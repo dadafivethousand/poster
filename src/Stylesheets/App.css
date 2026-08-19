@@ -1,0 +1,84 @@
+/* The stage: one fixed 4:5 canvas, and the unit every poster is authored in.
+ *
+ * The sibling repos size everything in vw/vh because they are screen-recorded
+ * off a phone, where the viewport IS the deliverable and its size varies. A
+ * poster is the opposite: the frame is a known 1080×1350 file, and what the
+ * browser shows is only a preview of it. So the canvas is pinned to 4:5 and
+ * scaled to fit whatever window it is being previewed in, and the export just
+ * opens a window that happens to be exactly canvas-sized.
+ *
+ * THE UNIT. `--px` is one design pixel at 1080 wide. Author every dimension as
+ * `calc(<n> * var(--px))` with <n> read straight off the 1080×1350 canvas, so
+ * "a 64px headline" is `calc(64 * var(--px))` and means the same thing in the
+ * preview, in the 1080 export and in a 2× print export.
+ *
+ * It is built out of container query units rather than a transform on purpose:
+ * a `scale()` on the stage would resample everything through one matrix and
+ * soften type and hairlines in the export. Under cq units the browser lays the
+ * poster out at its real size and renders it natively at whatever the device
+ * pixel ratio is, which is what makes `SCALE=2 npm run shot` genuinely 2×
+ * rather than an upscale.
+ *
+ * Never write a bare `px` value except for something that must stay a hairline
+ * at every export scale, and never write `vw`/`vh` inside a poster at all —
+ * those track the preview window, so the artwork would change shape between
+ * the screen and the file.
+ */
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  /* the surround outside the poster in the preview; never exported */
+  background: #0b0c0e;
+  overflow: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+}
+
+/* The poster's own box. Largest 4:5 rectangle that fits, and the query
+ * container everything inside measures itself against. */
+.pf-frame {
+  position: relative;
+  width: min(100vw, calc(100vh * 4 / 5));
+  width: min(100vw, calc(100dvh * 4 / 5));
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  container-type: size;
+  container-name: poster;
+  /* keeps the preview readable against the surround; harmless in the export,
+   * where the frame fills the window edge to edge */
+  box-shadow: 0 0 0 1px #1c1f24;
+}
+
+/* Every poster's root element sits here and inherits the unit. */
+.pf-stage {
+  --px: calc(100cqw / 1080);
+
+  /* Safe margins. The export is exact, so unlike the sibling repos these are
+   * not crop insurance — they are the poster's margins, and content still sits
+   * as one centred block with clear space on all four sides. */
+  --margin-x: calc(96 * var(--px));
+  --margin-y: calc(112 * var(--px));
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* A poster never scrolls, never selects, never hovers. It is a picture. */
+  user-select: none;
+  -webkit-user-select: none;
+}

@@ -1,0 +1,38 @@
+{
+  "name": "poster",
+  "version": "1.0.0",
+  "description": "Self-contained still poster compositions, exported as PNGs for social and print.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "logo": "node scripts/import-logo.js",
+    "source": "node scripts/import-source.js",
+    "shot": "node tools/shoot.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "framer-motion": "^12.0.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-scripts": "^5.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "typescript": "4.9.5"
+  }
+}

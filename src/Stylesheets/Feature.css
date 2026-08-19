@@ -1,0 +1,280 @@
+/* Feature — photo-led template poster. Namespace: ft-
+ *
+ * Every dimension is `calc(<n> * var(--px))`, where <n> is design pixels on the
+ * 1080×1350 canvas. See Stylesheets/App.css for why.
+ */
+
+.ft {
+  /* Roles pulled off the submitted image by useSource. The fallbacks matter:
+   * a poster must still render if the image fails to decode. */
+  --ink: var(--source-ink, #10131a);
+  --paper: var(--source-paper, #f4f2ee);
+  --accent: var(--source-accent, #e4002b);
+
+  background: var(--ink);
+}
+
+/* ---------- ground ---------- */
+
+/* The photograph, full bleed. `cover` on the canvas rather than the image's own
+ * aspect: a poster crops its picture, it doesn't letterbox it. */
+.ft-photo {
+  position: absolute;
+  inset: 0;
+  background-image: var(--source);
+  background-size: cover;
+  background-position: center;
+  /* pulled down and desaturated so white type has somewhere to sit; the poster
+   * is a designed object, not a photo with a logo dropped on it */
+  filter: saturate(0.74) contrast(1.06) brightness(0.68);
+}
+
+/* The no-photo path: the same colours, arranged by hand.
+ *
+ * Deliberately a LIGHT poster where the photo variant is a dark one. That is
+ * not just variety — with no photograph there is nothing to light, and the
+ * pool the photo variant relies on reads as a white smudge on a flat field
+ * rather than as light. Inverting the ground instead gives the dark mark its
+ * contrast from the page itself, and the two variants stop looking like the
+ * same poster twice.
+ *
+ * Two offset tints over paper rather than a flat fill: a solid ground with
+ * type on it is a slide, not a poster. */
+.ft-ground {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      120% 90% at 20% 8%,
+      color-mix(in srgb, var(--source-3, #c3c9d2) 58%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      110% 85% at 88% 96%,
+      color-mix(in srgb, var(--accent) 20%, transparent) 0%,
+      transparent 58%
+    ),
+    var(--paper);
+}
+
+/* Graded scrim, heavier at the feet so the type block has a ground to stand on
+ * and the picture stays open at the top. */
+.ft-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ink) 62%, transparent) 0%,
+    color-mix(in srgb, var(--ink) 14%, transparent) 34%,
+    color-mix(in srgb, var(--ink) 74%, transparent) 78%,
+    color-mix(in srgb, var(--ink) 94%, transparent) 100%
+  );
+}
+
+.ft-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    92% 74% at 50% 46%,
+    transparent 44%,
+    color-mix(in srgb, var(--ink) 62%, transparent) 100%
+  );
+}
+
+.ft-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* The light the lockup stands in.
+ *
+ * This is the load-bearing piece of the whole template. A photograph is an
+ * arbitrary field of tones, and no fixed logo colour survives every one of
+ * them — so rather than fighting the picture, the poster puts a pool of light
+ * where the lockup goes and lets the mark keep the colours it was drawn in.
+ * Heavily blurred and feathered to nothing well before its edge, so it reads
+ * as light falling on the scene rather than a white card stuck onto it.
+ */
+.ft-pool {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(900 * var(--px));
+  height: calc(780 * var(--px));
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    color-mix(in srgb, var(--paper) 94%, transparent) 0%,
+    color-mix(in srgb, var(--paper) 76%, transparent) 38%,
+    color-mix(in srgb, var(--paper) 30%, transparent) 62%,
+    transparent 76%
+  );
+  filter: blur(calc(26 * var(--px)));
+}
+
+/* ---------- the content block ---------- */
+
+/* One centred group with clear space on all four sides. Note there is no
+ * `flex: 1` on any child: giving one of them the free space would justify its
+ * siblings out to the margins and the leftover room would sit INSIDE the
+ * composition as a stretched gap instead of around it as margin. */
+.ft-card {
+  position: absolute;
+  inset: var(--margin-y) var(--margin-x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(44 * var(--px));
+}
+
+/* The mark and its caption are one object. The caption is a flow sibling with
+ * margin only — positioning it independently lets it drift the moment anything
+ * else on the poster changes size. */
+.ft-markwrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ft-markbox {
+  position: relative;
+  width: calc(560 * var(--px));
+  /* never a hard-coded ratio: useLogo publishes the trimmed mark's own aspect,
+   * so a replacement logo lands in register instead of stretched */
+  aspect-ratio: var(--logo-aspect, 2.4);
+  /* the mark sits proud of the pool rather than lying on it */
+  filter: drop-shadow(0 calc(8 * var(--px)) calc(22 * var(--px))
+    color-mix(in srgb, var(--ink) 34%, transparent));
+}
+
+/* Each region is a full-size painted layer seen through its own mask. The mark
+ * is never an <img> that gets tinted — that is what lets a poster give the
+ * hood, the eyes and "CODE" three different materials. */
+.ft-mark {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* Hood and "NINJAS" — and, unavoidably, THE EYE SLITS, because they are drawn
+ * in the same near-black and alpha carries no distinction between them.
+ *
+ * That is why this region is painted dark and the poster lights the mark from
+ * behind instead of inverting it. An earlier pass flipped the dark region to
+ * the palette's lightest tone so the hood would read on a dark photograph, and
+ * it did — but the slits inverted with it, so the ninja's angry eyes came out
+ * as two pale smudges on a tan band and the mark read as a blank white disc.
+ * There is no mask that separates a slit from the hood around it. Light the
+ * ground, keep the artwork's own colours. */
+.ft-mark-hood {
+  -webkit-mask-image: var(--logo-dark, var(--logo));
+  mask-image: var(--logo-dark, var(--logo));
+  background: linear-gradient(172deg, #23262c 0%, #0d1014 100%);
+}
+
+/* The band across the eyes. Its own colour, always — a poster that masks only
+ * by --logo flattens the lockup into one material and the ninja loses his
+ * eyes.
+ *
+ * This region stays SKIN and is deliberately not mixed toward the palette. An
+ * earlier pass warmed it with `--accent`, which is fine while the accent comes
+ * off a photograph and disastrous the moment it falls back to brand red: the
+ * ninja's face turns pink and the first thing anyone looks at on the poster is
+ * the one thing that's wrong. The palette drives the ground, the rule and the
+ * type; it does not get a vote on his face. */
+.ft-mark-face {
+  -webkit-mask-image: var(--logo-light);
+  mask-image: var(--logo-light);
+  background: linear-gradient(180deg, #ecd9b4 0%, #d7c19b 100%);
+}
+
+/* "CODE" keeps the brand's blue, lifted so it survives on a dark ground. */
+.ft-mark-code {
+  -webkit-mask-image: var(--logo-accent);
+  mask-image: var(--logo-accent);
+  background: linear-gradient(180deg, #6cc4ee 0%, #3490bf 100%);
+}
+
+/* Fallback for a logo with no separable regions. */
+.ft-mark-flat {
+  -webkit-mask-image: var(--logo);
+  mask-image: var(--logo);
+  background: linear-gradient(172deg, #23262c 0%, #0d1014 100%);
+}
+
+.ft-caption {
+  margin-top: calc(30 * var(--px));
+  font-size: calc(70 * var(--px));
+  font-weight: 900;
+  letter-spacing: calc(11 * var(--px));
+  /* tracking is applied to the right of every glyph including the last, which
+   * pushes a centred word off-centre by half a space */
+  text-indent: calc(11 * var(--px));
+  line-height: 1;
+  color: var(--ink);
+}
+
+.ft-rule {
+  width: calc(120 * var(--px));
+  height: max(1px, calc(3 * var(--px)));
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.ft-headline {
+  margin: 0;
+  max-width: calc(720 * var(--px));
+  font-size: calc(34 * var(--px));
+  font-weight: 600;
+  line-height: 1.42;
+  text-align: center;
+  text-wrap: balance;
+  color: color-mix(in srgb, var(--ink) 78%, transparent);
+}
+
+/* ---------- the light variant ---------- */
+
+.ft-photo-off {
+  background: var(--paper);
+}
+
+/* Both of these exist to hold a photograph down. With no photograph the scrim
+ * is a grey wash over a page that was already the right value, and the pool is
+ * a blob of white on white. */
+.ft-photo-off .ft-scrim,
+.ft-photo-off .ft-pool {
+  display: none;
+}
+
+/* Vignette stays, inverted in weight: just enough to close the corners so the
+ * page has an edge, nowhere near enough to read as a dark frame. */
+.ft-photo-off .ft-vignette {
+  background: radial-gradient(
+    94% 76% at 50% 46%,
+    transparent 46%,
+    color-mix(in srgb, var(--ink) 16%, transparent) 100%
+  );
+}
+
+/* On paper the mark casts a real shadow rather than needing separation from a
+ * busy picture. */
+.ft-photo-off .ft-markbox {
+  filter: drop-shadow(0 calc(10 * var(--px)) calc(24 * var(--px))
+    color-mix(in srgb, var(--ink) 22%, transparent));
+}
+
+.ft-photo-off .ft-grain {
+  opacity: 0.09;
+  mix-blend-mode: multiply;
+}
