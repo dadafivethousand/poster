@@ -13,23 +13,31 @@
  * it with a flag. That keeps a browser download out of an install that every
  * export has to do.
  *
- * THE WINDOW IS THE CANVAS. Chrome opens at exactly 1080×1350, so the 4:5
- * frame in App.css fills it edge to edge and the poster lays out at its true
- * size — nothing is scaled anywhere in the pipeline. SCALE raises the device
- * pixel ratio instead of resizing the window, so 2× is a genuine 2× render
- * (type re-rasterised, hairlines still hairlines) rather than an upscale.
+ * THE WINDOW IS THE CANVAS, and the page decides what the canvas is. The size
+ * is NOT configured here: Chrome is run once with --dump-dom to read the
+ * `data-canvas` attribute src/Frame.js puts on the frame, and the window is
+ * opened at exactly that. So the poster fills the window edge to edge and lays
+ * out at its true size, with nothing scaled anywhere in the pipeline.
  *
- * The PNG's dimensions are asserted afterwards. Silently exporting an
- * off-size or upscaled file is the failure mode that hides for weeks and then
- * gets blamed on the artwork.
+ * That extra launch buys the one guarantee worth paying for. An exporter told
+ * the size by a flag can be told the wrong one, and a letter poster exported
+ * at Instagram dimensions is a mistake nothing downstream would catch — it is
+ * just a slightly-wrong file that looks deliberate. Reading it off the page
+ * makes the two impossible to desync.
+ *
+ * SCALE raises the device pixel ratio instead of resizing the window, so 2× is
+ * a genuine 2× render (type re-rasterised, hairlines still hairlines) rather
+ * than an upscale. Print presets are already 300dpi, so SCALE is for social
+ * sizes that need a retina crop.
+ *
+ * The PNG's dimensions are asserted afterwards. Silently exporting an off-size
+ * or upscaled file is the failure mode that hides for weeks and then gets
+ * blamed on the artwork.
  */
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
-
-const CANVAS_W = 1080;
-const CANVAS_H = 1350;
 
 const CHROME =
   process.env.CHROME ||
@@ -56,7 +64,8 @@ if (!(SCALE > 0)) fail(`SCALE must be a positive number, got "${process.env.SCAL
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 
-const args = [
+// Flags shared by both launches.
+const BASE = [
   "--headless=new",
   "--disable-gpu",
   "--hide-scrollbars",
@@ -65,9 +74,36 @@ const args = [
   // still carry an entrance animation. Reduced motion pins it at its rest
   // state instead of exporting whatever frame the shutter happened to catch.
   "--force-prefers-reduced-motion",
+  `--virtual-time-budget=${WAIT}`,
+];
+
+// ---- launch 1: ask the page how big it is ----
+// maxBuffer is raised well past the default 1MB because useLogo and useSource
+// publish their trimmed images as data: URLs in an inline style attribute, so
+// the serialised DOM carries the artwork inside it.
+const probe = spawnSync(CHROME, [...BASE, "--dump-dom", URL], {
+  encoding: "utf8",
+  maxBuffer: 64 * 1024 * 1024,
+});
+if (probe.error) fail(`Couldn't start Chrome: ${probe.error.message}`);
+
+const found = /data-canvas="(\d+)x(\d+)"/.exec(probe.stdout || "");
+if (!found) {
+  fail(
+    `Couldn't read the canvas size from the page.\n` +
+      `    Is the dev server up at ${URL}? Start it with \`npm start\`.\n` +
+      `    If it is, check src/App.js renders its poster inside <Frame>, which\n` +
+      `    is what puts data-canvas on the frame.`
+  );
+}
+const CANVAS_W = Number(found[1]);
+const CANVAS_H = Number(found[2]);
+
+// ---- launch 2: take the picture ----
+const args = [
+  ...BASE,
   `--force-device-scale-factor=${SCALE}`,
   `--window-size=${CANVAS_W},${CANVAS_H}`,
-  `--virtual-time-budget=${WAIT}`,
   `--screenshot=${OUT}`,
   URL,
 ];
@@ -79,7 +115,6 @@ if (run.error) fail(`Couldn't start Chrome: ${run.error.message}`);
 if (!fs.existsSync(OUT)) {
   fail(
     `Chrome wrote nothing.\n` +
-      `    Is the dev server up at ${URL}? Start it with \`npm start\`.\n` +
       (run.stderr ? `    ${run.stderr.trim().split("\n").slice(-3).join("\n    ")}` : "")
   );
 }

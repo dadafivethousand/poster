@@ -44,10 +44,32 @@ desaturated interior whose most-saturated colour is a warm grey, and using it as
 the accent rendered the rule under the caption invisible. Always write
 `var(--source-accent, #e4002b)` with a fallback, never a bare `var(--source-accent)`.
 
-## The canvas: 1080×1350, and `--px`
+## The canvas: chosen per poster, defaulting to an Instagram post
 
-Fixed 4:5. The frame is a **known file size**, not a phone screen, which is the
-whole reason this repo's units differ from its siblings':
+The size is set on the `<Frame>` in `src/App.js` and **nowhere else**:
+
+```jsx
+<Frame><Feature /></Frame>                      // Instagram post 1080×1350 — the default
+<Frame canvas="square"><Feature /></Frame>      // 1080×1080
+<Frame canvas="letter"><Feature /></Frame>      // 8.5×11" at 300dpi, 2550×3300
+<Frame canvas={{ w: 1200, h: 1600 }}>…</Frame>  // one-off
+```
+
+Presets live in `src/canvas.js`: `ig` (default), `square`, `story`, `letter`,
+`letter-landscape`, `a4`, `tabloid`. Print sizes are 300dpi. An unknown name
+throws rather than falling back, because exporting at the wrong size is the one
+mistake this repo's tooling exists to prevent.
+
+**Assume `ig` unless the job says otherwise.** Don't ask which size for a
+poster that is obviously going on the feed.
+
+`npm run shot` is not told the size — it reads `data-canvas` off the rendered
+page. So the canvas is written down once and the two can't desync.
+
+## `--px`, and why it is not tied to the canvas
+
+The frame is a **known file size**, not a phone screen, which is the whole
+reason this repo's units differ from its siblings':
 
 ```css
 .xx-thing {
@@ -57,8 +79,17 @@ whole reason this repo's units differ from its siblings':
 ```
 
 `--px` is one design pixel, defined on `.pf-stage` in `App.css` out of
-container query units. Author every dimension as `calc(<n> * var(--px))` with
-`<n>` read straight off the canvas.
+container query units. Author every dimension as `calc(<n> * var(--px))`.
+
+**`--px` is always 1/1080th of the canvas width, whatever the canvas is** — the
+1080 is a constant, deliberately not `--canvas-w`. Posters are authored on a
+nominal **1080-wide sheet** and the preset decides how many real pixels that
+sheet is printed at. Tying the unit to the export size instead would mean a
+composition sized for an Instagram post came out as a row of ants the moment it
+was exported at letter, where the canvas is 2550px across.
+
+So `<n>` is read off a 1080-wide sheet, not off the export. Changing the preset
+changes the paper and the aspect; it never changes the type scale.
 
 - **Never write `vw`/`vh` inside a poster.** Those track the preview window, so
   the artwork would change shape between the screen and the exported file.
@@ -70,23 +101,27 @@ container query units. Author every dimension as `calc(<n> * var(--px))` with
   real size and renders natively, which is what makes `SCALE=2` a genuine 2×
   render rather than an upscale.
 
-Every poster's root element carries `className="pf-stage <prefix>"` and sits
-inside the `.pf-frame` in `App.js`.
+Every poster's root element carries `className="pf-stage <prefix>"` and is
+rendered inside `<Frame>` in `App.js`.
 
 ## Exporting
 
 ```bash
 npm start                # one shell, from the repo root
-npm run shot             # → ~/Downloads/poster.png, 1080×1350
+npm run shot             # → ~/Downloads/poster.png, at whatever the Frame says
 OUT=~/Desktop/camp.png npm run shot
-SCALE=2 npm run shot     # 2160×2700 for print or a retina crop
+SCALE=2 npm run shot     # a genuine 2× render, for a retina crop of a social size
 ```
 
 `tools/shoot.js` drives the Chrome already on the machine — no puppeteer, so
-nothing downloads a browser on install. It asserts the PNG's dimensions
-afterwards and warns if the file compresses like a flat frame, because an
-off-size or blank export is the failure that hides for weeks and then gets
-blamed on the artwork.
+nothing downloads a browser on install. It launches twice: once with
+`--dump-dom` to read the canvas off the page, once to take the picture at
+exactly that size. It then asserts the PNG's dimensions and warns if the file
+compresses like a flat frame, because an off-size or blank export is the
+failure that hides for weeks and then gets blamed on the artwork.
+
+There is no size flag, on purpose. Print presets are already 300dpi, so `SCALE`
+is only for social sizes.
 
 **A build log proves nothing here — these are visual deliverables.** Take the
 shot and look at it before reporting anything as done.
@@ -99,7 +134,10 @@ killing it, since the user may be recording in it.
 
 **Centre the content, with clear space on all four sides.** The export is exact
 so there is no crop to defend against, but the rule holds: one block of content
-concentrated in the middle, margins around it. Sparse beats full-bleed.
+concentrated in the middle, margins around it. Sparse beats full-bleed. It is
+also what lets one poster survive being re-exported at a different aspect —
+a centred block reflows onto a square or a sheet of letter; a composition
+pinned to the edges does not.
 
 ```css
 .xx-card {
@@ -208,6 +246,8 @@ to pin it, since that only holds for effects that declared a rest state.
 ## Workflow
 
 Commit and push after each change, straight to `master`, no side branches, per
-user preference. **There is no deploy step and no hosted URL** — this repo's
+user preference. The remote is `git@github.com:dadafivethousand/poster.git` —
+SSH, because the machine's stored HTTPS credential for GitHub 403s on push.
+**There is no deploy step and no hosted URL** — this repo's
 output is a file, so a poster is delivered when the PNG is in `~/Downloads` and
 the user has seen it, not when the commit lands.

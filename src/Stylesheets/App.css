@@ -49,13 +49,21 @@ body {
   place-items: center;
 }
 
-/* The poster's own box. Largest 4:5 rectangle that fits, and the query
- * container everything inside measures itself against. */
+/* The poster's own box. Largest rectangle of the chosen canvas's aspect that
+ * fits the preview window, and the query container everything inside measures
+ * itself against.
+ *
+ * `--canvas-w` / `--canvas-h` are the EXPORT's pixel dimensions, set by
+ * src/Frame.js from the canvas preset. They shape the paper; they do not set
+ * the unit — see `--px` below. */
 .pf-frame {
+  --canvas-w: 1080;
+  --canvas-h: 1350;
+
   position: relative;
-  width: min(100vw, calc(100vh * 4 / 5));
-  width: min(100vw, calc(100dvh * 4 / 5));
-  aspect-ratio: 4 / 5;
+  width: min(100vw, calc(100vh * var(--canvas-w) / var(--canvas-h)));
+  width: min(100vw, calc(100dvh * var(--canvas-w) / var(--canvas-h)));
+  aspect-ratio: var(--canvas-w) / var(--canvas-h);
   overflow: hidden;
   container-type: size;
   container-name: poster;
@@ -66,6 +74,13 @@ body {
 
 /* Every poster's root element sits here and inherits the unit. */
 .pf-stage {
+  /* One design pixel — always 1/1080th of the canvas WIDTH, whatever the
+   * canvas is. The 1080 is a constant on purpose and is NOT `--canvas-w`:
+   * tying the unit to the export size would mean a composition sized for an
+   * Instagram post came out as a row of ants the moment the same poster was
+   * exported at letter, where the canvas is 2550px across. Posters are always
+   * authored on a nominal 1080-wide sheet; the preset decides how many real
+   * pixels that sheet is printed at. */
   --px: calc(100cqw / 1080);
 
   /* Safe margins. The export is exact, so unlike the sibling repos these are

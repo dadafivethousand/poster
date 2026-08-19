@@ -23,17 +23,40 @@ reference image has no such requirement; a photo is fine.
 
 ## The canvas
 
-**1080×1350, 4:5** — the largest slot an Instagram feed gives a still.
+Set on the `<Frame>` in `src/App.js`. **Defaults to an Instagram post** —
+1080×1350, the largest slot a feed gives a still — so most posters say nothing
+about size at all.
 
-Everything inside a poster is authored in `calc(<n> * var(--px))`, where `<n>`
-is design pixels on that canvas and `--px` is built out of container query
-units. So "a 64px headline" means the same thing in the browser preview, in the
-1080 export and in a 2× print export, and nothing is ever scaled through a
-transform.
+```jsx
+<Frame><Feature /></Frame>                      // Instagram post 1080×1350
+<Frame canvas="square"><Feature /></Frame>      // 1080×1080
+<Frame canvas="letter"><Feature /></Frame>      // 8.5×11" at 300dpi
+<Frame canvas={{ w: 1200, h: 1600 }}>…</Frame>  // one-off
+```
+
+| preset | pixels | |
+|---|---|---|
+| `ig` *(default)* | 1080×1350 | Instagram post, 4:5 |
+| `square` | 1080×1080 | 1:1 |
+| `story` | 1080×1920 | Story / Reel, 9:16 |
+| `letter` | 2550×3300 | 8.5×11" portrait, 300dpi |
+| `letter-landscape` | 3300×2550 | 11×8.5" landscape |
+| `a4` | 2480×3508 | A4 portrait |
+| `tabloid` | 3300×5100 | 11×17" portrait |
+
+**Changing the preset changes the paper, not the type scale.** Everything
+inside a poster is authored in `calc(<n> * var(--px))`, and `--px` is always
+1/1080th of the canvas width whatever the canvas is — posters are drawn on a
+nominal 1080-wide sheet, and the preset decides how many real pixels that sheet
+prints at. So a poster built for the feed re-exports at letter without turning
+into a row of ants, and nothing is ever scaled through a transform.
+
+`npm run shot` isn't told the size; it reads it off the rendered page, so the
+canvas is written down once and the export can't disagree with the design.
 
 ```bash
-SCALE=2 npm run shot          # 2160×2700, a genuine 2× render
 OUT=~/Desktop/camp.png npm run shot
+SCALE=2 npm run shot                       # a genuine 2× render of a social size
 URL=http://localhost:3001 npm run shot     # if 3000 is a sibling repo's server
 ```
 
@@ -60,13 +83,14 @@ always writes its own fallback: `var(--source-accent, #e4002b)`.
 `src/App.js`:
 
 ```jsx
+import Frame from "./Frame";
 import Feature from "./Components/Feature";
 
 function App() {
   return (
-    <div className="pf-frame">
+    <Frame>
       <Feature withSource={true} />
-    </div>
+    </Frame>
   );
 }
 ```
@@ -87,8 +111,8 @@ twice until `npm run source` replaces it.
 
 One poster = one component in `src/Components/` + one stylesheet in
 `src/Stylesheets/`, classes namespaced with a short prefix, root element
-`className="pf-stage <prefix>"`. Copy `Feature` and give it a composition of
-its own.
+`className="pf-stage <prefix>"`, rendered inside `<Frame>`. Copy `Feature` and
+give it a composition of its own.
 
 Nothing here animates — there is no phase machine, because a still has no
 timeline.
