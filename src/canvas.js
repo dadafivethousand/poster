@@ -37,6 +37,7 @@ const CANVASES = {
   story: { w: 1080, h: 1920, label: "Story / Reel (9:16)" },
 
   // --- print, 300dpi ---
+  "half-letter": { w: 1650, h: 2550, label: 'Half-letter 5.5×8.5" flyer' },
   letter: { w: 2550, h: 3300, label: 'Letter 8.5×11" portrait' },
   "letter-landscape": { w: 3300, h: 2550, label: 'Letter 11×8.5" landscape' },
   a4: { w: 2480, h: 3508, label: "A4 portrait" },

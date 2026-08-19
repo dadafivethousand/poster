@@ -1,0 +1,342 @@
+/* StaplesFlyer — Staples × Code Ninjas $50-off handout. Namespace: sf-
+ *
+ * Half-letter (5.5×8.5in). Authored on the nominal 1080-wide sheet like every
+ * poster here, so `calc(<n> * var(--px))` is design pixels — see App.css.
+ *
+ * Colours are sampled out of the original PDF; don't nudge them by eye.
+ */
+
+.sf {
+  --red: #e4002b;
+  --navy: #123a5e;
+  --ink: #16233a;
+  --blue: #2b7cb8;
+  --page: #e6eef8;
+  --band: #d3deea;
+  --muted: #4f596a;
+  --fine: #7b8aa3;
+
+  --inset: calc(58 * var(--px)); /* the gutter every card sits inside */
+  --round: calc(26 * var(--px));
+
+  display: flex;
+  flex-direction: column;
+  background: var(--page);
+  font-family: Poppins, Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--ink);
+}
+
+/* The stage is `overflow: hidden` and this layout is a column of blocks rather
+ * than one centred group, because a flyer is a PAGE — it runs top to bottom and
+ * the eye is meant to walk it. That is the one deliberate departure from the
+ * centre-the-content rule the social posters follow. */
+
+/* ---------- co-brand header ---------- */
+
+.sf-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(30 * var(--px));
+  padding: calc(40 * var(--px)) 0 calc(30 * var(--px));
+}
+
+.sf-staples {
+  width: calc(196 * var(--px));
+  height: auto;
+}
+
+.sf-divide {
+  width: max(1px, calc(2 * var(--px)));
+  height: calc(46 * var(--px));
+  background: #b9c7d8;
+}
+
+.sf-cn {
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--px));
+}
+
+.sf-cn-head {
+  width: calc(62 * var(--px));
+  height: auto;
+}
+
+/* The wordmark is set rather than placed: there is no horizontal lockup file
+ * in any of these repos, only the stacked one. Poppins at 700 with tight
+ * tracking is a close read of the real mark at this size. */
+.sf-cn-word {
+  font-size: calc(38 * var(--px));
+  font-weight: 700;
+  letter-spacing: calc(-0.6 * var(--px));
+  color: var(--ink);
+  line-height: 1;
+}
+
+.sf-cn-word b {
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.sf-cn-word sup {
+  font-size: calc(13 * var(--px));
+  vertical-align: super;
+  font-weight: 600;
+}
+
+/* ---------- hero ---------- */
+
+.sf-hero {
+  position: relative;
+  margin: 0 var(--inset);
+  padding: calc(34 * var(--px)) calc(40 * var(--px)) calc(36 * var(--px));
+  background: #fff;
+  border-radius: var(--round);
+  display: flex;
+  align-items: flex-start;
+}
+
+.sf-hero-copy {
+  /* the mascot overlaps the right side, so the copy column stops short of it */
+  width: 66%;
+}
+
+.sf-kicker {
+  margin: 0 0 calc(16 * var(--px));
+  font-size: calc(20 * var(--px));
+  font-weight: 700;
+  letter-spacing: calc(2.6 * var(--px));
+  color: var(--blue);
+}
+
+.sf-headline {
+  margin: 0 0 calc(22 * var(--px));
+  font-size: calc(44 * var(--px));
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: calc(-0.8 * var(--px));
+  color: var(--ink);
+}
+
+.sf-headline-b {
+  color: var(--blue);
+}
+
+.sf-body {
+  margin: 0;
+  font-size: calc(24 * var(--px));
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Sits over the card's right edge and its own bottom corner — a mascot boxed
+ * neatly inside the card reads as a stock photo in a frame. */
+.sf-ninja {
+  position: absolute;
+  right: calc(10 * var(--px));
+  bottom: 0;
+  width: calc(310 * var(--px));
+  height: auto;
+}
+
+/* ---------- the tinted bands ---------- */
+
+/* Full-bleed: the band runs to the sheet edge while the card inside it keeps
+ * the gutter. That contrast is what separates the coupon from the page. */
+.sf-band {
+  margin-top: calc(20 * var(--px));
+  padding: calc(20 * var(--px)) var(--inset);
+  background: var(--band);
+}
+
+.sf-band-cards {
+  margin-top: calc(18 * var(--px));
+}
+
+/* ---------- coupon ---------- */
+
+.sf-coupon {
+  position: relative;
+  padding: calc(30 * var(--px)) calc(40 * var(--px)) calc(26 * var(--px));
+  background: #fff;
+  border-radius: calc(20 * var(--px));
+  /* dashed, in a wash of the red — a solid rule reads as a border, a dashed
+     one reads as "cut here" */
+  border: max(1px, calc(3 * var(--px))) dashed #ef8ca2;
+  text-align: center;
+}
+
+/* The two punched notches. Page-coloured discs sitting on the card edge, which
+ * is how a real perforated coupon reads at a glance. */
+.sf-notch {
+  position: absolute;
+  top: 50%;
+  width: calc(34 * var(--px));
+  height: calc(34 * var(--px));
+  margin-top: calc(-17 * var(--px));
+  background: var(--band);
+  border-radius: 50%;
+}
+
+.sf-notch-l {
+  left: calc(-19 * var(--px));
+}
+
+.sf-notch-r {
+  right: calc(-19 * var(--px));
+}
+
+.sf-amount {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(6 * var(--px));
+  line-height: 0.92;
+}
+
+.sf-amount-num {
+  font-size: calc(116 * var(--px));
+  font-weight: 800;
+  letter-spacing: calc(-3 * var(--px));
+  color: var(--red);
+}
+
+/* Outlined rather than filled, so "$50" carries the weight and "OFF" reads as
+ * its unit. `-webkit-text-stroke` keeps the counters open at this size where a
+ * painted outline would fill them in. */
+.sf-amount-word {
+  font-size: calc(94 * var(--px));
+  font-weight: 800;
+  letter-spacing: calc(-1 * var(--px));
+  color: transparent;
+  -webkit-text-stroke: calc(4 * var(--px)) var(--red);
+}
+
+.sf-offer {
+  margin: calc(10 * var(--px)) 0 0;
+  font-size: calc(30 * var(--px));
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sf-condition {
+  margin: calc(20 * var(--px)) 0 0;
+  padding: calc(17 * var(--px)) calc(22 * var(--px));
+  background: var(--red);
+  border-radius: calc(12 * var(--px));
+  font-size: calc(27 * var(--px));
+  font-weight: 600;
+  color: #fff;
+}
+
+.sf-promo {
+  margin: calc(20 * var(--px)) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(20 * var(--px));
+}
+
+.sf-promo-label {
+  font-size: calc(25 * var(--px));
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.sf-promo-code {
+  padding: calc(15 * var(--px)) calc(30 * var(--px));
+  background: var(--navy);
+  border-radius: calc(999 * var(--px));
+  font-size: calc(30 * var(--px));
+  font-weight: 700;
+  letter-spacing: calc(0.6 * var(--px));
+  color: #fff;
+}
+
+.sf-terms {
+  margin: calc(18 * var(--px)) 0 0;
+  font-size: calc(19 * var(--px));
+  font-weight: 400;
+  color: var(--fine);
+}
+
+.sf-terms b {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---------- upsell ---------- */
+
+.sf-note {
+  margin: calc(20 * var(--px)) var(--inset) 0;
+  padding: calc(26 * var(--px)) calc(32 * var(--px)) calc(28 * var(--px));
+  background: var(--navy);
+  border-radius: var(--round);
+  color: #fff;
+}
+
+.sf-note-title {
+  margin: 0 0 calc(12 * var(--px));
+  font-size: calc(31 * var(--px));
+  font-weight: 700;
+}
+
+/* Sized to hold this copy on TWO lines, as the original does. At 23px the
+ * last word drops to a third line and the block stops looking like an aside. */
+.sf-note-body {
+  margin: 0;
+  font-size: calc(22 * var(--px));
+  font-weight: 400;
+  line-height: 1.55;
+  color: #d9e4f0;
+}
+
+/* ---------- three proof points ---------- */
+
+.sf-cards {
+  display: flex;
+  gap: calc(16 * var(--px));
+}
+
+.sf-card {
+  flex: 1;
+  padding: calc(22 * var(--px)) calc(10 * var(--px));
+  background: #fff;
+  border-radius: calc(14 * var(--px));
+  text-align: center;
+  font-size: calc(24 * var(--px));
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+/* ---------- close ---------- */
+
+.sf-cta {
+  margin: calc(26 * var(--px)) var(--inset) 0;
+  text-align: center;
+  font-size: calc(29 * var(--px));
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.sf-site {
+  margin: calc(12 * var(--px)) 0 0;
+  text-align: center;
+  font-size: calc(31 * var(--px));
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.sf-fine {
+  margin: auto var(--inset) calc(34 * var(--px));
+  padding-top: calc(26 * var(--px));
+  text-align: center;
+  font-size: calc(14 * var(--px));
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--fine);
+}

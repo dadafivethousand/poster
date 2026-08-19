@@ -262,6 +262,11 @@ rather than shipping placeholder copy that could go out as real.
 
 Offers, prices, ages, dates and session names are never invented here.
 
+`StaplesFlyer` is the sharp end of that rule: it carries a partner's offer, a
+promo code, an expiry and a legal footer. Every one of those is a prop with the
+real value as its default, so changing one is a deliberate edit at the call
+site rather than a stray keystroke in the markup. Do not reword the fine print.
+
 ## Nothing on a poster moves
 
 No `usePhases`, no keyframes, no transitions — the siblings' phase machine has

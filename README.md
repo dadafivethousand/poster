@@ -125,6 +125,12 @@ The placeholder reference shipped here is a dojo photo, which happens to have
 the mark painted on the wall behind the students — so the poster shows it
 twice until `npm run source` replaces it.
 
+**StaplesFlyer** — the Staples × Code Ninjas $50-off handout, rebuilt from a
+PDF that had no source anywhere. Half-letter, 5.5×8.5", so it prints two-up.
+The mascot is extracted out of that PDF and the palette is sampled from it;
+every string is a prop, because the offer, the date, the promo code and the
+legal footer are real and came from Staples.
+
 ## Adding one
 
 One poster = one component in `src/Components/` + one stylesheet in

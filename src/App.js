@@ -1,7 +1,8 @@
 import React from "react";
 import "./Stylesheets/App.css";
 import Frame from "./Frame";
-import Feature from "./Components/Feature";
+// import Feature from "./Components/Feature";
+import StaplesFlyer from "./Components/StaplesFlyer";
 
 // One poster renders at a time. Swap the import and the returned component;
 // leave the previous one commented out above.
@@ -16,8 +17,8 @@ import Feature from "./Components/Feature";
 // off it and builds the artwork by hand.
 function App() {
   return (
-    <Frame>
-      <Feature withSource={true} />
+    <Frame canvas="half-letter">
+      <StaplesFlyer />
     </Frame>
   );
 }
