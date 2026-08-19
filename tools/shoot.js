@@ -3,10 +3,17 @@
  * Export the poster currently in src/App.js as a PNG.
  *
  *   npm start                      # in one shell, from the repo root
- *   npm run shot                   # → ~/Downloads/poster.png at 1080×1350
- *   OUT=~/Desktop/x.png npm run shot
- *   SCALE=2 npm run shot           # 2160×2700, for print or a retina crop
+ *   npm run shot                   # the size the poster asks for (default: IG post)
+ *   npm run shot -- square         # override it
+ *   npm run shot -- letter
+ *   npm run shot -- 8.5x11in       # or 1200x1600, or 210x297mm@150
+ *   OUT=~/Desktop/x.png npm run shot -- letter
+ *   SCALE=2 npm run shot           # a genuine 2x render of a social size
  *   URL=http://localhost:3000 npm run shot
+ *
+ * The size argument is handed to the PAGE as ?canvas=, not to the window. The
+ * aspect has to change inside the layout — resizing only the window would
+ * letterbox a poster still laid out at its old shape.
  *
  * No puppeteer. The sibling repo's recorder needs CDP to drive a screencast;
  * a still needs one screenshot, and the Chrome already on this machine takes
@@ -39,10 +46,14 @@ const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
+const { resolveCanvas } = require("../src/canvas");
+
 const CHROME =
   process.env.CHROME ||
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const URL = process.env.URL || "http://localhost:3000";
+const BASE_URL = process.env.URL || "http://localhost:3000";
+// `npm run shot -- letter`, or SIZE=letter for the same thing from a script.
+const SIZE = process.argv[2] || process.env.SIZE || "";
 const SCALE = Number(process.env.SCALE || 1);
 const OUT = path.resolve(
   (process.env.OUT || path.join(os.homedir(), "Downloads", "poster.png"))
@@ -61,6 +72,23 @@ if (!fs.existsSync(CHROME)) {
   fail(`No Chrome at ${CHROME}\n    Set CHROME=/path/to/chrome and re-run.`);
 }
 if (!(SCALE > 0)) fail(`SCALE must be a positive number, got "${process.env.SCALE}"`);
+
+// Resolve the requested size HERE, before launching anything, so a typo comes
+// back as the list of presets rather than as a mystery export.
+let want = null;
+if (SIZE) {
+  try {
+    want = resolveCanvas(SIZE);
+  } catch (e) {
+    fail(e.message);
+  }
+}
+
+// Handed to the page, which lays out at the new aspect; the window is then
+// sized from what the page reports back.
+const URL = want
+  ? BASE_URL + (BASE_URL.includes("?") ? "&" : "?") + `canvas=${encodeURIComponent(SIZE)}`
+  : BASE_URL;
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 
@@ -99,6 +127,17 @@ if (!found) {
 const CANVAS_W = Number(found[1]);
 const CANVAS_H = Number(found[2]);
 
+// The page is the authority, but if it laid out at something other than what
+// was asked for, that is a bug worth stopping on rather than a file to ship.
+if (want && (want.w !== CANVAS_W || want.h !== CANVAS_H)) {
+  fail(
+    `Asked for ${SIZE} (${want.w}×${want.h}) but the page laid out at ` +
+      `${CANVAS_W}×${CANVAS_H}.\n` +
+      `    Check src/App.js renders its poster inside <Frame>, which is what\n` +
+      `    reads the ?canvas= override.`
+  );
+}
+
 // ---- launch 2: take the picture ----
 const args = [
   ...BASE,
@@ -108,7 +147,10 @@ const args = [
   URL,
 ];
 
-console.log(`\n  → ${URL}  ${CANVAS_W}×${CANVAS_H} @${SCALE}x`);
+console.log(
+  `\n  → ${BASE_URL}  ${CANVAS_W}×${CANVAS_H} @${SCALE}x` +
+    (want ? `  (${want.label})` : "")
+);
 const run = spawnSync(CHROME, args, { encoding: "utf8" });
 
 if (run.error) fail(`Couldn't start Chrome: ${run.error.message}`);

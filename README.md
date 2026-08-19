@@ -23,15 +23,28 @@ reference image has no such requirement; a photo is fine.
 
 ## The canvas
 
-Set on the `<Frame>` in `src/App.js`. **Defaults to an Instagram post** —
-1080×1350, the largest slot a feed gives a still — so most posters say nothing
-about size at all.
+**Defaults to an Instagram post** — 1080×1350, the largest slot a feed gives a
+still — so most posters say nothing about size at all. When you want something
+else, ask for it at export time; you don't have to edit anything.
+
+```bash
+npm run shot                       # the default
+npm run shot -- square
+npm run shot -- letter
+npm run shot -- 8.5x11in           # or 1200x1600, or 210x297mm@150
+```
+
+Same sizes work in the browser, for looking before exporting:
+
+```
+localhost:3000/?canvas=letter
+```
+
+...and as a poster's own default, if it's built for one:
 
 ```jsx
-<Frame><Feature /></Frame>                      // Instagram post 1080×1350
-<Frame canvas="square"><Feature /></Frame>      // 1080×1080
-<Frame canvas="letter"><Feature /></Frame>      // 8.5×11" at 300dpi
-<Frame canvas={{ w: 1200, h: 1600 }}>…</Frame>  // one-off
+<Frame canvas="letter"><Feature /></Frame>
+<Frame canvas={{ w: 1200, h: 1600 }}>…</Frame>
 ```
 
 | preset | pixels | |
@@ -44,6 +57,9 @@ about size at all.
 | `a4` | 2480×3508 | A4 portrait |
 | `tabloid` | 3300×5100 | 11×17" portrait |
 
+Or skip the presets: `1200x1600` for literal pixels, `8.5x11in` / `210x297mm`
+for real-world units at 300dpi, `@150` on the end for another density.
+
 **Changing the preset changes the paper, not the type scale.** Everything
 inside a poster is authored in `calc(<n> * var(--px))`, and `--px` is always
 1/1080th of the canvas width whatever the canvas is — posters are drawn on a
@@ -51,11 +67,13 @@ nominal 1080-wide sheet, and the preset decides how many real pixels that sheet
 prints at. So a poster built for the feed re-exports at letter without turning
 into a row of ants, and nothing is ever scaled through a transform.
 
-`npm run shot` isn't told the size; it reads it off the rendered page, so the
-canvas is written down once and the export can't disagree with the design.
+The size is handed to the *page*, which re-lays-out at the new aspect; the
+export window is then sized from what the page reports back, and the shot fails
+rather than exporting if the two disagree. So a bigger poster is a genuinely
+different composition, never a letterboxed one.
 
 ```bash
-OUT=~/Desktop/camp.png npm run shot
+OUT=~/Desktop/camp.png npm run shot -- square
 SCALE=2 npm run shot                       # a genuine 2× render of a social size
 URL=http://localhost:3001 npm run shot     # if 3000 is a sibling repo's server
 ```

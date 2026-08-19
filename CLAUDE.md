@@ -44,27 +44,49 @@ desaturated interior whose most-saturated colour is a warm grey, and using it as
 the accent rendered the rule under the caption invisible. Always write
 `var(--source-accent, #e4002b)` with a fallback, never a bare `var(--source-accent)`.
 
-## The canvas: chosen per poster, defaulting to an Instagram post
+## The canvas: say any size you want, defaulting to an Instagram post
 
-The size is set on the `<Frame>` in `src/App.js` and **nowhere else**:
+**Assume `ig` unless the job says otherwise** — don't ask which size for a
+poster that is obviously going on the feed. But the size is never baked in:
+it can be given at export time, in the browser, or in the JSX, and all three
+take the same forms.
 
-```jsx
-<Frame><Feature /></Frame>                      // Instagram post 1080×1350 — the default
-<Frame canvas="square"><Feature /></Frame>      // 1080×1080
-<Frame canvas="letter"><Feature /></Frame>      // 8.5×11" at 300dpi, 2550×3300
-<Frame canvas={{ w: 1200, h: 1600 }}>…</Frame>  // one-off
+```bash
+npm run shot                       # what App.js asks for (default: IG post)
+npm run shot -- square
+npm run shot -- letter
+npm run shot -- 8.5x11in           # or 1200x1600, or 210x297mm@150
 ```
 
-Presets live in `src/canvas.js`: `ig` (default), `square`, `story`, `letter`,
-`letter-landscape`, `a4`, `tabloid`. Print sizes are 300dpi. An unknown name
-throws rather than falling back, because exporting at the wrong size is the one
-mistake this repo's tooling exists to prevent.
+```
+localhost:3000/?canvas=letter      # preview any size in the browser
+```
 
-**Assume `ig` unless the job says otherwise.** Don't ask which size for a
-poster that is obviously going on the feed.
+```jsx
+<Frame canvas="letter"><Feature /></Frame>      // the poster's own default
+<Frame canvas={{ w: 1200, h: 1600 }}>…</Frame>
+```
 
-`npm run shot` is not told the size — it reads `data-canvas` off the rendered
-page. So the canvas is written down once and the two can't desync.
+Accepted forms, everywhere a size is taken:
+
+| | |
+|---|---|
+| `ig` `square` `story` `letter` `letter-landscape` `a4` `tabloid` | presets in `src/canvas.js`; print ones are 300dpi |
+| `1200x1600` | literal pixels |
+| `8.5x11in` · `210x297mm@150` | real-world units at 300dpi, or `@<dpi>` |
+| `{ w, h }` | from JSX |
+
+Anything unparseable throws with the list of presets rather than falling back,
+because exporting at the wrong size is the one mistake this repo's tooling
+exists to prevent. In the browser a bad `?canvas=` renders the message on the
+page instead of white-screening.
+
+**The size goes into the PAGE, not the window.** `?canvas=` is the mechanism —
+the aspect has to change inside the layout, since resizing only the export
+window would letterbox a poster still laid out at its old shape. `shot` then
+reads `data-canvas` back off the rendered page to size the window and fails if
+it doesn't match what was asked for, so the picture is always taken at what the
+page actually laid out.
 
 ## `--px`, and why it is not tied to the canvas
 
@@ -82,7 +104,9 @@ reason this repo's units differ from its siblings':
 container query units. Author every dimension as `calc(<n> * var(--px))`.
 
 **`--px` is always 1/1080th of the canvas width, whatever the canvas is** — the
-1080 is a constant, deliberately not `--canvas-w`. Posters are authored on a
+1080 is a constant, deliberately not `--canvas-w`. This is what makes the size
+switchable at all: one poster re-exports at square, letter or A4 without being
+re-laid-out. Posters are authored on a
 nominal **1080-wide sheet** and the preset decides how many real pixels that
 sheet is printed at. Tying the unit to the export size instead would mean a
 composition sized for an Instagram post came out as a row of ants the moment it
@@ -107,10 +131,11 @@ rendered inside `<Frame>` in `App.js`.
 ## Exporting
 
 ```bash
-npm start                # one shell, from the repo root
-npm run shot             # → ~/Downloads/poster.png, at whatever the Frame says
-OUT=~/Desktop/camp.png npm run shot
-SCALE=2 npm run shot     # a genuine 2× render, for a retina crop of a social size
+npm start                          # one shell, from the repo root
+npm run shot                       # → ~/Downloads/poster.png
+npm run shot -- letter             # any size — see the canvas section
+OUT=~/Desktop/camp.png npm run shot -- square
+SCALE=2 npm run shot               # a genuine 2× render of a social size
 ```
 
 `tools/shoot.js` drives the Chrome already on the machine — no puppeteer, so
@@ -120,8 +145,9 @@ exactly that size. It then asserts the PNG's dimensions and warns if the file
 compresses like a flat frame, because an off-size or blank export is the
 failure that hides for weeks and then gets blamed on the artwork.
 
-There is no size flag, on purpose. Print presets are already 300dpi, so `SCALE`
-is only for social sizes.
+Print presets are already 300dpi, so `SCALE` is only for social sizes. The size
+argument and `SCALE` are different knobs: the argument changes the paper,
+`SCALE` renders the same paper at a higher pixel density.
 
 **A build log proves nothing here — these are visual deliverables.** Take the
 shot and look at it before reporting anything as done.
