@@ -27,6 +27,13 @@
   --skew: -11deg;
 
   --gold: #e9c46a;
+
+  /* The frame's own design pixel, before the safe-box shrink. Only the
+   * full-bleed layers use it. */
+  --u: calc(100cqw / 1080);
+  --safe-x: calc(76 * var(--u));
+  --safe-y: calc(95 * var(--u));
+
   background: #00102b;
   color: var(--paper);
   font-family: Poppins, Inter, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -83,6 +90,31 @@
     transparent 42%,
     rgba(0, 6, 22, 0.72) 100%
   );
+}
+
+/* ---------- the safe box ----------
+ *
+ * Crop insurance. Everything that is READ sits inside this box; the field, the
+ * leaf, the shaft and the grain stay full-bleed behind it, so what a crop eats
+ * off any edge is more poster and never a border.
+ *
+ * The shrink is done by REDEFINING THE UNIT, not by transforming the box. Every
+ * coordinate in this file is still the number measured off the original 1080
+ * sheet — nothing below had to move — but a design pixel is now 1/1080th of
+ * the INSET width rather than the full one, so the whole composition scales
+ * with it and stays in proportion. A `transform: scale()` would have been one
+ * line and would have rasterised the type once and then resampled it; this
+ * lays out and renders at the final size.
+ *
+ * The two margins are set so the fit is exact in both axes: 76 either side
+ * takes the width to 928/1080 = 0.859, and 95 top and bottom takes the height
+ * to 1160/1350 = 0.859 as well. Same ratio, so nothing is squashed and the
+ * clear space reads as even all round.
+ */
+.mb-safe {
+  position: absolute;
+  inset: var(--safe-y) var(--safe-x);
+  --px: calc((100cqw - 2 * var(--safe-x)) / 1080);
 }
 
 /* ---------- atmosphere ----------

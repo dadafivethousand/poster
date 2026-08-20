@@ -64,86 +64,93 @@ export default function MapleBackToSchool({
       {/* One shaft off the key light, raking across the upper third. */}
       <div className="mb-shaft" aria-hidden />
 
-      <img className="mb-logo" src={mapleLogo} alt="Maple Jiu Jitsu" />
+      {/* Everything that is READ lives inside the safe box. The field, the
+          leaf, the shaft and the grain stay full-bleed behind it, so the
+          margin is more poster rather than a border — a crop off any edge
+          takes background and nothing else. */}
+      <div className="mb-safe">
 
-      {/* ---- headline. The roundel sits beside it rather than over it, so the
-              two never fight for the same pixels at any string length. ---- */}
-      <div className="mb-top">
-        <h1 className="mb-head">
-          {headline.map((l) => (
-            <span key={l}>{l}</span>
-          ))}
-        </h1>
+        <img className="mb-logo" src={mapleLogo} alt="Maple Jiu Jitsu" />
 
-        <div className="mb-badge" aria-hidden={false}>
-          <span className="mb-badge-sm">{badge[0]}</span>
-          <span className="mb-badge-lg">{badge[1]}</span>
-          <span className="mb-badge-sm">{badge[2]}</span>
-          <span className="mb-badge-sm">{badge[3]}</span>
-        </div>
-      </div>
+        {/* ---- headline. The roundel sits beside it rather than over it, so the
+                two never fight for the same pixels at any string length. ---- */}
+        <div className="mb-top">
+          <h1 className="mb-head">
+            {headline.map((l) => (
+              <span key={l}>{l}</span>
+            ))}
+          </h1>
 
-      {/* Knocked out of a white slab — the one place on the sheet where the
-          navy becomes the ink and the paper becomes the ground. */}
-      <p className="mb-emph">
-        <span>{emphasis}</span>
-      </p>
-
-      <p className="mb-eyebrow">
-        <span>{eyebrow}</span>
-      </p>
-
-      <div className="mb-cards">
-        {cards.map((c, i) => (
-          <div
-            className={`mb-card ${c.art === "partner" ? "mb-card--partner" : ""}`}
-            key={c.big + i}
-          >
-            <span className="mb-num">{i + 1}</span>
-            <div className="mb-copy">
-              <p className="mb-big">{c.big}</p>
-              {c.small.length > 0 && (
-                <p className="mb-small">
-                  {c.small.map((l) => (
-                    <span key={l}>{l}</span>
-                  ))}
-                </p>
-              )}
-              {c.note && <p className="mb-note">{c.note}</p>}
-              <p className="mb-value">{money(c.value)}</p>
-            </div>
-
-            <div className="mb-art">
-              {c.art === "partner" ? (
-                <span className="mb-disc mb-disc--paper">
-                  <img src={cnLogo} alt="Code Ninjas" />
-                  <em>WOODBRIDGE</em>
-                </span>
-              ) : (
-                <span className="mb-disc mb-disc--glass">
-                  <span className="mb-emoji">{c.emoji}</span>
-                </span>
-              )}
-            </div>
+          <div className="mb-badge" aria-hidden={false}>
+            <span className="mb-badge-sm">{badge[0]}</span>
+            <span className="mb-badge-lg">{badge[1]}</span>
+            <span className="mb-badge-sm">{badge[2]}</span>
+            <span className="mb-badge-sm">{badge[3]}</span>
           </div>
-        ))}
+        </div>
+
+        {/* Knocked out of a white slab — the one place on the sheet where the
+            navy becomes the ink and the paper becomes the ground. */}
+        <p className="mb-emph">
+          <span>{emphasis}</span>
+        </p>
+
+        <p className="mb-eyebrow">
+          <span>{eyebrow}</span>
+        </p>
+
+        <div className="mb-cards">
+          {cards.map((c, i) => (
+            <div
+              className={`mb-card ${c.art === "partner" ? "mb-card--partner" : ""}`}
+              key={c.big + i}
+            >
+              <span className="mb-num">{i + 1}</span>
+              <div className="mb-copy">
+                <p className="mb-big">{c.big}</p>
+                {c.small.length > 0 && (
+                  <p className="mb-small">
+                    {c.small.map((l) => (
+                      <span key={l}>{l}</span>
+                    ))}
+                  </p>
+                )}
+                {c.note && <p className="mb-note">{c.note}</p>}
+                <p className="mb-value">{money(c.value)}</p>
+              </div>
+
+              <div className="mb-art">
+                {c.art === "partner" ? (
+                  <span className="mb-disc mb-disc--paper">
+                    <img src={cnLogo} alt="Code Ninjas" />
+                    <em>WOODBRIDGE</em>
+                  </span>
+                ) : (
+                  <span className="mb-disc mb-disc--glass">
+                    <span className="mb-emoji">{c.emoji}</span>
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mb-cta">
+          <span>{cta}</span>
+        </p>
+
+        <p className="mb-site">
+          <Globe />
+          {site}
+        </p>
+
+        <p className="mb-addr">
+          <Pin />
+            {address}
+          </p>
       </div>
-
-      <p className="mb-cta">
-        <span>{cta}</span>
-      </p>
-
-      <p className="mb-site">
-        <Globe />
-        {site}
-      </p>
 
       <Grain />
-
-      <p className="mb-addr">
-        <Pin />
-        {address}
-      </p>
     </div>
   );
 }
