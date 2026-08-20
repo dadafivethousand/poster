@@ -75,17 +75,22 @@ export default function MapleBackToSchool({
 
       <div className="mb-cards">
         {cards.map((c, i) => (
-          <div className="mb-card" key={c.big + i}>
+          <div
+            className={`mb-card ${c.small.length ? "" : "mb-card--plain"}`}
+            key={c.big + i}
+          >
             <span className="mb-num">{i + 1}</span>
-            <p className="mb-big">{c.big}</p>
-            {c.small.length > 0 && (
-              <p className="mb-small">
-                {c.small.map((l) => (
-                  <span key={l}>{l}</span>
-                ))}
-              </p>
-            )}
-            <p className="mb-value">{c.value}</p>
+            <div className="mb-copy">
+              <p className="mb-big">{c.big}</p>
+              {c.small.length > 0 && (
+                <p className="mb-small">
+                  {c.small.map((l) => (
+                    <span key={l}>{l}</span>
+                  ))}
+                </p>
+              )}
+              <p className="mb-value">{c.value}</p>
+            </div>
 
             <div className="mb-art">
               {c.partner ? (

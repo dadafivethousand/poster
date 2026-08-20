@@ -1,310 +1,377 @@
 /* MapleBackToSchool — Maple Jiu Jitsu back-to-school offer. Namespace: mb-
  *
- * 1080×1350 (the `ig` canvas). Authored on the nominal 1080-wide sheet, so
- * `calc(<n> * var(--px))` is design pixels — see App.css.
+ * 1080×1350 (the `ig` canvas). `calc(<n> * var(--px))` is design pixels.
  *
- * Navy sampled off the original: #001230. It is nearly black-blue, which is
- * what lets plain white type carry the whole sheet without a second accent.
+ * EVERY POSITION HERE IS MEASURED, NOT CHOSEN. The supplied poster was scanned
+ * for ink runs and the bounding box of each element read off it, converted
+ * from its 1122px width to this 1080px sheet. That is why the layout is
+ * absolute rather than a flow column: a flow layout reproduces the ORDER of a
+ * composition and then drifts on every font metric, which is what the first
+ * attempt did — same elements, wrong everywhere.
+ *
+ *   logo      w229 h191   top 6, centred
+ *   BACK TO   cap127 at y207, left 99
+ *   SCHOOL    cap134 at y343
+ *   SPECIAL   slab 685×114 at 84,489
+ *   roundel   293 at right 17, top 198
+ *   eyebrow   68→1020, y623, h40
+ *   cards     32→1043, y664, h471
+ *   SIGN UP   slab 861×105 at 112,1136
+ *   pill      586×66 centred, y1242
+ *   address   y1310
  */
 
 .mb {
   --navy: #001230;
   --paper: #ffffff;
-  --pad: calc(30 * var(--px));
+  --skew: -11deg;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* A flat fill at this value reads as dead ink in print and as a crushed
-   * black on a phone. The wash keeps the corners deepest and lifts the middle
-   * where the cards sit, so the sheet has somewhere to breathe. */
+  /* The original is a near-flat field; the earlier radial wash was reading as
+   * a spotlight the poster does not have. Just enough falloff to keep the
+   * corners from going dead. */
   background:
-    radial-gradient(120% 74% at 50% 30%, #062449 0%, #00142f 58%, #000d24 100%);
+    radial-gradient(128% 82% at 50% 26%, #04203f 0%, #001432 52%, #000e26 100%);
   color: var(--paper);
   font-family: Poppins, Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
-  text-align: center;
 }
 
-/* Anton is the closest free match to the original's heavy condensed display
- * face. It ships no italic, so the obliqued runs below lean it by transform —
- * a synthesised italic skews the whole box including its background, which is
- * exactly what the white slabs need. */
+/* THE DISPLAY FACE, derived rather than guessed.
+ *
+ * The original's "BACK TO" is 631px wide at a 127px cap height — a width-to-cap
+ * ratio of 4.97. Ten candidate faces were rendered and measured against that:
+ * Anton and Fjalla come out at 3.35–3.40 (far too condensed, which is what the
+ * second attempt shipped), Archivo Black and Montserrat 900 at 6.6–6.9 (far too
+ * wide, which is what the first attempt shipped). Nothing at a default width
+ * lands near 4.97.
+ *
+ * Archivo is variable on the width axis. At `font-stretch: 75%` it measures
+ * 5.04 — the match. Cap ratio there is 0.72em, which is where every font-size
+ * below comes from: cap / 0.72. */
 
 .mb-logo {
-  width: calc(192 * var(--px));
+  position: absolute;
+  top: calc(6 * var(--px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(229 * var(--px));
   height: auto;
-  margin-top: calc(10 * var(--px));
 }
 
-/* ---------- headline + roundel ---------- */
-
-.mb-top {
-  width: 100%;
-  padding: 0 calc(26 * var(--px)) 0 calc(38 * var(--px));
-  margin-top: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: calc(10 * var(--px));
-}
+/* ---------- headline ---------- */
 
 .mb-head {
+  position: absolute;
+  left: calc(99 * var(--px));
+  /* cap top lands at y207; Anton sits its caps ~0.115em below the line box top */
+  top: calc(202 * var(--px));
   margin: 0;
   display: flex;
   flex-direction: column;
-  font-family: Anton, Poppins, sans-serif;
-  font-weight: 400;
-  font-size: calc(118 * var(--px));
-  line-height: 0.9;
+  font-family: Archivo, Poppins, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: calc(176 * var(--px));
+  line-height: 0.795;
   letter-spacing: calc(-1 * var(--px));
   text-align: left;
 }
 
-/* Sits beside the headline, never over it: at any string length the two keep
- * their own columns instead of one being tuned to dodge the other. */
+/* ---------- bonus-value roundel ---------- */
+
 .mb-badge {
-  flex: none;
-  width: calc(252 * var(--px));
-  height: calc(252 * var(--px));
-  margin-top: calc(8 * var(--px));
+  position: absolute;
+  right: calc(17 * var(--px));
+  top: calc(198 * var(--px));
+  width: calc(293 * var(--px));
+  height: calc(293 * var(--px));
   border-radius: 50%;
-  background: var(--navy);
-  /* white ring, navy gap, white hairline — the original's double rule */
+  /* the double rule is drawn INSIDE the box so the measured 293 is the whole
+     mark, rings included, rather than 293 plus however wide the rings are */
   box-shadow:
-    0 0 0 calc(7 * var(--px)) var(--paper),
-    0 0 0 calc(13 * var(--px)) var(--navy),
-    0 0 0 calc(16 * var(--px)) var(--paper);
+    0 0 0 calc(6 * var(--px)) var(--paper) inset,
+    0 0 0 calc(12 * var(--px)) transparent inset,
+    0 0 0 calc(15 * var(--px)) var(--paper) inset;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: Anton, Poppins, sans-serif;
-  line-height: 1.02;
+  font-family: Archivo, Poppins, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
+  line-height: 1.04;
+  text-align: center;
 }
 
 .mb-badge-sm {
-  font-size: calc(35 * var(--px));
-  letter-spacing: calc(0.5 * var(--px));
+  font-size: calc(38 * var(--px));
 }
 
 .mb-badge-lg {
-  font-size: calc(84 * var(--px));
-  line-height: 0.98;
+  font-size: calc(96 * var(--px));
+  line-height: 0.94;
 }
 
 /* ---------- SPECIAL ---------- */
 
-/* Navy knocked out of a white slab, the slab itself obliqued. The skew is on
- * the span so the box leans with the letters — leaning the type alone leaves a
- * upright rectangle around slanted words, which reads as a mistake. */
+/* A parallelogram: the slab leans with the letters. The measured 685 includes
+ * the skew's horizontal overhang (114 × tan11° ≈ 22), so the box itself is
+ * 663 — set the box, let the transform add the rest. */
 .mb-emph {
-  margin: calc(10 * var(--px)) 0 0;
-  width: 100%;
-  padding: 0 calc(30 * var(--px));
-  text-align: left;
-}
-
-.mb-emph span {
-  display: inline-block;
-  padding: calc(4 * var(--px)) calc(30 * var(--px)) calc(10 * var(--px));
+  position: absolute;
+  left: calc(95 * var(--px));
+  top: calc(489 * var(--px));
+  width: calc(681 * var(--px));
+  height: calc(114 * var(--px));
+  margin: 0;
   background: var(--paper);
-  color: var(--navy);
-  font-family: Anton, Poppins, sans-serif;
-  font-size: calc(100 * var(--px));
-  line-height: 1;
-  letter-spacing: calc(2 * var(--px));
-  transform: skewX(-11deg);
-}
-
-/* ---------- eyebrow with rules ---------- */
-
-.mb-eyebrow {
-  margin: calc(16 * var(--px)) 0 0;
-  width: 100%;
-  padding: 0 calc(34 * var(--px));
+  transform: skewX(var(--skew));
   display: flex;
   align-items: center;
-  gap: calc(18 * var(--px));
-  font-size: calc(31 * var(--px));
-  font-weight: 600;
-  font-style: italic;
+  justify-content: center;
 }
 
-/* The rules are pseudo-elements on the paragraph so they always fill whatever
- * the caption leaves — no width to keep in sync with the text. */
+/* The letters lean WITH the slab. An earlier pass counter-skewed the span to
+ * keep the type upright inside a leaning box, which is not what the original
+ * does — there, box and letters share one oblique. */
+.mb-emph span {
+  display: block;
+  font-family: Archivo, Poppins, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: calc(129 * var(--px));
+  line-height: 1;
+  letter-spacing: calc(2 * var(--px));
+  color: var(--navy);
+}
+
+/* ---------- eyebrow ---------- */
+
+.mb-eyebrow {
+  position: absolute;
+  left: calc(68 * var(--px));
+  right: calc(60 * var(--px));
+  top: calc(616 * var(--px));
+  height: calc(36 * var(--px));
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(20 * var(--px));
+  font-size: calc(34 * var(--px));
+  font-weight: 600;
+  font-style: italic;
+  white-space: nowrap;
+}
+
 .mb-eyebrow::before,
 .mb-eyebrow::after {
   content: "";
   flex: 1;
   height: max(1px, calc(2 * var(--px)));
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 /* ---------- the three offers ---------- */
 
 .mb-cards {
-  margin-top: calc(20 * var(--px));
-  width: 100%;
-  padding: 0 var(--pad);
+  position: absolute;
+  left: calc(32 * var(--px));
+  right: calc(37 * var(--px));
+  top: calc(689 * var(--px));
+  height: calc(420 * var(--px));
   display: flex;
-  align-items: stretch;
   gap: calc(12 * var(--px));
 }
 
 .mb-card {
   flex: 1;
   position: relative;
-  padding: calc(40 * var(--px)) calc(12 * var(--px)) calc(18 * var(--px));
-  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.45);
-  border-radius: calc(16 * var(--px));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.5);
+  border-radius: calc(18 * var(--px));
+  text-align: center;
 }
 
-/* Straddles the card's top border, with a navy ring so the border appears to
- * pass behind it rather than run into it. */
+/* Straddles the card's top border. The navy ring is the field colour at this
+ * height, so the border appears to pass behind the disc. */
 .mb-num {
   position: absolute;
-  top: calc(-26 * var(--px));
+  top: calc(-33 * var(--px));
   left: 50%;
   transform: translateX(-50%);
-  width: calc(56 * var(--px));
-  height: calc(56 * var(--px));
+  width: calc(66 * var(--px));
+  height: calc(66 * var(--px));
   border-radius: 50%;
   background: var(--paper);
   color: var(--navy);
-  box-shadow: 0 0 0 calc(6 * var(--px)) #00142f;
+  box-shadow: 0 0 0 calc(7 * var(--px)) #001432;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: Anton, Poppins, sans-serif;
-  font-size: calc(38 * var(--px));
+  font-family: Archivo, Poppins, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: calc(55 * var(--px));
   line-height: 1;
+}
+
+/* y738 measured, minus the card's own top at y664, minus Anton's cap inset */
+/* big word, supporting lines and value FLOW rather than each being pinned.
+ * Measured, the value sits at y803 with no supporting lines, y836 with one and
+ * y893 with three — i.e. it rides on however many lines are above it at 29.5px
+ * apart. Three absolute tops cannot say that; a flow block says it once. */
+.mb-copy {
+  position: absolute;
+  top: calc(40 * var(--px));
+  left: calc(6 * var(--px));
+  right: calc(6 * var(--px));
 }
 
 .mb-big {
   margin: 0;
-  font-family: Anton, Poppins, sans-serif;
-  font-size: calc(50 * var(--px));
+  font-family: Archivo, Poppins, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: calc(76 * var(--px));
   line-height: 1;
   letter-spacing: calc(-0.5 * var(--px));
 }
 
 .mb-small {
-  margin: calc(3 * var(--px)) 0 0;
+  margin: calc(2 * var(--px)) 0 0;
   display: flex;
   flex-direction: column;
-  font-family: Anton, Poppins, sans-serif;
-  font-size: calc(27 * var(--px));
-  line-height: 1.12;
-  letter-spacing: calc(0.2 * var(--px));
+  font-family: Archivo, Poppins, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: calc(33 * var(--px));
+  line-height: 0.894;
 }
 
 .mb-value {
-  margin: calc(6 * var(--px)) 0 0;
-  font-size: calc(19 * var(--px));
+  margin: calc(9 * var(--px)) 0 0;
+  font-size: calc(28 * var(--px));
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-/* The art sits on a shared baseline across all three cards, so the emoji in
- * two of them and the partner mark in the third line up rather than floating
- * at whatever height their own copy left them. */
+/* y919→1112 measured, i.e. 255 below the card top, 23 above its bottom. */
 .mb-art {
-  margin-top: auto;
-  padding-top: calc(14 * var(--px));
+  position: absolute;
+  left: calc(10 * var(--px));
+  right: calc(10 * var(--px));
+  /* card 3 carries three supporting lines, so its value line sits lowest of
+   * the three; the art starts below where THAT lands, not where card 1's
+   * shorter stack ends. */
+  top: calc(256 * var(--px));
+  bottom: calc(24 * var(--px));
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(126 * var(--px));
 }
 
 .mb-emoji {
-  font-size: calc(112 * var(--px));
+  font-size: calc(150 * var(--px));
   line-height: 1;
-  /* emoji render flat; a drop-shadow seats them on the field like the
-     photographs they are standing in for */
-  filter: drop-shadow(0 calc(8 * var(--px)) calc(12 * var(--px))
+  filter: drop-shadow(0 calc(10 * var(--px)) calc(14 * var(--px))
     rgba(0, 6, 20, 0.55));
 }
 
-/* Partner mark on its own white disc, as in the original. */
 .mb-cn {
-  width: calc(148 * var(--px));
-  height: calc(148 * var(--px));
+  width: calc(156 * var(--px));
+  height: calc(156 * var(--px));
   border-radius: 50%;
   background: var(--paper);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: calc(6 * var(--px));
+  gap: calc(7 * var(--px));
 }
 
 .mb-cn img {
-  width: calc(112 * var(--px));
+  width: calc(118 * var(--px));
   height: auto;
   display: block;
 }
 
 .mb-cn em {
   font-style: normal;
-  font-size: calc(15 * var(--px));
+  font-size: calc(17 * var(--px));
   font-weight: 800;
-  letter-spacing: calc(1.4 * var(--px));
-  text-indent: calc(1.4 * var(--px));
+  letter-spacing: calc(1.6 * var(--px));
+  text-indent: calc(1.6 * var(--px));
   color: var(--navy);
 }
 
 /* ---------- sign up ---------- */
 
 .mb-cta {
-  margin: calc(18 * var(--px)) 0 0;
-  width: 100%;
-  padding: 0 var(--pad);
+  position: absolute;
+  left: calc(122 * var(--px));
+  top: calc(1136 * var(--px));
+  width: calc(841 * var(--px));
+  height: calc(105 * var(--px));
+  margin: 0;
+  background: var(--paper);
+  transform: skewX(var(--skew));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mb-cta span {
   display: block;
-  padding: calc(8 * var(--px)) 0 calc(14 * var(--px));
-  background: var(--paper);
-  color: var(--navy);
-  font-family: Anton, Poppins, sans-serif;
-  font-size: calc(72 * var(--px));
+  font-family: Archivo, Poppins, sans-serif;
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: calc(92 * var(--px));
   line-height: 1;
   letter-spacing: calc(1 * var(--px));
-  transform: skewX(-11deg);
+  color: var(--navy);
 }
 
+/* ---------- contact ---------- */
+
 .mb-site {
-  margin: calc(15 * var(--px)) 0 0;
-  padding: calc(10 * var(--px)) calc(42 * var(--px)) calc(12 * var(--px));
-  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.7);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(1242 * var(--px));
+  width: calc(586 * var(--px));
+  height: calc(66 * var(--px));
+  margin: 0;
+  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.75);
   border-radius: calc(999 * var(--px));
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: calc(16 * var(--px));
-  font-size: calc(38 * var(--px));
+  font-size: calc(43 * var(--px));
   font-weight: 700;
 }
 
 .mb-site svg {
   width: calc(38 * var(--px));
   height: calc(38 * var(--px));
+  flex: none;
 }
 
 .mb-addr {
-  margin: calc(11 * var(--px)) 0 calc(18 * var(--px));
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(1312 * var(--px));
+  margin: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: calc(10 * var(--px));
-  font-size: calc(28 * var(--px));
+  font-size: calc(30 * var(--px));
   font-weight: 500;
 }
 
 .mb-addr svg {
   width: calc(26 * var(--px));
   height: calc(26 * var(--px));
+  flex: none;
 }
