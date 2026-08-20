@@ -39,14 +39,23 @@
   background: #0d1117;
 }
 
+/* Framed by hand rather than by `object-fit: cover`.
+ *
+ * cover crops symmetrically around whatever object-position says, and this
+ * frame does not want a symmetric crop: the ceiling is track lighting and
+ * ductwork — the busiest thing in the picture — and the floor is empty. Laying
+ * the image out at its natural ratio and sliding it up is one number to tune
+ * and shows exactly what it says: about 80px of headroom above the tallest
+ * person, cutting below the knee rather than at the ankle. */
 .tt-photo img {
+  position: absolute;
+  left: 0;
+  top: calc(-110 * var(--px));
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 28%;
-  /* the supplied frame is bright and slightly flat; a touch of contrast lets
-   * the white panel below read as a separate surface rather than a continuation */
-  filter: contrast(1.04) saturate(1.02);
+  height: auto;
+  /* the frame is bright and slightly flat; a touch of contrast lets the white
+   * panel below read as a separate surface rather than a continuation */
+  filter: contrast(1.05) saturate(1.03);
 }
 
 /* ---------- the Tech Talk mark ---------- */

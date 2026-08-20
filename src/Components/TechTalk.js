@@ -31,7 +31,7 @@ export default function TechTalk({
   bullets = [
     "How game AI drives character behaviour and decision-making",
     "Computer vision — teaching a game to interpret what it sees",
-    "Hands-on build time, led by Code Ninjas instructors",
+    "Practical applications of AI across the development pipeline",
     "The logic, problem-solving and JavaScript underneath it all",
   ],
 }) {
