@@ -44,6 +44,10 @@ export default function MapleBackToSchool({
 }) {
   return (
     <div className="pf-stage mb">
+      {/* Field layers: key light, tatami weave, vignette. First child, so every
+          positioned element after it paints on top without a z-index fight. */}
+      <div className="mb-field" aria-hidden />
+
       <img className="mb-logo" src={mapleLogo} alt="Maple Jiu Jitsu" />
 
       {/* ---- headline. The roundel sits beside it rather than over it, so the
@@ -89,7 +93,7 @@ export default function MapleBackToSchool({
                   ))}
                 </p>
               )}
-              <p className="mb-value">{c.value}</p>
+              <p className="mb-value">{money(c.value)}</p>
             </div>
 
             <div className="mb-art">
@@ -121,6 +125,23 @@ export default function MapleBackToSchool({
       </p>
     </div>
   );
+}
+
+/* The dollar figure carries the offer, so it is the one thing in the value line
+ * that gets the accent. Splitting on the amount rather than asking for two
+ * props keeps the caller writing "($120 Value)" as one readable string. */
+function money(text) {
+  return String(text)
+    .split(/(\$[\d,]+)/)
+    .map((part, i) =>
+      /^\$/.test(part) ? (
+        <b key={i} className="mb-money">
+          {part}
+        </b>
+      ) : (
+        part
+      )
+    );
 }
 
 /* Drawn, not set as emoji: 🌐 and 📍 render full-colour on Apple platforms and

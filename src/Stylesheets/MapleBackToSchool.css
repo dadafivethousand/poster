@@ -26,14 +26,62 @@
   --paper: #ffffff;
   --skew: -11deg;
 
-  /* The original is a near-flat field; the earlier radial wash was reading as
-   * a spotlight the poster does not have. Just enough falloff to keep the
-   * corners from going dead. */
-  background:
-    radial-gradient(128% 82% at 50% 26%, #04203f 0%, #001432 52%, #000e26 100%);
+  --gold: #e9c46a;
+  background: #00102b;
   color: var(--paper);
   font-family: Poppins, Inter, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+
+/* ---------- the field ----------
+ *
+ * Three layers, because a single flat navy is the reason the original reads as
+ * a template: a key light behind the headline so the type sits IN something, a
+ * tatami weave at 3% for tooth, and a vignette to close the corners. All of it
+ * stays under 6% opacity — the moment the field is legible as an effect it is
+ * competing with the offer.
+ */
+.mb-field {
+  position: absolute;
+  inset: 0;
+  background:
+    /* key light, high and slightly left, where the headline sits */
+    radial-gradient(78% 46% at 34% 22%, rgba(72, 148, 226, 0.28) 0%, transparent 68%),
+    /* cool fill from the opposite corner so the dark side is not dead */
+    radial-gradient(64% 44% at 92% 74%, rgba(28, 92, 168, 0.2) 0%, transparent 70%),
+    linear-gradient(180deg, #04203f 0%, #00102b 100%);
+  background-color: #00102b;
+}
+
+/* tatami: a woven mat is two sets of parallel picks at right angles */
+.mb-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.42;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.032) 0 calc(1 * var(--px)),
+      transparent calc(1 * var(--px)) calc(9 * var(--px))
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.022) 0 calc(1 * var(--px)),
+      transparent calc(1 * var(--px)) calc(9 * var(--px))
+    );
+}
+
+.mb-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    82% 68% at 50% 44%,
+    transparent 42%,
+    rgba(0, 6, 22, 0.72) 100%
+  );
 }
 
 /* THE DISPLAY FACE, derived rather than guessed.
@@ -73,6 +121,9 @@
   font-stretch: 75%;
   font-size: calc(176 * var(--px));
   line-height: 0.795;
+  /* the key light sits directly behind this type; without a shadow the white
+   * loses its edge against the brightest part of the field */
+  text-shadow: 0 calc(6 * var(--px)) calc(26 * var(--px)) rgba(0, 8, 24, 0.55);
   letter-spacing: calc(-1 * var(--px));
   text-align: left;
 }
@@ -86,12 +137,18 @@
   width: calc(293 * var(--px));
   height: calc(293 * var(--px));
   border-radius: 50%;
-  /* the double rule is drawn INSIDE the box so the measured 293 is the whole
-     mark, rings included, rather than 293 plus however wide the rings are */
+  /* A struck seal rather than a drawn circle: the rings are INSIDE the box so
+     the measured 293 is the whole mark, and a gold hairline between the two
+     white rules is what stops it reading as clip art. */
+  background:
+    radial-gradient(72% 72% at 38% 26%, rgba(86, 160, 235, 0.34) 0%, transparent 72%),
+    linear-gradient(165deg, #06264a 0%, #00112e 100%);
   box-shadow:
     0 0 0 calc(6 * var(--px)) var(--paper) inset,
+    0 0 0 calc(9 * var(--px)) var(--gold) inset,
     0 0 0 calc(12 * var(--px)) transparent inset,
-    0 0 0 calc(15 * var(--px)) var(--paper) inset;
+    0 0 0 calc(15 * var(--px)) var(--paper) inset,
+    0 calc(16 * var(--px)) calc(34 * var(--px)) rgba(0, 6, 20, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -124,7 +181,8 @@
   width: calc(681 * var(--px));
   height: calc(114 * var(--px));
   margin: 0;
-  background: var(--paper);
+  background: linear-gradient(180deg, #ffffff 0%, #eef2f8 100%);
+  box-shadow: 0 calc(14 * var(--px)) calc(30 * var(--px)) rgba(0, 6, 20, 0.42);
   transform: skewX(var(--skew));
   display: flex;
   align-items: center;
@@ -168,7 +226,14 @@
   content: "";
   flex: 1;
   height: max(1px, calc(2 * var(--px)));
-  background: rgba(255, 255, 255, 0.6);
+}
+
+.mb-eyebrow::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65));
+}
+
+.mb-eyebrow::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.65), transparent);
 }
 
 /* ---------- the three offers ---------- */
@@ -186,8 +251,20 @@
 .mb-card {
   flex: 1;
   position: relative;
-  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.5);
-  border-radius: calc(18 * var(--px));
+  /* Lit glass rather than a wire outline. The inset top highlight is the one
+   * that does the work — it puts a lit edge where the light is coming from and
+   * the panel stops looking like a border someone drew. */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.085) 0%,
+    rgba(255, 255, 255, 0.022) 46%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.26);
+  border-radius: calc(20 * var(--px));
+  box-shadow:
+    inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.34),
+    0 calc(18 * var(--px)) calc(38 * var(--px)) rgba(0, 6, 20, 0.36);
   text-align: center;
 }
 
@@ -201,9 +278,11 @@
   width: calc(66 * var(--px));
   height: calc(66 * var(--px));
   border-radius: 50%;
-  background: var(--paper);
+  background: linear-gradient(180deg, #ffffff 0%, #dfe6f0 100%);
   color: var(--navy);
-  box-shadow: 0 0 0 calc(7 * var(--px)) #001432;
+  box-shadow:
+    0 0 0 calc(7 * var(--px)) #00132f,
+    0 calc(8 * var(--px)) calc(16 * var(--px)) rgba(0, 6, 20, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -251,7 +330,12 @@
   margin: calc(9 * var(--px)) 0 0;
   font-size: calc(28 * var(--px));
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.mb-money {
+  font-weight: 700;
+  color: var(--gold);
 }
 
 /* y919→1112 measured, i.e. 255 below the card top, 23 above its bottom. */
@@ -269,18 +353,56 @@
   justify-content: center;
 }
 
+/* An emoji dropped on a flat field reads as a sticker, which is what made the
+ * first pass look cheap. Three things fix it: a pool of light behind it, a
+ * contact shadow on the floor beneath it, and a real cast shadow on the glyph
+ * itself. Together they place the object in the panel instead of on it. */
 .mb-emoji {
-  font-size: calc(150 * var(--px));
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-size: calc(146 * var(--px));
   line-height: 1;
-  filter: drop-shadow(0 calc(10 * var(--px)) calc(14 * var(--px))
-    rgba(0, 6, 20, 0.55));
+  filter: drop-shadow(0 calc(14 * var(--px)) calc(16 * var(--px))
+    rgba(0, 4, 16, 0.6));
+}
+
+.mb-emoji::before {
+  content: "";
+  position: absolute;
+  width: calc(190 * var(--px));
+  height: calc(190 * var(--px));
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(120, 186, 255, 0.24) 0%,
+    rgba(120, 186, 255, 0.09) 52%,
+    transparent 100%
+  );
+}
+
+.mb-emoji::after {
+  content: "";
+  position: absolute;
+  bottom: calc(-6 * var(--px));
+  width: calc(118 * var(--px));
+  height: calc(20 * var(--px));
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 4, 16, 0.55) 0%,
+    transparent 100%
+  );
 }
 
 .mb-cn {
   width: calc(156 * var(--px));
   height: calc(156 * var(--px));
   border-radius: 50%;
-  background: var(--paper);
+  background: linear-gradient(180deg, #ffffff 0%, #e6ecf5 100%);
+  box-shadow:
+    inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.9),
+    0 calc(14 * var(--px)) calc(26 * var(--px)) rgba(0, 4, 16, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -312,7 +434,8 @@
   width: calc(841 * var(--px));
   height: calc(105 * var(--px));
   margin: 0;
-  background: var(--paper);
+  background: linear-gradient(180deg, #ffffff 0%, #eef2f8 100%);
+  box-shadow: 0 calc(14 * var(--px)) calc(30 * var(--px)) rgba(0, 6, 20, 0.42);
   transform: skewX(var(--skew));
   display: flex;
   align-items: center;
@@ -340,8 +463,10 @@
   width: calc(586 * var(--px));
   height: calc(66 * var(--px));
   margin: 0;
-  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.75);
+  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.55);
   border-radius: calc(999 * var(--px));
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
