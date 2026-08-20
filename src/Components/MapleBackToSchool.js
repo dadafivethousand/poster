@@ -28,10 +28,15 @@ export default function MapleBackToSchool({
   headline = ["BACK TO", "SCHOOL"],
   emphasis = "SPECIAL",
   badge = ["OVER", "$300", "IN BONUS", "VALUE"],
-  eyebrow = "For New Kids Signups",
+  eyebrow = "For New Kids Signups (Ages 5-12)",
 
   cards = [
-    { big: "FREE GI", small: [], value: "($120 Value)", photo: giPhoto },
+    {
+      big: "FREE",
+      small: ["GI UNIFORM"],
+      value: "($120 Value)",
+      photo: giPhoto,
+    },
     {
       big: "FREE",
       small: ["BOXING GLOVES"],
@@ -49,7 +54,7 @@ export default function MapleBackToSchool({
 
   cta = "SIGN UP TODAY",
   site = "maplebjj.com",
-  address = "20 Cranston Park Ave, Vaughan",
+  address = "20 Cranston Park Ave",
 }) {
   return (
     <div className="pf-stage mb">
