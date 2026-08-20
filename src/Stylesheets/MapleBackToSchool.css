@@ -194,10 +194,18 @@
 
 .mb-logo {
   position: absolute;
-  top: calc(6 * var(--px));
+  /* The mark is now the WHOLE leaf, stem included — the earlier asset was
+   * cropped at the leaf body, and what looked like a clipped stem was a stem
+   * that had been deleted and then had BACK TO parked against the cut.
+   *
+   * Full, it is 0.985 wide-to-tall instead of 1.15, so at the old width it
+   * would run into the headline. It is lifted 18px INTO the safe margin
+   * instead: the margin is 120px, so 102 stays clear above it, and the mark
+   * keeps its size rather than shrinking to fit a gap. */
+  top: calc(-18 * var(--px));
   left: 50%;
   transform: translateX(-50%);
-  width: calc(229 * var(--px));
+  width: calc(214 * var(--px));
   height: auto;
 }
 
@@ -371,7 +379,7 @@
   left: calc(32 * var(--px));
   right: calc(37 * var(--px));
   top: calc(689 * var(--px));
-  height: calc(420 * var(--px));
+  height: calc(436 * var(--px));
   display: flex;
   gap: calc(12 * var(--px));
 }
@@ -460,7 +468,7 @@
  * apart. Three absolute tops cannot say that; a flow block says it once. */
 .mb-copy {
   position: absolute;
-  top: calc(40 * var(--px));
+  top: calc(32 * var(--px));
   left: calc(6 * var(--px));
   right: calc(6 * var(--px));
 }
@@ -470,7 +478,7 @@
   font-family: Archivo, Poppins, sans-serif;
   font-weight: 900;
   font-stretch: 75%;
-  font-size: calc(76 * var(--px));
+  font-size: calc(72 * var(--px));
   line-height: 1;
   letter-spacing: calc(-0.5 * var(--px));
 }
@@ -482,21 +490,21 @@
   font-family: Archivo, Poppins, sans-serif;
   font-weight: 900;
   font-stretch: 75%;
-  font-size: calc(33 * var(--px));
+  font-size: calc(30 * var(--px));
   line-height: 0.894;
 }
 
 .mb-note {
   margin: calc(7 * var(--px)) 0 0;
-  font-size: calc(19 * var(--px));
+  font-size: calc(17 * var(--px));
   font-weight: 600;
   letter-spacing: calc(0.6 * var(--px));
   color: rgba(255, 255, 255, 0.68);
 }
 
 .mb-value {
-  margin: calc(7 * var(--px)) 0 0;
-  font-size: calc(28 * var(--px));
+  margin: calc(6 * var(--px)) 0 0;
+  font-size: calc(25 * var(--px));
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
 }
@@ -514,10 +522,11 @@
   /* Card 3 carries three supporting lines, so its value sits ~26px lower than
    * the others'. The well starts below THAT for every card, so all three discs
    * land on one line across the row. */
-  /* 262, not 252: card 3's value line ends at ~254 and the ninja's raised
-   * hand reaches the very top of its frame, so the well has to start below
-   * the LOWEST card's copy for all three to share one baseline. */
-  top: calc(262 * var(--px));
+  /* The well starts below the LOWEST card's copy so all three artworks share
+   * one baseline — card 3 has four rows and sets it. Shrinking that card's
+   * type by a few points and taking the cards 16px taller is what bought the
+   * artwork its extra 38px; the well is 188 where it was 150. */
+  top: calc(240 * var(--px));
   bottom: calc(8 * var(--px));
   display: flex;
   align-items: center;

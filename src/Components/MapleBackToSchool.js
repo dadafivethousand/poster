@@ -40,7 +40,7 @@ export default function MapleBackToSchool({
     },
     {
       big: "FREE",
-      small: ["1 MONTH OF", "CODE NINJAS"],
+      small: ["1 MONTH AT", "CODE NINJAS"],
       note: "(WOODBRIDGE LOCATION)",
       value: "($169 Value)",
       photo: ninjaPhoto,
