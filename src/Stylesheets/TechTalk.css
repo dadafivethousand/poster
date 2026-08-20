@@ -39,22 +39,19 @@
   background: #0d1117;
 }
 
-/* Framed by hand rather than by `object-fit: cover`.
- *
- * cover crops symmetrically around whatever object-position says, and this
- * frame does not want a symmetric crop: the ceiling is track lighting and
- * ductwork — the busiest thing in the picture — and the floor is empty. Laying
- * the image out at its natural ratio and sliding it up is one number to tune
- * and shows exactly what it says: about 80px of headroom above the tallest
- * person, cutting below the knee rather than at the ankle. */
+/* The supplied frame is already cropped to 16:9 and composed — headroom above
+ * the group, cut below the knee, the ceiling's track lighting and ductwork
+ * gone. So `cover` is right here and the hand-framing an earlier pass needed
+ * is not: at 1.78 against the panel's 1.93 there are only ~47px to lose, and
+ * centring spends them evenly instead of re-deciding a crop somebody already
+ * made deliberately. */
 .tt-photo img {
-  position: absolute;
-  left: 0;
-  top: calc(-110 * var(--px));
   width: 100%;
-  height: auto;
-  /* the frame is bright and slightly flat; a touch of contrast lets the white
-   * panel below read as a separate surface rather than a continuation */
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  /* a touch of contrast so the white panel below reads as a separate surface
+   * rather than a continuation */
   filter: contrast(1.05) saturate(1.03);
 }
 
