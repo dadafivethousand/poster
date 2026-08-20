@@ -343,12 +343,11 @@
   position: absolute;
   left: calc(10 * var(--px));
   right: calc(10 * var(--px));
-  /* Cards 1 and 2 get the full well. Card 3 carries three supporting lines, so
-   * its value sits ~26px lower and its artwork has to start below THAT — which
-   * is why the two are not the same box. Pinning both to card 3's constraint
-   * is what left the first drawn pass looking undersized. */
-  top: calc(232 * var(--px));
-  bottom: calc(10 * var(--px));
+  /* Card 3 carries three supporting lines, so its value sits ~26px lower than
+   * the others'. The well starts below THAT for every card, so all three discs
+   * land on one line across the row. */
+  top: calc(256 * var(--px));
+  bottom: calc(12 * var(--px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -359,64 +358,29 @@
  * contact shadow on the floor beneath it, and a real cast shadow on the glyph
  * itself. Together they place the object in the panel instead of on it. */
 .mb-svg {
-  width: 100%;
-  height: 100%;
-  /* same light as the field, so the artwork sits in the panel rather than on it */
-  filter: drop-shadow(0 calc(14 * var(--px)) calc(18 * var(--px))
-    rgba(0, 4, 16, 0.55));
+  width: 84%;
+  height: 84%;
+  filter: drop-shadow(0 calc(10 * var(--px)) calc(14 * var(--px))
+    rgba(0, 4, 16, 0.5));
 }
 
-.mb-card--partner .mb-art {
-  top: calc(258 * var(--px));
-  bottom: calc(18 * var(--px));
-}
-
-.mb-emoji {
+/* ---------- the plinth ----------
+ *
+ * All three cards carry the SAME disc: same diameter, same gold hairline, same
+ * cast. Only the fill differs — glass for the two emoji, paper for the partner
+ * mark, which needs a light ground to sit on.
+ *
+ * That is the whole reason the emoji stopped looking dropped-in. Free-floating
+ * they were two glyphs beside a designed object, and the row read as two
+ * different ideas; on a matching plinth they are the same idea three times and
+ * the eye reads a set. The glyph is still an emoji — it just has somewhere to
+ * stand.
+ */
+.mb-disc {
   position: relative;
-  display: grid;
-  place-items: center;
-  font-size: calc(146 * var(--px));
-  line-height: 1;
-  filter: drop-shadow(0 calc(14 * var(--px)) calc(16 * var(--px))
-    rgba(0, 4, 16, 0.6));
-}
-
-.mb-emoji::before {
-  content: "";
-  position: absolute;
-  width: calc(190 * var(--px));
-  height: calc(190 * var(--px));
+  width: calc(148 * var(--px));
+  height: calc(148 * var(--px));
   border-radius: 50%;
-  background: radial-gradient(
-    closest-side,
-    rgba(120, 186, 255, 0.24) 0%,
-    rgba(120, 186, 255, 0.09) 52%,
-    transparent 100%
-  );
-}
-
-.mb-emoji::after {
-  content: "";
-  position: absolute;
-  bottom: calc(-6 * var(--px));
-  width: calc(118 * var(--px));
-  height: calc(20 * var(--px));
-  border-radius: 50%;
-  background: radial-gradient(
-    closest-side,
-    rgba(0, 4, 16, 0.55) 0%,
-    transparent 100%
-  );
-}
-
-.mb-cn {
-  width: calc(156 * var(--px));
-  height: calc(156 * var(--px));
-  border-radius: 50%;
-  background: linear-gradient(180deg, #ffffff 0%, #e6ecf5 100%);
-  box-shadow:
-    inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.9),
-    0 calc(14 * var(--px)) calc(26 * var(--px)) rgba(0, 4, 16, 0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -424,19 +388,49 @@
   gap: calc(7 * var(--px));
 }
 
-.mb-cn img {
-  width: calc(118 * var(--px));
+.mb-disc--glass {
+  /* No gold on the glass discs. A wide gold ring at low opacity over dark
+   * glass does not read as gold, it reads as olive — the hue survives but the
+   * value does not, and the ring goes muddy. Gold stays where it has a light
+   * ground to sit on: the paper disc, the seal and the dollar figures. */
+  background:
+    radial-gradient(72% 72% at 34% 24%, rgba(132, 190, 255, 0.26) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.045) 100%);
+  box-shadow:
+    inset 0 0 0 max(1px, calc(2 * var(--px))) rgba(255, 255, 255, 0.3),
+    inset 0 calc(2 * var(--px)) 0 rgba(255, 255, 255, 0.28),
+    0 calc(14 * var(--px)) calc(26 * var(--px)) rgba(0, 4, 16, 0.42);
+}
+
+.mb-disc--paper {
+  background: linear-gradient(180deg, #ffffff 0%, #e6ecf5 100%);
+  box-shadow:
+    inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 calc(4 * var(--px)) rgba(211, 168, 74, 0.55),
+    0 calc(14 * var(--px)) calc(26 * var(--px)) rgba(0, 4, 16, 0.5);
+}
+
+.mb-disc--paper img {
+  width: calc(104 * var(--px));
   height: auto;
   display: block;
 }
 
-.mb-cn em {
+.mb-disc--paper em {
   font-style: normal;
-  font-size: calc(17 * var(--px));
+  font-size: calc(15 * var(--px));
   font-weight: 800;
-  letter-spacing: calc(1.6 * var(--px));
-  text-indent: calc(1.6 * var(--px));
+  letter-spacing: calc(1.5 * var(--px));
+  text-indent: calc(1.5 * var(--px));
   color: var(--navy);
+}
+
+.mb-emoji {
+  font-size: calc(88 * var(--px));
+  line-height: 1;
+  /* the glyph casts onto its own plinth, which is what seats it */
+  filter: drop-shadow(0 calc(9 * var(--px)) calc(11 * var(--px))
+    rgba(0, 4, 16, 0.55));
 }
 
 /* ---------- sign up ---------- */

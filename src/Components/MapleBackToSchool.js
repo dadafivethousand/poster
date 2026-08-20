@@ -28,8 +28,8 @@ export default function MapleBackToSchool({
   eyebrow = "For New Kids Signups",
 
   cards = [
-    { big: "FREE GI", small: [], value: "($120 Value)", art: "gi" },
-    { big: "FREE", small: ["BOXING GLOVES"], value: "($50 Value)", art: "gloves" },
+    { big: "FREE GI", small: [], value: "($120 Value)", emoji: "🥋" },
+    { big: "FREE", small: ["BOXING GLOVES"], value: "($50 Value)", emoji: "🥊" },
     {
       big: "FREE",
       small: ["MONTH OF", "CODE NINJAS", "WOODBRIDGE"],
@@ -98,16 +98,14 @@ export default function MapleBackToSchool({
 
             <div className="mb-art">
               {c.art === "partner" ? (
-                <span className="mb-cn">
+                <span className="mb-disc mb-disc--paper">
                   <img src={cnLogo} alt="Code Ninjas" />
                   <em>WOODBRIDGE</em>
                 </span>
-              ) : c.art === "gi" ? (
-                <Gi />
-              ) : c.art === "gloves" ? (
-                <Gloves />
               ) : (
-                <span className="mb-emoji">{c.emoji}</span>
+                <span className="mb-disc mb-disc--glass">
+                  <span className="mb-emoji">{c.emoji}</span>
+                </span>
               )}
             </div>
           </div>
@@ -147,7 +145,7 @@ export default function MapleBackToSchool({
  * instead of `art` and it renders exactly as before.
  * ------------------------------------------------------------------------- */
 
-function Gi() {
+function Gi() {  // eslint-disable-line no-unused-vars
   return (
     <svg className="mb-svg" viewBox="0 0 200 200" role="img" aria-label="Gi">
       <defs>
@@ -192,7 +190,7 @@ function Gi() {
   );
 }
 
-function Gloves() {
+function Gloves() {  // eslint-disable-line no-unused-vars
   /* ORIENTATION was the thing, not the modelling. Drawn upright — fist above,
    * cuff below — a glove is a tall stack of a big round mass on a small one,
    * which is a mushroom, and three passes of better shading did not change
