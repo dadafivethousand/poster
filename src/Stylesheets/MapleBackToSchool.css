@@ -31,8 +31,8 @@
   /* The frame's own design pixel, before the safe-box shrink. Only the
    * full-bleed layers use it. */
   --u: calc(100cqw / 1080);
-  --safe-x: calc(76 * var(--u));
-  --safe-y: calc(95 * var(--u));
+  --safe-x: calc(96 * var(--u));
+  --safe-y: calc(120 * var(--u));
 
   background: #00102b;
   color: var(--paper);
@@ -106,10 +106,14 @@
  * line and would have rasterised the type once and then resampled it; this
  * lays out and renders at the final size.
  *
- * The two margins are set so the fit is exact in both axes: 76 either side
- * takes the width to 928/1080 = 0.859, and 95 top and bottom takes the height
- * to 1160/1350 = 0.859 as well. Same ratio, so nothing is squashed and the
+ * The two margins are set so the fit is exact in both axes: 96 either side
+ * takes the width to 888/1080 = 0.822, and 120 top and bottom takes the height
+ * to 1110/1350 = 0.822 as well. Same ratio, so nothing is squashed and the
  * clear space reads as even all round.
+ *
+ * To open the margins further, raise both keeping the 1 : 1.25 ratio between
+ * them — that is the sheet's own aspect, and it is what keeps the scale equal
+ * in both axes. Change one alone and the composition stretches.
  */
 .mb-safe {
   position: absolute;
