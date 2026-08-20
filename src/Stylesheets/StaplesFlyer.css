@@ -61,37 +61,15 @@
   background: #b9c7d8;
 }
 
+/* The OFFICIAL horizontal lockup, as vector — resolution-independent, so there
+ * is no size at which it softens. An earlier pass set this in Poppins next to
+ * the head mark because no horizontal lockup file appeared to exist in these
+ * repos; ../animations has carried `cn-logo-horizontal.svg` all along. Set
+ * type is a decent forgery of a wordmark and never the wordmark. */
 .sf-cn {
-  display: flex;
-  align-items: center;
-  gap: calc(13 * var(--px));
-}
-
-.sf-cn-head {
-  width: calc(58 * var(--px));
+  width: calc(224 * var(--px));
   height: auto;
-}
-
-/* The wordmark is set rather than placed: there is no horizontal lockup file
- * in any of these repos, only the stacked one. Poppins at 700 with tight
- * tracking is a close read of the real mark at this size. */
-.sf-cn-word {
-  font-size: calc(36 * var(--px));
-  font-weight: 700;
-  letter-spacing: calc(-0.6 * var(--px));
-  color: var(--ink);
-  line-height: 1;
-}
-
-.sf-cn-word b {
-  font-weight: 700;
-  color: var(--blue);
-}
-
-.sf-cn-word sup {
-  font-size: calc(12 * var(--px));
-  vertical-align: super;
-  font-weight: 600;
+  display: block;
 }
 
 /* ---------- hero ---------- */

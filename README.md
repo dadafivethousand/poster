@@ -131,6 +131,12 @@ The mascot is extracted out of that PDF and the palette is sampled from it;
 every string is a prop, because the offer, the date, the promo code and the
 legal footer are real and came from Staples.
 
+**TechTalk** — Instagram post for the Staples × Code Ninjas Tech Talk, on the
+`ig` canvas. Follows the "Connecting through coding" template: photograph swept
+into an arc, headline in black and Staples red, the red bracket and base rule.
+Adds what the template has no slot for — the event's substance as bullets, the
+Tech Talk mark sat on the seam, and the two-mark partner lockup at the foot.
+
 ## Adding one
 
 One poster = one component in `src/Components/` + one stylesheet in

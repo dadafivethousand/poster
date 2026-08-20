@@ -1,0 +1,210 @@
+/* TechTalk — Staples × Code Ninjas Tech Talk, Instagram post. Namespace: tt-
+ *
+ * 1080×1350 (the `ig` canvas). Authored on the nominal 1080-wide sheet, so
+ * `calc(<n> * var(--px))` is design pixels — see App.css.
+ */
+
+.tt {
+  /* Staples red is #e2211c, NOT Code Ninjas' #e4002b. They are a shade apart
+   * and the difference is visible when the two marks sit in the same lockup.
+   * Staples is the host here, so the sheet is Staples red. */
+  --red: #e2211c;
+  --ink: #14161a;
+  --body: #4a5260;
+  --hair: #d8dde4;
+
+  --pad: calc(84 * var(--px));
+
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  font-family: Poppins, Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- photograph ---------- */
+
+/* The arc is the template's one piece of styling, and it is a SWEEP, not a
+ * rounded corner: 50% horizontal radius on each bottom corner means the two
+ * curves meet in the middle, so the edge reads as a single shallow arc across
+ * the full width. Anything less than 50% leaves a flat run between them and
+ * the shape stops looking drawn. */
+.tt-photo {
+  position: relative;
+  flex: 0 0 calc(560 * var(--px));
+  overflow: hidden;
+  border-bottom-left-radius: 50% calc(58 * var(--px));
+  border-bottom-right-radius: 50% calc(58 * var(--px));
+  background: #0d1117;
+}
+
+.tt-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+  /* the supplied frame is bright and slightly flat; a touch of contrast lets
+   * the white panel below read as a separate surface rather than a continuation */
+  filter: contrast(1.04) saturate(1.02);
+}
+
+/* ---------- the Tech Talk mark ---------- */
+
+.tt-badge {
+  position: absolute;
+  top: calc(398 * var(--px));
+  right: calc(52 * var(--px));
+  width: calc(262 * var(--px));
+  height: auto;
+  z-index: 3;
+  /* it is a sticker: it needs to cast onto both surfaces it straddles */
+  filter: drop-shadow(0 calc(10 * var(--px)) calc(20 * var(--px))
+    rgba(10, 20, 35, 0.28));
+}
+
+/* ---------- panel ---------- */
+
+.tt-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  /* The badge overhangs the top-right of this panel, so the copy starts
+   * below it rather than beside it. A headline set to dodge a sticker is a
+   * headline with a bite out of it. */
+  padding: calc(104 * var(--px)) var(--pad) 0;
+}
+
+.tt-eyebrow {
+  margin: 0 0 calc(20 * var(--px));
+  /* the copy column stops short of the badge, which overhangs the panel */
+  max-width: calc(660 * var(--px));
+  font-size: calc(21 * var(--px));
+  font-weight: 700;
+  letter-spacing: calc(3.4 * var(--px));
+  color: var(--red);
+}
+
+/* Set as tight and as large as the measure allows. The template's headline is
+ * the whole design; shrinking it to make room for anything else loses the
+ * thing that made the template work. */
+.tt-head {
+  margin: 0 0 calc(42 * var(--px));
+  font-size: calc(76 * var(--px));
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: calc(-2.4 * var(--px));
+  color: var(--ink);
+}
+
+.tt-head-b {
+  color: var(--red);
+}
+
+/* ---------- bullets ---------- */
+
+.tt-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--px));
+}
+
+.tt-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(16 * var(--px));
+  font-size: calc(24 * var(--px));
+  font-weight: 500;
+  line-height: 1.38;
+  color: var(--body);
+}
+
+/* A filled disc, not an outline and not a bare glyph: at this size an outlined
+ * tick is a grey smudge, and a plain "•" carries none of the sheet's colour. */
+.tt-tick {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(30 * var(--px));
+  height: calc(30 * var(--px));
+  margin-top: calc(3 * var(--px));
+  background: var(--red);
+  border-radius: 50%;
+  color: #fff;
+}
+
+.tt-tick svg {
+  width: calc(17 * var(--px));
+  height: calc(17 * var(--px));
+}
+
+/* ---------- partner lockup ---------- */
+
+.tt-lock {
+  width: calc(392 * var(--px));
+  margin-top: auto;
+  margin-bottom: calc(58 * var(--px));
+  padding-top: calc(30 * var(--px));
+  border-top: max(1px, calc(2 * var(--px))) solid var(--hair);
+  display: flex;
+  align-items: center;
+}
+
+.tt-lock-s {
+  width: 42.9%;
+  height: auto;
+  display: block;
+  flex: none;
+}
+
+/* The divider's height comes from a gradient rather than a percentage: the
+ * row's height is set by the marks inside it, so a percentage against an auto
+ * height would be a guess. Stretched and masked is exact at any width. */
+.tt-lock-bar {
+  width: max(1px, calc(2 * var(--px)));
+  margin: 0 3.9% 0 4.4%;
+  align-self: stretch;
+  flex: none;
+  background: linear-gradient(
+    180deg,
+    transparent 18%,
+    var(--hair) 18%,
+    var(--hair) 82%,
+    transparent 82%
+  );
+}
+
+.tt-lock-c {
+  width: 48.4%;
+  height: auto;
+  display: block;
+  flex: none;
+}
+
+/* ---------- the template's closing marks ---------- */
+
+/* A rule that turns a corner, sitting under the base bar at bottom right. */
+.tt-bracket {
+  position: absolute;
+  right: 0;
+  bottom: calc(26 * var(--px));
+  width: calc(268 * var(--px));
+  height: calc(196 * var(--px));
+  border-top: calc(9 * var(--px)) solid var(--red);
+  border-left: calc(9 * var(--px)) solid var(--red);
+  border-top-left-radius: calc(66 * var(--px));
+}
+
+.tt-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(26 * var(--px));
+  background: var(--red);
+}

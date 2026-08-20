@@ -2,7 +2,8 @@ import React from "react";
 import "./Stylesheets/App.css";
 import Frame from "./Frame";
 // import Feature from "./Components/Feature";
-import StaplesFlyer from "./Components/StaplesFlyer";
+// import StaplesFlyer from "./Components/StaplesFlyer";
+import TechTalk from "./Components/TechTalk";
 
 // One poster renders at a time. Swap the import and the returned component;
 // leave the previous one commented out above.
@@ -17,8 +18,8 @@ import StaplesFlyer from "./Components/StaplesFlyer";
 // off it and builds the artwork by hand.
 function App() {
   return (
-    <Frame canvas="half-letter">
-      <StaplesFlyer />
+    <Frame>
+      <TechTalk />
     </Frame>
   );
 }

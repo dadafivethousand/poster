@@ -19,7 +19,7 @@
 import React from "react";
 import "../Stylesheets/StaplesFlyer.css";
 import staplesLogo from "../Images/staples-easy-logo.png";
-import cnHead from "../Images/cn-head-mark.png";
+import cnLogo from "../Images/cn-logo-horizontal.svg";
 import ninja from "../Images/ninja-wave.png";
 
 export default function StaplesFlyer({
@@ -59,12 +59,7 @@ export default function StaplesFlyer({
       <header className="sf-head">
         <img className="sf-staples" src={staplesLogo} alt="Staples easy" />
         <span className="sf-divide" aria-hidden />
-        <span className="sf-cn">
-          <img className="sf-cn-head" src={cnHead} alt="" />
-          <span className="sf-cn-word">
-            <b>CODE</b>NINJAS<sup>&reg;</sup>
-          </span>
-        </span>
+        <img className="sf-cn" src={cnLogo} alt="Code Ninjas" />
       </header>
 
       {/* ---- hero: the pitch, with the mascot alongside ---- */}
