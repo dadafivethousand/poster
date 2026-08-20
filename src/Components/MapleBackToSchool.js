@@ -20,6 +20,9 @@ import React from "react";
 import "../Stylesheets/MapleBackToSchool.css";
 import mapleLogo from "../Images/maple-logo.png";
 import cnLogo from "../Images/cn-logo-horizontal.svg";
+import giPhoto from "../Images/maple-gi.png";
+import glovesPhoto from "../Images/maple-gloves.png";
+import ninjaPhoto from "../Images/cn-ninja-figure.png";
 
 export default function MapleBackToSchool({
   headline = ["BACK TO", "SCHOOL"],
@@ -28,14 +31,19 @@ export default function MapleBackToSchool({
   eyebrow = "For New Kids Signups",
 
   cards = [
-    { big: "FREE GI", small: [], value: "($120 Value)", emoji: "🥋" },
-    { big: "FREE", small: ["BOXING GLOVES"], value: "($50 Value)", emoji: "🥊" },
+    { big: "FREE GI", small: [], value: "($120 Value)", photo: giPhoto },
+    {
+      big: "FREE",
+      small: ["BOXING GLOVES"],
+      value: "($50 Value)",
+      photo: glovesPhoto,
+    },
     {
       big: "FREE",
       small: ["1 MONTH OF", "CODE NINJAS"],
       note: "(WOODBRIDGE LOCATION)",
       value: "($169 Value)",
-      art: "partner",
+      photo: ninjaPhoto,
     },
   ],
 
@@ -120,7 +128,9 @@ export default function MapleBackToSchool({
               </div>
 
               <div className="mb-art">
-                {c.art === "partner" ? (
+                {c.photo ? (
+                  <img className="mb-photo" src={c.photo} alt="" />
+                ) : c.art === "partner" ? (
                   <span className="mb-disc mb-disc--paper">
                     <img src={cnLogo} alt="Code Ninjas" />
                     <em>WOODBRIDGE</em>

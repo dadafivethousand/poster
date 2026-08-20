@@ -514,8 +514,11 @@
   /* Card 3 carries three supporting lines, so its value sits ~26px lower than
    * the others'. The well starts below THAT for every card, so all three discs
    * land on one line across the row. */
-  top: calc(256 * var(--px));
-  bottom: calc(12 * var(--px));
+  /* 262, not 252: card 3's value line ends at ~254 and the ninja's raised
+   * hand reaches the very top of its frame, so the well has to start below
+   * the LOWEST card's copy for all three to share one baseline. */
+  top: calc(262 * var(--px));
+  bottom: calc(8 * var(--px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -544,6 +547,56 @@
  * the eye reads a set. The glyph is still an emoji — it just has somewhere to
  * stand.
  */
+/* ---------- photographed artwork ----------
+ *
+ * Real product shots replace the glyphs. They arrive on transparent grounds
+ * with their own modelling, so they need less staging than the emoji did, not
+ * more — the plinth that made two emoji read as placed would now be a saucer
+ * under an object that already has form.
+ *
+ * What they do need is CONTACT. An object cut out and dropped on a field
+ * floats; a pool of light behind it and a shadow on the floor beneath it put
+ * it in the panel. Both come off .mb-art so they sit behind the image.
+ */
+.mb-photo {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 calc(12 * var(--px)) calc(16 * var(--px))
+    rgba(0, 4, 16, 0.62));
+}
+
+.mb-art::before {
+  content: "";
+  position: absolute;
+  width: calc(190 * var(--px));
+  height: calc(190 * var(--px));
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(126, 186, 255, 0.17) 0%,
+    rgba(126, 186, 255, 0.06) 54%,
+    transparent 100%
+  );
+}
+
+.mb-art::after {
+  content: "";
+  position: absolute;
+  bottom: calc(2 * var(--px));
+  width: calc(126 * var(--px));
+  height: calc(20 * var(--px));
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 4, 16, 0.6) 0%,
+    transparent 100%
+  );
+}
+
 .mb-disc {
   position: relative;
   width: calc(148 * var(--px));
