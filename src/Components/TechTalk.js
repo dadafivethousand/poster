@@ -47,6 +47,16 @@ export default function TechTalk({
       <img className="tt-badge" src={techTalk} alt="Staples Tech Talk" />
 
       <div className="tt-panel">
+        {/* The partner lockup, assembled from the official artwork rather than
+            used as one flat image. The proportions — 42.9% / 48.4% either side
+            of a hairline — are measured off approved print artwork in the
+            sibling repo, not chosen here. */}
+        <div className="tt-lock">
+          <img className="tt-lock-s" src={staplesLogo} alt="Staples" />
+          <span className="tt-lock-bar" aria-hidden />
+          <img className="tt-lock-c" src={cnLogo} alt="Code Ninjas" />
+        </div>
+
         <p className="tt-eyebrow">{eyebrow}</p>
 
         <h1 className="tt-head">
@@ -69,15 +79,6 @@ export default function TechTalk({
           ))}
         </ul>
 
-        {/* The partner lockup, assembled from the official artwork rather than
-            used as one flat image. The proportions — 42.9% / 48.4% either side
-            of a hairline — are measured off approved print artwork in the
-            sibling repo, not chosen here. */}
-        <div className="tt-lock">
-          <img className="tt-lock-s" src={staplesLogo} alt="Staples" />
-          <span className="tt-lock-bar" aria-hidden />
-          <img className="tt-lock-c" src={cnLogo} alt="Code Ninjas" />
-        </div>
       </div>
 
       <span className="tt-bracket" aria-hidden />

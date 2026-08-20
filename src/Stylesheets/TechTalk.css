@@ -79,7 +79,7 @@
   /* The badge overhangs the top-right of this panel, so the copy starts
    * below it rather than beside it. A headline set to dodge a sticker is a
    * headline with a bite out of it. */
-  padding: calc(104 * var(--px)) var(--pad) 0;
+  padding: calc(64 * var(--px)) var(--pad) 0;
 }
 
 .tt-eyebrow {
@@ -96,7 +96,7 @@
  * the whole design; shrinking it to make room for anything else loses the
  * thing that made the template work. */
 .tt-head {
-  margin: 0 0 calc(42 * var(--px));
+  margin: 0 0 calc(34 * var(--px));
   font-size: calc(76 * var(--px));
   font-weight: 700;
   line-height: 1.04;
@@ -116,7 +116,7 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: calc(24 * var(--px));
+  gap: calc(20 * var(--px));
 }
 
 .tt-list li {
@@ -151,12 +151,14 @@
 
 /* ---------- partner lockup ---------- */
 
+/* Leads the panel rather than closing it. Down at the foot the marks were the
+ * last thing read and the smallest thing on the sheet; above the dateline they
+ * are what the panel opens with, which is the right order for a co-branded
+ * piece — you are told whose it is before you are told what it was. Sized so
+ * they sit beside the Tech Talk badge without either crowding the other. */
 .tt-lock {
-  width: calc(392 * var(--px));
-  margin-top: auto;
-  margin-bottom: calc(58 * var(--px));
-  padding-top: calc(30 * var(--px));
-  border-top: max(1px, calc(2 * var(--px))) solid var(--hair);
+  width: calc(560 * var(--px));
+  margin-bottom: calc(30 * var(--px));
   display: flex;
   align-items: center;
 }
@@ -199,11 +201,15 @@
   position: absolute;
   right: 0;
   bottom: calc(26 * var(--px));
-  width: calc(268 * var(--px));
-  height: calc(196 * var(--px));
+  /* Pulled in from 268×196: with the lockup moved to the top of the panel
+   * everything below it shifted down, and the last bullet's final words ran
+   * straight through the corner's curve. The bracket is a closing flourish —
+   * it gives way to the copy, not the other way round. */
+  width: calc(228 * var(--px));
+  height: calc(170 * var(--px));
   border-top: calc(9 * var(--px)) solid var(--red);
   border-left: calc(9 * var(--px)) solid var(--red);
-  border-top-left-radius: calc(66 * var(--px));
+  border-top-left-radius: calc(58 * var(--px));
 }
 
 .tt-base {
