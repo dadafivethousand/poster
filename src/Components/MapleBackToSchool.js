@@ -49,6 +49,21 @@ export default function MapleBackToSchool({
           positioned element after it paints on top without a z-index fight. */}
       <div className="mb-field" aria-hidden />
 
+      {/* The leaf, enormous and nearly invisible. The mark's alpha IS the leaf
+          outline — the wordmark inside it is painted, not punched — so masking
+          with the logo file gives a clean silhouette with no type in it. */}
+      <div
+        className="mb-leaf"
+        aria-hidden
+        style={{
+          WebkitMaskImage: `url(${mapleLogo})`,
+          maskImage: `url(${mapleLogo})`,
+        }}
+      />
+
+      {/* One shaft off the key light, raking across the upper third. */}
+      <div className="mb-shaft" aria-hidden />
+
       <img className="mb-logo" src={mapleLogo} alt="Maple Jiu Jitsu" />
 
       {/* ---- headline. The roundel sits beside it rather than over it, so the
@@ -122,6 +137,8 @@ export default function MapleBackToSchool({
         <Globe />
         {site}
       </p>
+
+      <Grain />
 
       <p className="mb-addr">
         <Pin />
@@ -259,6 +276,26 @@ function money(text) {
         part
       )
     );
+}
+
+/* Film grain over the whole sheet.
+ *
+ * This is the difference between a gradient and a photograph. Every tone on
+ * this poster is a CSS gradient, and gradients band — on a navy this deep the
+ * steps are visible on a phone and unmissable in print. A few percent of
+ * monochrome noise breaks the banding into dither and the field reads as a
+ * surface instead of a ramp. It has to be desaturated with feColorMatrix or
+ * raw turbulence lands as coloured confetti. */
+function Grain() {
+  return (
+    <svg className="mb-grain" aria-hidden focusable="false">
+      <filter id="mb-noise" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="3" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#mb-noise)" />
+    </svg>
+  );
 }
 
 /* Drawn, not set as emoji: 🌐 and 📍 render full-colour on Apple platforms and
