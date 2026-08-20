@@ -3,7 +3,8 @@ import "./Stylesheets/App.css";
 import Frame from "./Frame";
 // import Feature from "./Components/Feature";
 // import StaplesFlyer from "./Components/StaplesFlyer";
-import TechTalk from "./Components/TechTalk";
+// import TechTalk from "./Components/TechTalk";
+import MapleBackToSchool from "./Components/MapleBackToSchool";
 
 // One poster renders at a time. Swap the import and the returned component;
 // leave the previous one commented out above.
@@ -19,7 +20,7 @@ import TechTalk from "./Components/TechTalk";
 function App() {
   return (
     <Frame>
-      <TechTalk />
+      <MapleBackToSchool />
     </Frame>
   );
 }

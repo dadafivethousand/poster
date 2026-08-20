@@ -137,6 +137,12 @@ into an arc, headline in black and Staples red, the red bracket and base rule.
 Adds what the template has no slot for — the event's substance as bullets, the
 Tech Talk mark sat on the seam, and the two-mark partner lockup at the foot.
 
+**MapleBackToSchool** — Maple Jiu Jitsu's back-to-school offer, on the `ig`
+canvas. Deep navy, condensed display type, a bonus-value roundel and three
+numbered offer cards. The gi and gloves are emoji rather than the original's
+branded product shots, at the user's direction — no photography to re-license
+or re-shoot when a value changes.
+
 ## Adding one
 
 One poster = one component in `src/Components/` + one stylesheet in
