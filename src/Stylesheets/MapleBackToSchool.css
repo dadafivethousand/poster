@@ -343,11 +343,12 @@
   position: absolute;
   left: calc(10 * var(--px));
   right: calc(10 * var(--px));
-  /* card 3 carries three supporting lines, so its value line sits lowest of
-   * the three; the art starts below where THAT lands, not where card 1's
-   * shorter stack ends. */
-  top: calc(256 * var(--px));
-  bottom: calc(24 * var(--px));
+  /* Cards 1 and 2 get the full well. Card 3 carries three supporting lines, so
+   * its value sits ~26px lower and its artwork has to start below THAT — which
+   * is why the two are not the same box. Pinning both to card 3's constraint
+   * is what left the first drawn pass looking undersized. */
+  top: calc(232 * var(--px));
+  bottom: calc(10 * var(--px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -357,6 +358,19 @@
  * first pass look cheap. Three things fix it: a pool of light behind it, a
  * contact shadow on the floor beneath it, and a real cast shadow on the glyph
  * itself. Together they place the object in the panel instead of on it. */
+.mb-svg {
+  width: 100%;
+  height: 100%;
+  /* same light as the field, so the artwork sits in the panel rather than on it */
+  filter: drop-shadow(0 calc(14 * var(--px)) calc(18 * var(--px))
+    rgba(0, 4, 16, 0.55));
+}
+
+.mb-card--partner .mb-art {
+  top: calc(258 * var(--px));
+  bottom: calc(18 * var(--px));
+}
+
 .mb-emoji {
   position: relative;
   display: grid;

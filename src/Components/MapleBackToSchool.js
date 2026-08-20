@@ -28,13 +28,13 @@ export default function MapleBackToSchool({
   eyebrow = "For New Kids Signups",
 
   cards = [
-    { big: "FREE GI", small: [], value: "($120 Value)", emoji: "🥋" },
-    { big: "FREE", small: ["BOXING GLOVES"], value: "($50 Value)", emoji: "🥊" },
+    { big: "FREE GI", small: [], value: "($120 Value)", art: "gi" },
+    { big: "FREE", small: ["BOXING GLOVES"], value: "($50 Value)", art: "gloves" },
     {
       big: "FREE",
       small: ["MONTH OF", "CODE NINJAS", "WOODBRIDGE"],
       value: "($169 Value)",
-      partner: true,
+      art: "partner",
     },
   ],
 
@@ -80,7 +80,7 @@ export default function MapleBackToSchool({
       <div className="mb-cards">
         {cards.map((c, i) => (
           <div
-            className={`mb-card ${c.small.length ? "" : "mb-card--plain"}`}
+            className={`mb-card ${c.art === "partner" ? "mb-card--partner" : ""}`}
             key={c.big + i}
           >
             <span className="mb-num">{i + 1}</span>
@@ -97,11 +97,15 @@ export default function MapleBackToSchool({
             </div>
 
             <div className="mb-art">
-              {c.partner ? (
+              {c.art === "partner" ? (
                 <span className="mb-cn">
                   <img src={cnLogo} alt="Code Ninjas" />
                   <em>WOODBRIDGE</em>
                 </span>
+              ) : c.art === "gi" ? (
+                <Gi />
+              ) : c.art === "gloves" ? (
+                <Gloves />
               ) : (
                 <span className="mb-emoji">{c.emoji}</span>
               )}
@@ -124,6 +128,119 @@ export default function MapleBackToSchool({
         {address}
       </p>
     </div>
+  );
+}
+
+
+/* ---------------------------------------------------------------------------
+ * The gi and the gloves, drawn.
+ *
+ * These were 🥋 and 🥊 — the user's own shortcut so the post could exist
+ * without sourcing product artwork, and the right call at the time. They were
+ * also the last thing on the sheet that looked bought rather than made: Apple
+ * emoji arrive in someone else's palette, someone else's lighting and someone
+ * else's line weight, and no amount of glow behind them fixes that.
+ *
+ * Drawn here they cost nothing extra, carry the poster's own navy/white/gold,
+ * and take the same light as everything else — lit from the upper left, same
+ * as the field's key. The emoji path is still live: give a card `emoji`
+ * instead of `art` and it renders exactly as before.
+ * ------------------------------------------------------------------------- */
+
+function Gi() {
+  return (
+    <svg className="mb-svg" viewBox="0 0 200 200" role="img" aria-label="Gi">
+      <defs>
+        <linearGradient id="mb-gi-a" x1=".15" y1="0" x2=".7" y2="1">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="1" stopColor="#c6d1e0" />
+        </linearGradient>
+        <linearGradient id="mb-gi-b" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#f2f6fb" />
+          <stop offset="1" stopColor="#adbaca" />
+        </linearGradient>
+      </defs>
+
+      {/* Sleeves thrown wide — the silhouette is what identifies a gi at
+          thumbnail size, and a narrow one reads as a shirt. */}
+      <path d="M62 30 L12 78a12 12 0 0 0 0 17l17 18a11 11 0 0 0 16 0l30-32z"
+            fill="url(#mb-gi-b)" />
+      <path d="M138 30l50 48a12 12 0 0 1 0 17l-17 18a11 11 0 0 1-16 0l-30-32z"
+            fill="url(#mb-gi-b)" />
+
+      {/* body, widening to the hem */}
+      <path d="M62 24h76l12 148a8 8 0 0 1-8 9H58a8 8 0 0 1-8-9z"
+            fill="url(#mb-gi-a)" />
+
+      {/* Lapels: one thick V and the closure below it, drawn as a stroke so
+          the join mitres itself. */}
+      <path d="M66 26 L100 96 L134 26" fill="none" stroke="#e2e9f3"
+            strokeWidth="24" strokeLinejoin="round" />
+      <path d="M100 96 V181" fill="none" stroke="#e2e9f3" strokeWidth="24" />
+      <path d="M66 26 L100 96 L134 26" fill="none" stroke="#a3b1c6"
+            strokeWidth="2.5" strokeLinejoin="round" opacity=".75" />
+      <path d="M100 96 V181" fill="none" stroke="#a3b1c6" strokeWidth="2.5"
+            opacity=".45" />
+
+      {/* black belt: band, knot, two hanging ends */}
+      <path d="M91 140l-8 46h14l4-46zM109 140l8 46h-14l-4-46z" fill="#0b1220" />
+      <rect x="46" y="114" width="108" height="27" rx="6" fill="#121b29" />
+      <rect x="46" y="114" width="108" height="9" rx="4" fill="#1f2b3e" />
+      <rect x="84" y="108" width="32" height="39" rx="8" fill="#0b1220" />
+      <rect x="84" y="108" width="32" height="10" rx="5" fill="#28374e" />
+    </svg>
+  );
+}
+
+function Gloves() {
+  /* ORIENTATION was the thing, not the modelling. Drawn upright — fist above,
+   * cuff below — a glove is a tall stack of a big round mass on a small one,
+   * which is a mushroom, and three passes of better shading did not change
+   * that. A boxing glove reads HORIZONTALLY: the fist punches forward, the
+   * wrist trails behind it, and the thumb drops off the underside. Wide
+   * silhouette, off-centre mass, and it is unmistakable.
+   *
+   * Everything shares one fill and overlaps, so the parts fuse into a single
+   * outline rather than stacking as separate objects. */
+  const glove = (
+    <g transform="rotate(-8 100 100)">
+      {/* wrist, behind and to the right */}
+      <rect x="132" y="64" width="56" height="60" rx="20" fill="url(#mb-gl-b)" />
+      <rect x="146" y="64" width="20" height="60" fill="#e9c46a" />
+      <rect x="143" y="84" width="26" height="20" rx="4" fill="#c8a24d" />
+      {/* thumb, dropping off the underside */}
+      <ellipse cx="66" cy="130" rx="27" ry="21" fill="url(#mb-gl-b)" />
+      {/* fist, forward and left */}
+      <ellipse cx="90" cy="92" rx="60" ry="50" fill="url(#mb-gl-a)" />
+      {/* crease where the thumb meets the fist */}
+      <path d="M62 108c6 8 7 16 6 24" fill="none" stroke="#93a3ba"
+            strokeWidth="4" strokeLinecap="round" opacity=".55" />
+      {/* knuckle seam, following the punching face */}
+      <path d="M44 74c-6 16-5 32 3 46" fill="none" stroke="#8e9fb8"
+            strokeWidth="4.5" strokeLinecap="round" opacity=".6" />
+      {/* highlight, upper left — same key as the field */}
+      <path d="M52 74a52 40 0 0 1 34-26" fill="none" stroke="#ffffff"
+            strokeWidth="10" strokeLinecap="round" opacity=".8" />
+    </g>
+  );
+  return (
+    <svg className="mb-svg" viewBox="0 0 200 200" role="img"
+         aria-label="Boxing gloves">
+      <defs>
+        <linearGradient id="mb-gl-a" x1=".15" y1="0" x2=".85" y2="1">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="1" stopColor="#b6c2d5" />
+        </linearGradient>
+        <linearGradient id="mb-gl-b" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#e7ecf5" />
+          <stop offset="1" stopColor="#98a6bb" />
+        </linearGradient>
+      </defs>
+      {/* A PAIR: the second mirrored and set back, so they face each other the
+          way a pair hangs. One glove alone reads as a mitt. */}
+      <g transform="translate(202 -34) scale(-.74 .74)" opacity=".42">{glove}</g>
+      <g transform="translate(-4 22) scale(.92)">{glove}</g>
+    </svg>
   );
 }
 
