@@ -59,7 +59,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.42;
+  mix-blend-mode: soft-light;
+  opacity: 0.85;
   background-image:
     repeating-linear-gradient(
       45deg,
@@ -145,9 +146,8 @@
     linear-gradient(165deg, #06264a 0%, #00112e 100%);
   box-shadow:
     0 0 0 calc(6 * var(--px)) var(--paper) inset,
-    0 0 0 calc(9 * var(--px)) var(--gold) inset,
-    0 0 0 calc(12 * var(--px)) transparent inset,
     0 0 0 calc(15 * var(--px)) var(--paper) inset,
+    inset 0 calc(4 * var(--px)) calc(18 * var(--px)) rgba(120, 190, 255, 0.14),
     0 calc(16 * var(--px)) calc(34 * var(--px)) rgba(0, 6, 20, 0.5);
   display: flex;
   flex-direction: column;
@@ -158,6 +158,37 @@
   font-stretch: 75%;
   line-height: 1.04;
   text-align: center;
+}
+
+/* The gold between the two white rules is a CONIC sweep masked to a ring, so
+ * it travels light-to-dark round the circumference the way milled metal does.
+ * A flat gold hairline reads as a printed line; this reads as an edge. */
+.mb-badge::before {
+  content: "";
+  position: absolute;
+  inset: calc(6 * var(--px));
+  border-radius: 50%;
+  background: conic-gradient(
+    from 216deg,
+    #6d5219 0deg,
+    #e9c46a 58deg,
+    #fff4d2 96deg,
+    #dcb457 150deg,
+    #8a6a24 210deg,
+    #e9c46a 286deg,
+    #fbe6ae 320deg,
+    #6d5219 360deg
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 6 * var(--px)),
+    #000 calc(100% - 6 * var(--px))
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 6 * var(--px)),
+    #000 calc(100% - 6 * var(--px))
+  );
 }
 
 .mb-badge-sm {
@@ -181,8 +212,11 @@
   width: calc(681 * var(--px));
   height: calc(114 * var(--px));
   margin: 0;
-  background: linear-gradient(180deg, #ffffff 0%, #eef2f8 100%);
-  box-shadow: 0 calc(14 * var(--px)) calc(30 * var(--px)) rgba(0, 6, 20, 0.42);
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 46%, #e6ecf6 100%);
+  box-shadow:
+    inset 0 calc(3 * var(--px)) 0 rgba(255, 255, 255, 0.95),
+    inset 0 calc(-5 * var(--px)) calc(12 * var(--px)) rgba(14, 44, 96, 0.1),
+    0 calc(16 * var(--px)) calc(32 * var(--px)) rgba(0, 6, 20, 0.45);
   transform: skewX(var(--skew));
   display: flex;
   align-items: center;
@@ -254,17 +288,47 @@
   /* Lit glass rather than a wire outline. The inset top highlight is the one
    * that does the work — it puts a lit edge where the light is coming from and
    * the panel stops looking like a border someone drew. */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.085) 0%,
-    rgba(255, 255, 255, 0.022) 46%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
-  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.26);
+  /* Frosted glass with a LIT RIM.
+   *
+   * The rim is a gradient border, which CSS has no direct property for: two
+   * backgrounds are painted, one clipped to the padding box (the pane) and one
+   * to the border box (the rim), with a transparent border letting the second
+   * show through only at the edge. It brightens toward the key light and falls
+   * away from it — a single flat border colour is lit from nowhere.
+   *
+   * backdrop-filter is doing real work: the tatami weave and the key light
+   * behind each card blur and desaturate through the pane, so the panel has
+   * something behind it rather than being a lighter rectangle. */
+  border: max(1px, calc(2 * var(--px))) solid transparent;
   border-radius: calc(20 * var(--px));
+  background-image:
+    /* pane */
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.085) 0%,
+      rgba(255, 255, 255, 0.022) 48%,
+      rgba(255, 255, 255, 0.05) 100%
+    ),
+    /* Smoked, not clear. Blurring the backdrop alone AVERAGES the field behind
+     * the card — the vignette and the key light flatten into one mid tone and
+     * the panel comes out a milky grey that reads lighter than the sheet it is
+     * sitting on. A dark tint over the blur keeps it glass and keeps it navy. */
+    linear-gradient(0deg, rgba(1, 13, 34, 0.42), rgba(1, 13, 34, 0.42)),
+    /* rim */
+    linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.13) 42%,
+      rgba(255, 255, 255, 0.09) 62%,
+      rgba(255, 255, 255, 0.36) 100%
+    );
+  background-origin: border-box;
+  background-clip: padding-box, padding-box, border-box;
+  backdrop-filter: blur(calc(7 * var(--px)));
+  -webkit-backdrop-filter: blur(calc(7 * var(--px)));
   box-shadow:
-    inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.34),
-    0 calc(18 * var(--px)) calc(38 * var(--px)) rgba(0, 6, 20, 0.36);
+    inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.2),
+    0 calc(20 * var(--px)) calc(42 * var(--px)) rgba(0, 6, 20, 0.42);
   text-align: center;
 }
 
@@ -278,11 +342,13 @@
   width: calc(66 * var(--px));
   height: calc(66 * var(--px));
   border-radius: 50%;
-  background: linear-gradient(180deg, #ffffff 0%, #dfe6f0 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 38%, #c8d4e6 100%);
   color: var(--navy);
   box-shadow:
     0 0 0 calc(7 * var(--px)) #00132f,
-    0 calc(8 * var(--px)) calc(16 * var(--px)) rgba(0, 6, 20, 0.55);
+    inset 0 max(1px, calc(2 * var(--px))) 0 #ffffff,
+    inset 0 calc(-4 * var(--px)) calc(8 * var(--px)) rgba(12, 40, 90, 0.22),
+    0 calc(9 * var(--px)) calc(18 * var(--px)) rgba(0, 6, 20, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -326,8 +392,16 @@
   line-height: 0.894;
 }
 
+.mb-note {
+  margin: calc(7 * var(--px)) 0 0;
+  font-size: calc(19 * var(--px));
+  font-weight: 600;
+  letter-spacing: calc(0.6 * var(--px));
+  color: rgba(255, 255, 255, 0.68);
+}
+
 .mb-value {
-  margin: calc(9 * var(--px)) 0 0;
+  margin: calc(7 * var(--px)) 0 0;
   font-size: calc(28 * var(--px));
   font-weight: 500;
   color: rgba(255, 255, 255, 0.82);
@@ -442,8 +516,11 @@
   width: calc(841 * var(--px));
   height: calc(105 * var(--px));
   margin: 0;
-  background: linear-gradient(180deg, #ffffff 0%, #eef2f8 100%);
-  box-shadow: 0 calc(14 * var(--px)) calc(30 * var(--px)) rgba(0, 6, 20, 0.42);
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 46%, #e6ecf6 100%);
+  box-shadow:
+    inset 0 calc(3 * var(--px)) 0 rgba(255, 255, 255, 0.95),
+    inset 0 calc(-5 * var(--px)) calc(12 * var(--px)) rgba(14, 44, 96, 0.1),
+    0 calc(16 * var(--px)) calc(32 * var(--px)) rgba(0, 6, 20, 0.45);
   transform: skewX(var(--skew));
   display: flex;
   align-items: center;
@@ -471,10 +548,17 @@
   width: calc(586 * var(--px));
   height: calc(66 * var(--px));
   margin: 0;
-  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.55);
+  border: max(1px, calc(2 * var(--px))) solid transparent;
   border-radius: calc(999 * var(--px));
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.2);
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    linear-gradient(0deg, rgba(1, 13, 34, 0.4), rgba(1, 13, 34, 0.4)),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.15) 46%, rgba(255, 255, 255, 0.42));
+  background-origin: border-box;
+  background-clip: padding-box, padding-box, border-box;
+  backdrop-filter: blur(calc(6 * var(--px)));
+  -webkit-backdrop-filter: blur(calc(6 * var(--px)));
+  box-shadow: inset 0 max(1px, calc(2 * var(--px))) 0 rgba(255, 255, 255, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;

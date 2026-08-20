@@ -32,7 +32,8 @@ export default function MapleBackToSchool({
     { big: "FREE", small: ["BOXING GLOVES"], value: "($50 Value)", emoji: "🥊" },
     {
       big: "FREE",
-      small: ["MONTH OF", "CODE NINJAS", "WOODBRIDGE"],
+      small: ["1 MONTH OF", "CODE NINJAS"],
+      note: "(WOODBRIDGE LOCATION)",
       value: "($169 Value)",
       art: "partner",
     },
@@ -93,6 +94,7 @@ export default function MapleBackToSchool({
                   ))}
                 </p>
               )}
+              {c.note && <p className="mb-note">{c.note}</p>}
               <p className="mb-value">{money(c.value)}</p>
             </div>
 
