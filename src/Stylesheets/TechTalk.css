@@ -59,9 +59,14 @@
 
 .tt-badge {
   position: absolute;
-  top: calc(398 * var(--px));
+  /* Deliberately small. It carries its own "staples" wordmark, so at size it
+   * repeats the lockup a few hundred pixels away — and it is the least
+   * corporate thing on the sheet: sticker outlines, a cartoon mic, a cartoon
+   * laptop. Small, it reads as an official programme stamp. Large, it sets the
+   * tone for everything else. */
+  top: calc(446 * var(--px));
   right: calc(52 * var(--px));
-  width: calc(262 * var(--px));
+  width: calc(200 * var(--px));
   height: auto;
   z-index: 3;
   /* it is a sticker: it needs to cast onto both surfaces it straddles */
@@ -157,9 +162,9 @@
  * piece — you are told whose it is before you are told what it was. Sized so
  * they sit beside the Tech Talk badge without either crowding the other. */
 .tt-lock {
-  /* 640 is the ceiling: the lockup ends at x724 and the Tech Talk badge starts
-   * at x766, so any wider and the two marks start closing on each other. */
-  width: calc(640 * var(--px));
+  /* The badge is what caps this. At 200px wide it starts at x828, so the
+   * lockup can run to x784 and still keep a clear gap. */
+  width: calc(700 * var(--px));
   margin-bottom: calc(28 * var(--px));
   display: flex;
   align-items: center;
