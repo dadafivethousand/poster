@@ -10,6 +10,15 @@
  *   #7a2bbd violet       #ef7c18 orange
  */
 
+/* THE DISPLAY FACE, derived rather than picked.
+ *
+ * The original's "HOUSE!" is 587px wide at a 142px cap — a width-to-cap ratio
+ * of 4.13. Measured against it: Baloo 2 is 5.02 and Nunito 1000 is 5.27 (both
+ * far too wide, and Baloo was the first guess), Chewy 3.34 (too narrow),
+ * Titan One 4.60. Fredoka is variable on the width axis, and at
+ * `font-stretch: 85%` it measures 4.15 — the match, and rounded the same way.
+ * Cap there is 0.73em, which is where the display sizes below come from.
+ */
 .oh {
   --navy: #001b43;
   --navy-deep: #00122f;
@@ -48,24 +57,16 @@
 .oh-slot--empty {
   display: grid;
   place-items: center;
-  /* Neutral rather than white-on-transparent: a white dashed box vanishes on
-   * the white date strip, which is exactly where two of the slots live. This
-   * greys read on the navy field and on paper. */
-  border: max(1px, calc(2 * var(--px))) dashed rgba(120, 145, 180, 0.85);
-  border-radius: calc(8 * var(--px));
-  background: rgba(128, 145, 175, 0.22);
-  font-family: Poppins, sans-serif;
-  font-size: calc(11 * var(--px));
-  font-weight: 700;
-  letter-spacing: calc(0.3 * var(--px));
-  color: #9fb4d2;
-  text-align: center;
-  line-height: 1.05;
-  /* A long name in a 44px box spills and reads as the label colliding with
-   * whatever is beside it — which is what "giveaways" was doing to its tab. */
+  /* An empty slot RESERVES ITS SPACE AND SHOWS NOTHING. The dashed labelled
+   * boxes were useful while the layout was being built and are noise once it
+   * is right — the poster now reads as the finished thing with holes where the
+   * art goes, rather than as a wireframe. The names are still in the markup,
+   * so `document.querySelectorAll('.oh-slot--empty')` lists what is missing. */
+  border: 0;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
   overflow: hidden;
-  padding: 0 calc(2 * var(--px));
-  word-break: break-word;
 }
 
 /* ---------- confetti ---------- */
@@ -86,24 +87,26 @@
  * straight-then-angled, not curved. */
 .oh-sheet {
   position: absolute;
-  left: calc(196 * var(--px));
-  top: calc(-40 * var(--px));
-  width: calc(700 * var(--px));
-  height: calc(210 * var(--px));
+  left: calc(176 * var(--px));
+  top: calc(-46 * var(--px));
+  width: calc(813 * var(--px));
+  height: calc(251 * var(--px));
   background: #fff;
   clip-path: polygon(4% 0, 100% 0, 96% 100%, 8% 100%, 0 52%);
 }
 
 .oh-script {
   position: absolute;
-  left: calc(28 * var(--px));
-  top: calc(18 * var(--px));
+  left: calc(26 * var(--px));
+  top: calc(16 * var(--px));
   margin: 0;
-  width: calc(170 * var(--px));
+  /* Has to finish before x176, where the white sheet's angled edge begins —
+   * "Screen Time" is the widest line and was running under it. */
+  width: calc(146 * var(--px));
   display: flex;
   flex-direction: column;
   font-family: Caveat, cursive;
-  font-size: calc(40 * var(--px));
+  font-size: calc(35 * var(--px));
   font-weight: 700;
   line-height: 1.02;
   color: #fff;
@@ -121,17 +124,17 @@
 
 .oh-logo {
   position: absolute;
-  left: calc(268 * var(--px));
-  top: calc(18 * var(--px));
-  width: calc(520 * var(--px));
+  left: calc(276 * var(--px));
+  top: calc(16 * var(--px));
+  width: calc(551 * var(--px));
   height: auto;
 }
 
 .oh-centre-name {
   position: absolute;
-  left: calc(268 * var(--px));
-  top: calc(112 * var(--px));
-  width: calc(520 * var(--px));
+  left: calc(276 * var(--px));
+  top: calc(116 * var(--px));
+  width: calc(551 * var(--px));
   margin: 0;
   text-align: center;
   font-size: calc(31 * var(--px));
@@ -146,10 +149,10 @@
  * generated polygon is exact and costs one property. */
 .oh-burst {
   position: absolute;
-  right: calc(14 * var(--px));
-  top: calc(58 * var(--px));
-  width: calc(226 * var(--px));
-  height: calc(126 * var(--px));
+  left: calc(839 * var(--px));
+  top: calc(55 * var(--px));
+  width: calc(184 * var(--px));
+  height: calc(134 * var(--px));
   background: var(--violet);
   clip-path: polygon(
     50% 0%, 57% 9%, 66% 3%, 70% 14%, 81% 10%, 82% 22%, 93% 21%, 90% 33%,
@@ -166,7 +169,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: "Baloo 2", Poppins, sans-serif;
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
   font-size: calc(23 * var(--px));
   font-weight: 800;
   line-height: 1.08;
@@ -183,21 +187,25 @@
  * faces are hard-edged and a blurred drop-shadow reads as a glow. */
 .oh-title {
   position: absolute;
-  left: calc(206 * var(--px));
-  top: calc(132 * var(--px));
-  width: calc(640 * var(--px));
+  /* 140, not 120: the sheet's WOODBRIDGE line ends at 142, and OPEN's line
+   * box sits above its cap, so a top that looks clear in the numbers still
+   * put the O through the wordmark. */
+  left: calc(214 * var(--px));
+  top: calc(140 * var(--px));
+  width: calc(618 * var(--px));
   margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: "Baloo 2", Poppins, sans-serif;
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
   font-weight: 800;
   line-height: 0.86;
   letter-spacing: calc(-2 * var(--px));
 }
 
 .oh-title-a {
-  font-size: calc(158 * var(--px));
+  font-size: calc(200 * var(--px));
   color: #fff;
   text-shadow:
     0 calc(3 * var(--px)) 0 #b9c6d8, 0 calc(6 * var(--px)) 0 #93a3b8,
@@ -205,7 +213,7 @@
 }
 
 .oh-title-b {
-  font-size: calc(150 * var(--px));
+  font-size: calc(195 * var(--px));
   color: var(--lime);
   text-shadow:
     0 calc(3 * var(--px)) 0 #8fa522, 0 calc(6 * var(--px)) 0 #74881a,
@@ -214,19 +222,18 @@
 
 .oh-kids {
   position: absolute;
-  right: calc(6 * var(--px));
-  top: calc(182 * var(--px));
-  width: calc(258 * var(--px));
-  height: calc(222 * var(--px));
-  border-radius: calc(14 * var(--px));
+  left: calc(809 * var(--px));
+  top: calc(211 * var(--px));
+  width: calc(271 * var(--px));
+  height: calc(258 * var(--px));
 }
 
 .oh-mascot {
   position: absolute;
-  left: calc(-6 * var(--px));
-  top: calc(196 * var(--px));
-  width: calc(216 * var(--px));
-  height: calc(420 * var(--px));
+  left: calc(-4 * var(--px));
+  top: calc(224 * var(--px));
+  width: calc(224 * var(--px));
+  height: calc(482 * var(--px));
   filter: drop-shadow(0 calc(10 * var(--px)) calc(18 * var(--px)) rgba(0, 8, 26, 0.55));
 }
 
@@ -234,16 +241,17 @@
 
 .oh-banner {
   position: absolute;
-  left: calc(178 * var(--px));
-  top: calc(404 * var(--px));
-  width: calc(618 * var(--px));
+  left: calc(196 * var(--px));
+  top: calc(469 * var(--px));
+  width: calc(608 * var(--px));
   margin: 0;
   padding: calc(13 * var(--px)) calc(20 * var(--px));
   background: linear-gradient(180deg, #0f5bc4 0%, #073e92 100%);
   border-radius: calc(10 * var(--px));
   box-shadow: 0 calc(6 * var(--px)) calc(16 * var(--px)) rgba(0, 8, 26, 0.45);
   text-align: center;
-  font-family: "Baloo 2", Poppins, sans-serif;
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
   font-size: calc(39 * var(--px));
   font-weight: 800;
   line-height: 1;
@@ -258,10 +266,10 @@
 
 .oh-when {
   position: absolute;
-  left: calc(182 * var(--px));
-  top: calc(470 * var(--px));
-  width: calc(610 * var(--px));
-  height: calc(120 * var(--px));
+  left: calc(211 * var(--px));
+  top: calc(542 * var(--px));
+  width: calc(590 * var(--px));
+  height: calc(143 * var(--px));
   padding: 0 calc(26 * var(--px));
   background: #fff;
   border-radius: calc(60 * var(--px)) calc(24 * var(--px)) calc(56 * var(--px)) calc(20 * var(--px));
@@ -281,7 +289,8 @@
 /* nowrap: at 58px the date broke to two lines and the strip lost its shape */
 .oh-when-date,
 .oh-when-time {
-  font-family: "Baloo 2", Poppins, sans-serif;
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
   font-size: calc(47 * var(--px));
   font-weight: 800;
   line-height: 1;
@@ -296,17 +305,17 @@
 
 .oh-tabs {
   position: absolute;
-  right: calc(6 * var(--px));
-  top: calc(466 * var(--px));
-  width: calc(268 * var(--px));
+  left: calc(800 * var(--px));
+  right: 0;
+  top: calc(465 * var(--px));
   display: flex;
   flex-direction: column;
-  gap: calc(8 * var(--px));
+  gap: calc(9 * var(--px));
 }
 
 .oh-tab {
-  height: calc(72 * var(--px));
-  padding: 0 calc(10 * var(--px));
+  height: calc(74 * var(--px));
+  padding: 0 calc(12 * var(--px));
   border-radius: calc(14 * var(--px)) 0 0 calc(14 * var(--px));
   box-shadow: 0 calc(4 * var(--px)) calc(10 * var(--px)) rgba(0, 8, 26, 0.4);
   display: flex;
@@ -333,7 +342,8 @@
 }
 
 .oh-tab-text b {
-  font-family: "Baloo 2", Poppins, sans-serif;
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
   font-size: calc(22 * var(--px));
   font-weight: 800;
   line-height: 0.95;
@@ -352,9 +362,9 @@
 .oh-programs {
   position: absolute;
   left: calc(24 * var(--px));
-  top: calc(700 * var(--px));
+  top: calc(697 * var(--px));
   width: calc(748 * var(--px));
-  height: calc(190 * var(--px));
+  height: calc(194 * var(--px));
   padding: calc(14 * var(--px)) calc(6 * var(--px));
   background: rgba(0, 20, 54, 0.62);
   border-radius: calc(16 * var(--px));
@@ -402,9 +412,9 @@
 .oh-checks {
   position: absolute;
   left: 0;
-  top: calc(898 * var(--px));
-  width: calc(790 * var(--px));
-  height: calc(52 * var(--px));
+  top: calc(892 * var(--px));
+  width: calc(861 * var(--px));
+  height: calc(48 * var(--px));
   background: #fff;
   border-radius: 0 calc(26 * var(--px)) calc(26 * var(--px)) 0;
   display: flex;
@@ -437,7 +447,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(126 * var(--px));
+  height: calc(142 * var(--px));
   padding: 0 calc(26 * var(--px));
   background: var(--navy);
   display: flex;
@@ -483,7 +493,8 @@
 }
 
 .oh-foot-tel {
-  font-family: "Baloo 2", Poppins, sans-serif;
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
   font-size: calc(40 * var(--px));
   font-weight: 800;
   white-space: nowrap;
@@ -498,7 +509,8 @@
 }
 
 .oh-qr b {
-  font-family: "Baloo 2", Poppins, sans-serif;
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
   font-size: calc(15 * var(--px));
   font-weight: 800;
   color: var(--violet);
