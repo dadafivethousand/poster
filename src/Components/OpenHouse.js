@@ -18,15 +18,25 @@ import React from "react";
 import "../Stylesheets/OpenHouse.css";
 import cnLogo from "../Images/cn-logo-horizontal.svg";
 import ninjaFigure from "../Images/cn-ninja-figure.png";
+import FALLBACKS from "./OpenHouseIcons";
 
-/** An image if one was supplied, otherwise a labelled hole. */
+/**
+ * A supplied image, else a drawn fallback, else reserved space.
+ *
+ * The fallback is what stops an unfilled poster reading as a wireframe. It is
+ * a floor and not a decision — pass a src for that slot and it is gone.
+ */
 function Slot({ src, name, className = "", alt = "" }) {
   if (src) return <img className={`oh-slot ${className}`} src={src} alt={alt} />;
-  return (
-    <span className={`oh-slot oh-slot--empty ${className}`} aria-hidden>
-      {name}
-    </span>
-  );
+  const Fallback = FALLBACKS[name];
+  if (Fallback) {
+    return (
+      <span className={`oh-slot oh-slot--drawn ${className}`} aria-hidden>
+        <Fallback />
+      </span>
+    );
+  }
+  return <span className={`oh-slot oh-slot--empty ${className}`} aria-hidden />;
 }
 
 export default function OpenHouse({
@@ -106,7 +116,7 @@ export default function OpenHouse({
 
       {/* ---------- when ---------- */}
       <div className="oh-when">
-        <Slot src={a.calendar} name="cal" className="oh-when-icon" />
+        <Slot src={a.calendar} name="calendar" className="oh-when-icon" />
         <span className="oh-when-date">{date}</span>
         <Slot src={a.clock} name="clock" className="oh-when-icon" />
         <span className="oh-when-time">{time}</span>
@@ -160,7 +170,7 @@ export default function OpenHouse({
 
         <span className="oh-foot-rule" aria-hidden />
 
-        <Slot src={a.phone} name="tel" className="oh-foot-icon" />
+        <Slot src={a.phone} name="phone" className="oh-foot-icon" />
         <span className="oh-foot-tel">{phone}</span>
 
         <span className="oh-qr">
