@@ -1,0 +1,515 @@
+/* OpenHouse.css — Code Ninjas Woodbridge open house. Namespace: oh-
+ *
+ * 1080×1080 (the `square` canvas). `calc(<n> * var(--px))` is design pixels;
+ * the source is 1254 square, so a source pixel is 0.861 of one here.
+ *
+ * Palette sampled off the original:
+ *   #001b43 field navy   #001d48 footer navy
+ *   #c1d931 HOUSE green  #4ea936 prizes green
+ *   #0172ec chess blue   #f9d81d more yellow
+ *   #7a2bbd violet       #ef7c18 orange
+ */
+
+.oh {
+  --navy: #001b43;
+  --navy-deep: #00122f;
+  --lime: #c1d931;
+  --green: #4ea936;
+  --blue: #0172ec;
+  --yellow: #f9d81d;
+  --violet: #7a2bbd;
+  --orange: #ef7c18;
+  --ink: #0b2a5b;
+
+  font-family: Poppins, Inter, sans-serif;
+  color: #fff;
+  background: var(--navy-deep);
+  -webkit-font-smoothing: antialiased;
+}
+
+.oh-field {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(72% 46% at 26% 16%, rgba(70, 140, 220, 0.34) 0%, transparent 68%),
+    radial-gradient(64% 44% at 88% 40%, rgba(40, 110, 200, 0.26) 0%, transparent 70%),
+    linear-gradient(178deg, #0a3f86 0%, #012c66 42%, var(--navy) 100%);
+}
+
+/* ---------- slots ----------
+ * A missing image is a dashed box carrying its own name, sized and placed
+ * exactly where the artwork goes — so the composition can be judged before a
+ * single asset exists, and it is obvious what to drop where. */
+.oh-slot {
+  display: block;
+  object-fit: contain;
+}
+
+.oh-slot--empty {
+  display: grid;
+  place-items: center;
+  /* Neutral rather than white-on-transparent: a white dashed box vanishes on
+   * the white date strip, which is exactly where two of the slots live. This
+   * greys read on the navy field and on paper. */
+  border: max(1px, calc(2 * var(--px))) dashed rgba(120, 145, 180, 0.85);
+  border-radius: calc(8 * var(--px));
+  background: rgba(128, 145, 175, 0.22);
+  font-family: Poppins, sans-serif;
+  font-size: calc(11 * var(--px));
+  font-weight: 700;
+  letter-spacing: calc(0.3 * var(--px));
+  color: #9fb4d2;
+  text-align: center;
+  line-height: 1.05;
+  /* A long name in a 44px box spills and reads as the label colliding with
+   * whatever is beside it — which is what "giveaways" was doing to its tab. */
+  overflow: hidden;
+  padding: 0 calc(2 * var(--px));
+  word-break: break-word;
+}
+
+/* ---------- confetti ---------- */
+
+.oh-confetti {
+  position: absolute;
+  inset: 0;
+}
+
+.oh-confetti span {
+  position: absolute;
+  border-radius: calc(2 * var(--px));
+}
+
+/* ---------- top sheet ----------
+ * The white shape the logo sits on: a slab whose bottom edge sweeps, cut with
+ * a polygon rather than a border-radius because the original's edge is
+ * straight-then-angled, not curved. */
+.oh-sheet {
+  position: absolute;
+  left: calc(196 * var(--px));
+  top: calc(-40 * var(--px));
+  width: calc(700 * var(--px));
+  height: calc(210 * var(--px));
+  background: #fff;
+  clip-path: polygon(4% 0, 100% 0, 96% 100%, 8% 100%, 0 52%);
+}
+
+.oh-script {
+  position: absolute;
+  left: calc(28 * var(--px));
+  top: calc(18 * var(--px));
+  margin: 0;
+  width: calc(170 * var(--px));
+  display: flex;
+  flex-direction: column;
+  font-family: Caveat, cursive;
+  font-size: calc(40 * var(--px));
+  font-weight: 700;
+  line-height: 1.02;
+  color: #fff;
+  transform: rotate(-4deg);
+}
+
+/* the last line is the payoff, so it takes the accent and the underline */
+.oh-script span:last-child {
+  color: var(--yellow);
+  border-bottom: calc(5 * var(--px)) solid var(--yellow);
+  border-radius: 0 0 calc(40 * var(--px)) calc(6 * var(--px));
+  padding-bottom: calc(2 * var(--px));
+  align-self: flex-start;
+}
+
+.oh-logo {
+  position: absolute;
+  left: calc(268 * var(--px));
+  top: calc(18 * var(--px));
+  width: calc(520 * var(--px));
+  height: auto;
+}
+
+.oh-centre-name {
+  position: absolute;
+  left: calc(268 * var(--px));
+  top: calc(112 * var(--px));
+  width: calc(520 * var(--px));
+  margin: 0;
+  text-align: center;
+  font-size: calc(31 * var(--px));
+  font-weight: 700;
+  letter-spacing: calc(9 * var(--px));
+  text-indent: calc(9 * var(--px));
+  color: var(--ink);
+}
+
+/* ---------- starburst ----------
+ * A many-pointed star, which no border-radius makes. `clip-path` with a
+ * generated polygon is exact and costs one property. */
+.oh-burst {
+  position: absolute;
+  right: calc(14 * var(--px));
+  top: calc(58 * var(--px));
+  width: calc(226 * var(--px));
+  height: calc(126 * var(--px));
+  background: var(--violet);
+  clip-path: polygon(
+    50% 0%, 57% 9%, 66% 3%, 70% 14%, 81% 10%, 82% 22%, 93% 21%, 90% 33%,
+    100% 36%, 93% 46%, 100% 57%, 90% 62%, 95% 74%, 84% 76%, 85% 88%, 74% 85%,
+    70% 97%, 60% 91%, 50% 100%, 40% 91%, 30% 97%, 26% 85%, 15% 88%, 16% 76%,
+    5% 74%, 10% 62%, 0% 57%, 7% 46%, 0% 36%, 10% 33%, 7% 21%, 18% 22%,
+    19% 10%, 30% 14%, 34% 3%, 43% 9%
+  );
+  display: grid;
+  place-items: center;
+}
+
+.oh-burst span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Baloo 2", Poppins, sans-serif;
+  font-size: calc(23 * var(--px));
+  font-weight: 800;
+  line-height: 1.08;
+  text-align: center;
+}
+
+.oh-burst b:nth-child(2),
+.oh-burst b:nth-child(3) {
+  color: var(--yellow);
+}
+
+/* ---------- headline ----------
+ * The extrusion is a stack of offset shadows, not a filter: the original's
+ * faces are hard-edged and a blurred drop-shadow reads as a glow. */
+.oh-title {
+  position: absolute;
+  left: calc(206 * var(--px));
+  top: calc(132 * var(--px));
+  width: calc(640 * var(--px));
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Baloo 2", Poppins, sans-serif;
+  font-weight: 800;
+  line-height: 0.86;
+  letter-spacing: calc(-2 * var(--px));
+}
+
+.oh-title-a {
+  font-size: calc(158 * var(--px));
+  color: #fff;
+  text-shadow:
+    0 calc(3 * var(--px)) 0 #b9c6d8, 0 calc(6 * var(--px)) 0 #93a3b8,
+    0 calc(9 * var(--px)) 0 #6d7f96, 0 calc(12 * var(--px)) calc(18 * var(--px)) rgba(0, 10, 30, 0.55);
+}
+
+.oh-title-b {
+  font-size: calc(150 * var(--px));
+  color: var(--lime);
+  text-shadow:
+    0 calc(3 * var(--px)) 0 #8fa522, 0 calc(6 * var(--px)) 0 #74881a,
+    0 calc(9 * var(--px)) 0 #5c6d13, 0 calc(12 * var(--px)) calc(18 * var(--px)) rgba(0, 10, 30, 0.55);
+}
+
+.oh-kids {
+  position: absolute;
+  right: calc(6 * var(--px));
+  top: calc(182 * var(--px));
+  width: calc(258 * var(--px));
+  height: calc(222 * var(--px));
+  border-radius: calc(14 * var(--px));
+}
+
+.oh-mascot {
+  position: absolute;
+  left: calc(-6 * var(--px));
+  top: calc(196 * var(--px));
+  width: calc(216 * var(--px));
+  height: calc(420 * var(--px));
+  filter: drop-shadow(0 calc(10 * var(--px)) calc(18 * var(--px)) rgba(0, 8, 26, 0.55));
+}
+
+/* ---------- banner ---------- */
+
+.oh-banner {
+  position: absolute;
+  left: calc(178 * var(--px));
+  top: calc(404 * var(--px));
+  width: calc(618 * var(--px));
+  margin: 0;
+  padding: calc(13 * var(--px)) calc(20 * var(--px));
+  background: linear-gradient(180deg, #0f5bc4 0%, #073e92 100%);
+  border-radius: calc(10 * var(--px));
+  box-shadow: 0 calc(6 * var(--px)) calc(16 * var(--px)) rgba(0, 8, 26, 0.45);
+  text-align: center;
+  font-family: "Baloo 2", Poppins, sans-serif;
+  font-size: calc(39 * var(--px));
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.oh-banner b {
+  color: var(--yellow);
+}
+
+/* ---------- date strip ---------- */
+
+.oh-when {
+  position: absolute;
+  left: calc(182 * var(--px));
+  top: calc(470 * var(--px));
+  width: calc(610 * var(--px));
+  height: calc(120 * var(--px));
+  padding: 0 calc(26 * var(--px));
+  background: #fff;
+  border-radius: calc(60 * var(--px)) calc(24 * var(--px)) calc(56 * var(--px)) calc(20 * var(--px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(12 * var(--px));
+  color: var(--ink);
+}
+
+.oh-when-icon {
+  width: calc(52 * var(--px));
+  height: calc(52 * var(--px));
+  flex: none;
+}
+
+/* nowrap: at 58px the date broke to two lines and the strip lost its shape */
+.oh-when-date,
+.oh-when-time {
+  font-family: "Baloo 2", Poppins, sans-serif;
+  font-size: calc(47 * var(--px));
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.oh-when-time {
+  color: var(--violet);
+}
+
+/* ---------- right-hand tabs ---------- */
+
+.oh-tabs {
+  position: absolute;
+  right: calc(6 * var(--px));
+  top: calc(466 * var(--px));
+  width: calc(268 * var(--px));
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--px));
+}
+
+.oh-tab {
+  height: calc(72 * var(--px));
+  padding: 0 calc(10 * var(--px));
+  border-radius: calc(14 * var(--px)) 0 0 calc(14 * var(--px));
+  box-shadow: 0 calc(4 * var(--px)) calc(10 * var(--px)) rgba(0, 8, 26, 0.4);
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--px));
+}
+
+.oh-tab--violet { background: linear-gradient(180deg, #8c3ad0 0%, #6c22ab 100%); }
+.oh-tab--green  { background: linear-gradient(180deg, #5cbb40 0%, #3f9129 100%); }
+.oh-tab--blue   { background: linear-gradient(180deg, #1a80f0 0%, #0060cf 100%); }
+.oh-tab--orange { background: linear-gradient(180deg, #f78a26 0%, #dd6a0c 100%); }
+.oh-tab--yellow { background: linear-gradient(180deg, #ffe23c 0%, #f5c40f 100%); color: var(--ink); }
+
+.oh-tab-icon {
+  width: calc(44 * var(--px));
+  height: calc(44 * var(--px));
+  flex: none;
+}
+
+.oh-tab-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.oh-tab-text b {
+  font-family: "Baloo 2", Poppins, sans-serif;
+  font-size: calc(22 * var(--px));
+  font-weight: 800;
+  line-height: 0.95;
+}
+
+.oh-tab-text i {
+  font-style: normal;
+  font-size: calc(13 * var(--px));
+  font-weight: 600;
+  line-height: 1.14;
+  opacity: 0.94;
+}
+
+/* ---------- programs ---------- */
+
+.oh-programs {
+  position: absolute;
+  left: calc(24 * var(--px));
+  top: calc(700 * var(--px));
+  width: calc(748 * var(--px));
+  height: calc(190 * var(--px));
+  padding: calc(14 * var(--px)) calc(6 * var(--px));
+  background: rgba(0, 20, 54, 0.62);
+  border-radius: calc(16 * var(--px));
+  display: flex;
+}
+
+/* Dotted separators between the four, drawn on the item rather than as extra
+   elements — the first one simply has no rule. */
+.oh-program {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 calc(6 * var(--px));
+  border-left: max(1px, calc(2 * var(--px))) dotted rgba(255, 255, 255, 0.34);
+}
+
+.oh-program:first-child {
+  border-left: 0;
+}
+
+.oh-program-icon {
+  width: calc(88 * var(--px));
+  height: calc(78 * var(--px));
+  margin-bottom: calc(8 * var(--px));
+}
+
+.oh-program b {
+  font-size: calc(19 * var(--px));
+  font-weight: 800;
+  letter-spacing: calc(0.3 * var(--px));
+}
+
+.oh-program i {
+  font-style: normal;
+  font-size: calc(16 * var(--px));
+  font-weight: 500;
+  line-height: 1.22;
+  opacity: 0.92;
+}
+
+/* ---------- checks ---------- */
+
+.oh-checks {
+  position: absolute;
+  left: 0;
+  top: calc(898 * var(--px));
+  width: calc(790 * var(--px));
+  height: calc(52 * var(--px));
+  background: #fff;
+  border-radius: 0 calc(26 * var(--px)) calc(26 * var(--px)) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(26 * var(--px)) 0 calc(30 * var(--px));
+  color: var(--ink);
+}
+
+.oh-checks span {
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--px));
+  font-size: calc(21 * var(--px));
+  font-weight: 800;
+  letter-spacing: calc(0.3 * var(--px));
+}
+
+.oh-checks svg {
+  width: calc(21 * var(--px));
+  height: calc(21 * var(--px));
+  color: var(--green);
+  flex: none;
+}
+
+/* ---------- footer ---------- */
+
+.oh-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(126 * var(--px));
+  padding: 0 calc(26 * var(--px));
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--px));
+}
+
+.oh-foot-icon {
+  width: calc(46 * var(--px));
+  height: calc(46 * var(--px));
+  flex: none;
+}
+
+.oh-foot-addr {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.14;
+}
+
+.oh-foot-addr b {
+  font-size: calc(27 * var(--px));
+  font-weight: 800;
+}
+
+.oh-foot-addr i {
+  font-style: normal;
+  font-size: calc(21 * var(--px));
+  font-weight: 500;
+}
+
+.oh-foot-addr em {
+  font-style: normal;
+  font-size: calc(17 * var(--px));
+  font-weight: 600;
+  color: var(--lime);
+}
+
+.oh-foot-rule {
+  width: max(1px, calc(2 * var(--px)));
+  height: calc(66 * var(--px));
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.oh-foot-tel {
+  font-family: "Baloo 2", Poppins, sans-serif;
+  font-size: calc(40 * var(--px));
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.oh-qr {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(3 * var(--px));
+}
+
+.oh-qr b {
+  font-family: "Baloo 2", Poppins, sans-serif;
+  font-size: calc(15 * var(--px));
+  font-weight: 800;
+  color: var(--violet);
+  background: #fff;
+  border-radius: calc(4 * var(--px));
+  padding: 0 calc(6 * var(--px));
+}
+
+.oh-qr-img {
+  width: calc(84 * var(--px));
+  height: calc(84 * var(--px));
+  background: #fff;
+  border-radius: calc(4 * var(--px));
+}

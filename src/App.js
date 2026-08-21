@@ -4,7 +4,8 @@ import Frame from "./Frame";
 // import Feature from "./Components/Feature";
 // import StaplesFlyer from "./Components/StaplesFlyer";
 // import TechTalk from "./Components/TechTalk";
-import MapleBackToSchool from "./Components/MapleBackToSchool";
+// import MapleBackToSchool from "./Components/MapleBackToSchool";
+import OpenHouse from "./Components/OpenHouse";
 
 // One poster renders at a time. Swap the import and the returned component;
 // leave the previous one commented out above.
@@ -19,8 +20,8 @@ import MapleBackToSchool from "./Components/MapleBackToSchool";
 // off it and builds the artwork by hand.
 function App() {
   return (
-    <Frame>
-      <MapleBackToSchool />
+    <Frame canvas="square">
+      <OpenHouse />
     </Frame>
   );
 }
