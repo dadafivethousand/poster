@@ -412,9 +412,19 @@
 
 .oh-when-icon { width: calc(58 * var(--px)); height: calc(58 * var(--px)); flex: none; }
 
-/* each icon takes the colour of the text it labels */
-.oh-when-icon:nth-child(1) { color: var(--green); --icon-ink: #fff; }
-.oh-when-icon:nth-child(3) { color: var(--violet); --icon-ink: #fff; }
+/* Each icon takes the colour of the text it labels — and on this pill BOTH
+ * inks matter, because the pill is white.
+ *
+ * --icon-ink is cut against the surface, so on white it has to be dark: the
+ * calendar's top band and rings were #fff, which made the top of the calendar
+ * disappear into the pill and left a green box with a date floating over it.
+ * They are a deeper shade of the icon's own hue now, which reads against the
+ * white behind AND against the body below.
+ *
+ * --icon-face is printed on the icon's own mass, so it stays white: the "30"
+ * sits on green and the clock hands sit on violet. */
+.oh-when-icon:nth-child(1) { color: var(--green);  --icon-ink: #2c7a1f; --icon-face: #fff; }
+.oh-when-icon:nth-child(3) { color: var(--violet); --icon-ink: #55189b; --icon-face: #fff; }
 
 .oh-when-date,
 .oh-when-time {

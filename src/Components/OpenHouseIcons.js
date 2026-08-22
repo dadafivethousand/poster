@@ -36,6 +36,16 @@ import React from "react";
 
 const box = { viewBox: "0 0 64 64", xmlns: "http://www.w3.org/2000/svg" };
 const INK = "var(--icon-ink, #0b2a5b)";
+/* A SECOND ink, for the parts that sit ON the icon's own mass rather than
+ * against the surface behind it.
+ *
+ * The calendar needed both at once. Its body is the mass, its top band and
+ * rings are cut against the SURFACE, and the numeral is printed on the BODY —
+ * so with one ink the band and the numeral had to be the same colour, and the
+ * only colour that worked for the numeral was white. On the white date pill
+ * that made the top of the calendar vanish and left a green box with a
+ * floating date over it. */
+const FACE = "var(--icon-face, #fff)";
 
 /* ---------- the date pill ---------- */
 
@@ -50,18 +60,21 @@ export const Calendar = ({ day = "23" }) => (
     <rect x="5" y="20" width="54" height="7" fill={INK} />
     <rect x="15" y="4" width="8" height="15" rx="4" fill={INK} />
     <rect x="41" y="4" width="8" height="15" rx="4" fill={INK} />
-    <text x="32" y="51" textAnchor="middle" fill={INK}
+    <text x="32" y="51" textAnchor="middle" fill={FACE}
           fontFamily="Fredoka, Poppins, sans-serif" fontWeight="700" fontSize="26">
       {day}
     </text>
   </svg>
 );
 
+/* Same split as the calendar: the rim is cut against the surface, the hands are
+ * printed on the face. A white rim on the white pill was doing nothing except
+ * eating two units off the edge of the violet disc. */
 export const Clock = () => (
   <svg {...box}>
     <circle cx="32" cy="32" r="27" fill="currentColor" />
     <circle cx="32" cy="32" r="27" fill="none" stroke={INK} strokeWidth="4" />
-    <path d="M32 15v18l11 6.5" fill="none" stroke={INK} strokeWidth="6"
+    <path d="M32 15v18l11 6.5" fill="none" stroke={FACE} strokeWidth="6"
           strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
