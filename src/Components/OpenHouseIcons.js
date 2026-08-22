@@ -105,16 +105,21 @@ export const Trophy = () => (
   </svg>
 );
 
-/* A knight, because it is the piece a seven-year-old can name on sight. The
- * old drawing was a pawn-shaped blob that read as a chess piece only because
- * the word CHESS was next to it. */
+/* The earlier drawing, restored. It was replaced with a knight on the theory
+ * that a knight is the piece a child can name — but a knight is all silhouette
+ * detail (muzzle, mane, ear) and at 44px on a saturated tab every one of those
+ * details closes up into a lump. This shape is a piece on a collar on a base:
+ * three simple masses that survive being shrunk, which is the only thing that
+ * matters at this size.
+ *
+ * `currentColor`, not the #fff it was originally drawn in, so it takes its ink
+ * from whatever it sits on like the rest of the set. */
 export const Chess = () => (
   <svg {...box}>
-    <path d="M41 13c-4.2-4.4-9.6-6.6-15-6.6l-2.2 5.4-7.2 4.2c-3.2 1.9-5.2 5.3-5.2 9V33l7.4-3.2 2.2-4.4 5.2 2.2-8.4 9.4c-2.2 2.4-3.4 5.6-3.4 8.8V48h29v-6.4c0-9.6-1-17-2.2-21.2-.2-3.2-.8-5.6-2.2-7.4z"
+    <path d="M32 6c4 0 7 3 7 7 0 2-1 4-3 5l3 5-4 4 4 12H25l4-12-4-4 3-5c-2-1-3-3-3-5 0-4 3-7 7-7z"
           fill="currentColor" />
-    <circle cx="35.5" cy="19.5" r="2.2" fill={INK} />
-    <rect x="15" y="47" width="34" height="6" rx="3" fill="currentColor" />
-    <rect x="10" y="53" width="44" height="7" rx="3.5" fill="currentColor" />
+    <path d="M20 41h24l4 9H16z" fill="currentColor" />
+    <rect x="12" y="50" width="40" height="8" rx="3" fill="currentColor" />
   </svg>
 );
 

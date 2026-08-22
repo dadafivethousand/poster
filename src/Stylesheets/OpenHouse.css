@@ -167,13 +167,14 @@
 /* the last line is the payoff, so it takes the accent and the underline */
 .oh-script span:last-child {
   color: var(--yellow);
-  /* A hand-drawn underline is not a straight rule: it is heavier at one end
-     and it overshoots. The asymmetric radius plus a slight negative skew is
-     what sells it as part of the writing rather than a border. */
+  /* SYMMETRIC. The radius here was 60 on one bottom corner and 8 on the other,
+     which was meant to read as a hand-drawn overshoot and instead read as a
+     rule that had come loose at one end — the whole line looked skewed
+     underneath type that is already sitting at -5deg. Equal soft ends, and the
+     tilt of the note is the only tilt in it. */
   border-bottom: calc(6 * var(--px)) solid var(--yellow);
-  border-radius: 0 0 calc(60 * var(--px)) calc(8 * var(--px));
-  padding-bottom: calc(3 * var(--px));
-  padding-right: calc(4 * var(--px));
+  border-radius: 0 0 calc(10 * var(--px)) calc(10 * var(--px));
+  padding-bottom: calc(4 * var(--px));
   align-self: flex-start;
 }
 
@@ -278,8 +279,12 @@
  *
  * The keyline is 5, not 6: at 6 the counters of the O and the P were starting
  * to close up at this size, which is what made the word look soft. */
+/* 180/176, down from 200/195. HOUSE! ran to y480 and the banner starts at
+ * y469 — the blue bar was sitting across the bottom of the word. The pair now
+ * ends at y446, 23 clear of the banner, and the narrower HOUSE! also opens up
+ * the gap between the mascot's raised hand and the H. */
 .oh-title-a {
-  font-size: calc(200 * var(--px));
+  font-size: calc(180 * var(--px));
   color: #fff;
   -webkit-text-stroke: calc(5 * var(--px)) #fff;
   paint-order: stroke fill;
@@ -292,7 +297,7 @@
 }
 
 .oh-title-b {
-  font-size: calc(195 * var(--px));
+  font-size: calc(176 * var(--px));
   color: var(--lime);
   -webkit-text-stroke: calc(5 * var(--px)) #fff;
   paint-order: stroke fill;
