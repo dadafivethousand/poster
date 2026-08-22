@@ -105,21 +105,24 @@ export const Trophy = () => (
   </svg>
 );
 
-/* The earlier drawing, restored. It was replaced with a knight on the theory
- * that a knight is the piece a child can name — but a knight is all silhouette
- * detail (muzzle, mane, ear) and at 44px on a saturated tab every one of those
- * details closes up into a lump. This shape is a piece on a collar on a base:
- * three simple masses that survive being shrunk, which is the only thing that
- * matters at this size.
+/* A KING. The knight before this was all silhouette detail — muzzle, mane,
+ * ear — and every one of those closed into a lump at 44px. A king is the
+ * opposite: it is identified by ONE feature, the cross on top, sitting above
+ * three simple masses. That reads at any size, which is the only property that
+ * matters here.
  *
- * `currentColor`, not the #fff it was originally drawn in, so it takes its ink
- * from whatever it sits on like the rest of the set. */
+ * currentColor, so it takes its ink from the tab like the rest of the set. */
 export const Chess = () => (
   <svg {...box}>
-    <path d="M32 6c4 0 7 3 7 7 0 2-1 4-3 5l3 5-4 4 4 12H25l4-12-4-4 3-5c-2-1-3-3-3-5 0-4 3-7 7-7z"
+    {/* the cross — the whole reason you know it is a king */}
+    <path d="M29.2 2h5.6v4.6h4.6v5.6h-4.6V17h-5.6v-4.8h-4.6V6.6h4.6z" fill="currentColor" />
+    {/* crown and body */}
+    <path d="M32 19c4.8 0 8.6 3.7 8.6 8.2 0 2.5-1.2 4.8-3.2 6.3L41.6 44H22.4l4.2-10.5c-2-1.5-3.2-3.8-3.2-6.3C23.4 22.7 27.2 19 32 19z"
           fill="currentColor" />
-    <path d="M20 41h24l4 9H16z" fill="currentColor" />
-    <rect x="12" y="50" width="40" height="8" rx="3" fill="currentColor" />
+    {/* collar */}
+    <path d="M20.5 45.5h23l3.5 7.5H17z" fill="currentColor" />
+    {/* base */}
+    <rect x="12" y="53" width="40" height="8" rx="3.5" fill="currentColor" />
   </svg>
 );
 

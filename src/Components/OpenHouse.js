@@ -64,16 +64,16 @@ export default function OpenHouse({
   time = "1:00 PM",
 
   // Right-hand tabs. `key` names the art slot; `tone` picks the colour.
+  // SHORT LINES. On the square sheet these were full-width bars with room for
+  // a sentence; on a 9:16 reel they are five chips across one row, and a chip
+  // 180 units wide holds two or three words. Everything cut was filler anyway
+  // — "Win Awesome Prizes!" under the word PRIZES is the same word twice.
   tabs = [
-    { key: "games", tone: "violet", title: "GAMES", line: "Play & Explore!" },
-    { key: "prizes", tone: "green", title: "PRIZES", line: "Win Awesome Prizes!" },
-    // One line, like the other four. Any longer and it wraps, which puts this
-    // tab's text block a line taller than its neighbours' and breaks the
-    // rhythm of five identical bars — the same reason the head is no longer
-    // "CHESS TOURNAMENT".
-    { key: "chess", tone: "blue", title: "CHESS", line: "Tournament all day!" },
-    { key: "giveaways", tone: "orange", title: "GIVEAWAYS", line: "Fun for Everyone!" },
-    { key: "more", tone: "yellow", title: "AND MORE!", line: "Bring your friends along!" },
+    { key: "games", tone: "violet", title: "GAMES", line: "Play & explore" },
+    { key: "prizes", tone: "green", title: "PRIZES", line: "All afternoon" },
+    { key: "chess", tone: "blue", title: "CHESS", line: "Tournament" },
+    { key: "giveaways", tone: "orange", title: "GIVEAWAYS", line: "For everyone" },
+    { key: "more", tone: "yellow", title: "AND MORE", line: "Come and see" },
   ],
 
   programs = [
@@ -232,20 +232,31 @@ function lines(text) {
 /* Paper confetti round the top edge. Positions are fixed rather than random so
  * the poster renders identically every time — an export that differs run to
  * run cannot be checked against anything. */
+/* Confetti, spread over a 9:16 sheet.
+ *
+ * The percentages are of the CANVAS, so the square layout's positions all
+ * bunched into the top half the moment the canvas got taller. This set is
+ * distributed down the whole frame, and it keeps out of three places: the
+ * handwritten note (x2-24% / y22-34%), the starburst, and the type inside the
+ * white slab. Pieces below y78% are under the app's own furniture on a reel —
+ * they are there so the reserved band is a field rather than a flat rectangle,
+ * and losing them costs nothing.
+ *
+ * Fixed rather than random so the export is identical run to run; a poster
+ * that differs between renders cannot be checked against anything. */
 const CONFETTI = [
-  /* The first three of these used to sit at [4,2], [13,8] and [2,12] — right
-   * on top of the handwritten note, which occupies x2-16% / y1-16%. Paper
-   * confetti scattered across the one piece of handwriting on the sheet reads
-   * as dirt, not as celebration. Moved into the clear gutter below it. */
-  [1, 20, 20, 10, -18, "#f9d81d"], [17, 17, 15, 15, 34, "#7a2bbd"],
-  [21, 1, 19, 9, 12, "#4ea936"], [30, 6, 14, 14, -40, "#ef7c18"],
-  [46, 0, 21, 10, 22, "#0172ec"], [55, 5, 15, 15, -12, "#e4002b"],
-  [63, 2, 18, 9, 48, "#f9d81d"], [72, 7, 14, 14, -28, "#4ea936"],
-  [80, 1, 20, 10, 16, "#7a2bbd"], [88, 6, 16, 16, -44, "#ef7c18"],
-  [95, 11, 18, 9, 30, "#0172ec"], [2, 30, 15, 15, 8, "#4ea936"],
-  [10, 18, 18, 9, -22, "#0172ec"], [92, 17, 19, 10, 40, "#f9d81d"],
-  [6, 26, 13, 13, 18, "#f9d81d"], [86, 26, 16, 8, -30, "#4ea936"],
-  [97, 33, 14, 14, 24, "#7a2bbd"], [1, 34, 17, 8, -14, "#ef7c18"],
+  [21, 1, 19, 9, 12, "#f9d81d"], [31, 6, 15, 15, -34, "#4ea936"],
+  [43, 2, 17, 8, 22, "#0172ec"], [55, 5, 13, 13, -40, "#e4002b"],
+  [66, 1, 20, 10, 16, "#ef7c18"], [74, 7, 15, 15, 30, "#7a2bbd"],
+  [88, 6, 17, 8, 44, "#4ea936"], [95, 11, 14, 14, -20, "#0172ec"],
+  [3, 4, 16, 8, -18, "#7a2bbd"], [11, 9, 13, 13, 34, "#ef7c18"],
+  [2, 19, 18, 9, 26, "#f9d81d"], [97, 19, 15, 7, -30, "#e4002b"],
+  [2, 30, 14, 14, 14, "#4ea936"], [96, 33, 17, 8, -24, "#f9d81d"],
+  [4, 44, 13, 13, 40, "#7a2bbd"], [95, 47, 16, 8, 18, "#0172ec"],
+  [1, 57, 15, 7, -36, "#ef7c18"], [97, 60, 13, 13, 22, "#4ea936"],
+  [6, 82, 17, 8, -14, "#0172ec"], [92, 85, 14, 14, 32, "#f9d81d"],
+  [24, 90, 15, 7, 20, "#7a2bbd"], [70, 93, 16, 8, -26, "#4ea936"],
+  [47, 88, 13, 13, 38, "#ef7c18"], [83, 96, 15, 7, -18, "#0172ec"],
 ];
 
 function Confetti() {

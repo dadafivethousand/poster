@@ -18,9 +18,14 @@ import OpenHouse from "./Components/OpenHouse";
 // `withSource` is the choice every poster makes about the image that was
 // submitted: true renders it as the subject, false uses only the colours taken
 // off it and builds the artwork by hand.
+// STORY, not square: OpenHouse goes out as an Instagram Reel. The poster is
+// laid out inside a safe area — see the top of OpenHouse.css — because a reel
+// played full screen loses its top to the status bar and the Reels header, its
+// bottom to the caption and audio strip, and whatever else the device crops
+// off to fill its own aspect.
 function App() {
   return (
-    <Frame canvas="square">
+    <Frame canvas="story">
       <OpenHouse />
     </Frame>
   );
