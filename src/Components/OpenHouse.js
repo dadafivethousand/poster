@@ -55,12 +55,20 @@ export default function OpenHouse({
   title = ["OPEN", "HOUSE!"],
   banner = ["COME EXPLORE. PLAY.", "WIN!"],
 
-  // ONE STRING, so nobody can update the weekday and leave the number. Note
-  // that August 23 2026 is a SUNDAY — see the note at the call site.
-  date = "SAT, AUG 23",
+  // ONE STRING, so nobody can update the weekday and leave the number.
+  //
+  // AUGUST 30 2026 IS A SUNDAY. The sheet had carried "SAT, AUG 23" through
+  // several passes; the number has now been corrected to the 30th, and the 30th
+  // is a Sunday exactly as the 23rd was — two separate dates from the centre,
+  // both Sundays, against a weekday that never moved. The weekday is the part
+  // that was stale, so it now reads SUN and the two agree.
+  //
+  // If the event is in fact on the SATURDAY, it is Aug 29, not Aug 30: change
+  // both halves of this string and `dateNum` together.
+  date = "SUN, AUG 30",
   // The numeral the calendar icon prints on its own face, kept beside the date
   // it is drawn from rather than hard-coded into the icon.
-  dateNum = "23",
+  dateNum = "30",
   time = "1:00 PM",
 
   // Right-hand tabs. `key` names the art slot; `tone` picks the colour.
