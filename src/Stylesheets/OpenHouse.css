@@ -532,7 +532,7 @@
 }
 
 .oh-tab {
-  height: calc(140 * var(--px));
+  height: calc(126 * var(--px));
   padding: calc(12 * var(--px)) calc(8 * var(--px));
   border-radius: calc(18 * var(--px));
   /* A white keyline is what separates five saturated blocks sitting in a row,
@@ -553,6 +553,16 @@
     0 0 0 calc(3 * var(--px)) #fff,
     0 calc(6 * var(--px)) 0 var(--edge, #2a2f3a),
     0 calc(11 * var(--px)) 0 var(--edge-d, #171b23),
+    /* THE KEYLINE HAS TO GO ROUND THE SIDE FACE TOO. The white ring above has
+       no offset, so it wrapped only the TOP of the block and the extrusion
+       hung out below it — five saturated bands of colour sitting outside the
+       border, which is what it looked like: a leak, not a solid.
+
+       This is the same ring offset to the depth of the deepest edge and
+       listed AFTER the coloured layers, so it paints behind them. The union
+       of the two rings is a continuous outline down both sides, and the block
+       is enclosed. */
+    0 calc(11 * var(--px)) 0 calc(3 * var(--px)) #fff,
     0 calc(22 * var(--px)) calc(26 * var(--px)) rgba(0, 8, 26, 0.55),
     inset 0 calc(3 * var(--px)) 0 rgba(255, 255, 255, 0.4),
     inset 0 calc(-3 * var(--px)) 0 rgba(0, 0, 0, 0.18);
