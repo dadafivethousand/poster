@@ -52,7 +52,13 @@ export default function OpenHouse({
   // fact that decides whether a parent walking past is the audience, and it
   // costs nothing to put it in the line that was already there.
   burst = ["FUN FOR", "KIDS 5–14", "& FAMILIES!"],
-  title = ["OPEN", "HOUSE!"],
+  title = ["OPEN", "HOUSE"],
+  // THE EVENT IS TWO EVENTS. It was billed as an open house alone, which sold
+  // the chess tournament as a line inside a chip nobody was going to read.
+  // The exclamation moved to the end of the whole name rather than sitting in
+  // the middle of it — "OPEN HOUSE! & CHESS TOURNAMENT" punctuates a clause
+  // that has not finished.
+  subtitle = "& CHESS TOURNAMENT!",
   banner = ["COME EXPLORE. PLAY.", "WIN!"],
 
   // ONE STRING, so nobody can update the weekday and leave the number.
@@ -109,6 +115,12 @@ export default function OpenHouse({
   return (
     <div className="pf-stage oh">
       <div className="oh-field" aria-hidden />
+      {/* A CHESSBOARD IN PERSPECTIVE, lying under the whole sheet and running
+          off the bottom edge. Two jobs at once: it says "tournament" before a
+          word is read, and it fills the lower third, which the reel safe area
+          reserves for Instagram's own furniture and which was otherwise flat
+          navy. */}
+      <div className="oh-chess-board" aria-hidden />
       <Confetti />
 
       {/* ---------- top band ---------- */}
@@ -135,6 +147,7 @@ export default function OpenHouse({
       <h1 className="oh-title">
         <span className="oh-title-a">{title[0]}</span>
         <span className="oh-title-b">{title[1]}</span>
+        <span className="oh-title-c">{subtitle}</span>
       </h1>
 
       {/* The `kids` photo slot that used to sit here reserved 271×258 of the
