@@ -75,7 +75,7 @@ export default function OpenHouse({
   // The numeral the calendar icon prints on its own face, kept beside the date
   // it is drawn from rather than hard-coded into the icon.
   dateNum = "30",
-  time = "1:00 PM",
+  time = "1:00 PM – 2:00 PM",
 
   // Right-hand tabs. `key` names the art slot; `tone` picks the colour.
   // SHORT LINES. On the square sheet these were full-width bars with room for
