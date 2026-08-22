@@ -87,7 +87,10 @@ export default function OpenHouse({
 
   centre = "CODE NINJAS WOODBRIDGE",
   address = "6175 Hwy 7, Woodbridge, ON",
-  plaza = "(In Market Lane Plaza)",
+  // The centre is NOT in Market Lane Plaza — that line was wrong and is gone.
+  // The prop stays so a real plaza or unit number can be put back without
+  // touching the markup; empty renders nothing rather than an empty line box.
+  plaza = "",
   phone = "647-887-9940",
 
   // Artwork. Anything omitted renders as a labelled slot.
@@ -197,7 +200,7 @@ export default function OpenHouse({
         <span className="oh-foot-addr">
           <b>{centre}</b>
           <i>{address}</i>
-          <em>{plaza}</em>
+          {plaza ? <em>{plaza}</em> : null}
         </span>
 
         <span className="oh-foot-rule" aria-hidden />

@@ -143,53 +143,79 @@ export const Laptop = () => (
   </svg>
 );
 
-/* A voxel cube — the shape of block-building games, not any one game's block.
- * Three faces at three lightnesses is what makes a hexagon read as a solid. */
+/* THE TWO NAMED GAMES ARE THE ONLY ICONS THAT BREAK THE COLOUR SYSTEM, and it
+ * is deliberate. Everything else on this sheet paints in `currentColor` so the
+ * row reads as a set — but a grass block that is not green on top and earth
+ * underneath is not a grass block, it is a grey hexagon, and a child scanning
+ * the row does not recognise it. These two are drawn in their own colours; the
+ * two generic ones either side keep the poster's inks.
+ *
+ * Note this reproduces marks these companies own. That is a call for whoever
+ * signs off the print run, not for this file — the previous version drew them
+ * generically for exactly that reason. The ® is on the labels either way. */
 export const Cube = () => (
   <svg {...box}>
-    <path d="M32 6l24 12.5L32 31 8 18.5z" fill="currentColor" />
-    <path d="M8 18.5L32 31v25L8 43.5z" fill="currentColor" opacity=".72" />
-    <path d="M56 18.5L32 31v25l24-12.5z" fill="currentColor" opacity=".42" />
-    <path d="M32 6l24 12.5L32 31 8 18.5zM32 31v25M8 18.5v25L32 56M56 18.5v25L32 56"
-          fill="none" stroke={INK} strokeWidth="1.8" strokeLinejoin="round" />
+    {/* top face — grass */}
+    <path d="M32 5l25 13-25 13L7 18z" fill="#6cbb3c" />
+    <path d="M32 5l25 13-25 13L7 18z" fill="none" stroke="#4e8c2b" strokeWidth="1.4"
+          strokeLinejoin="round" />
+    {/* left face — the grass overhangs the dirt, which is the detail that makes
+        it read as turf rather than as a green lid */}
+    <path d="M7 18l25 13v25L7 43z" fill="#8b6239" />
+    <path d="M7 18l25 13v7L7 25z" fill="#5fa834" />
+    {/* right face, one step darker so the solid turns */}
+    <path d="M57 18L32 31v25l25-13z" fill="#6e4b2a" />
+    <path d="M57 18L32 31v7l25-13z" fill="#4e8c2b" />
+    {/* a few darker voxels, so it reads as blocks and not as a smooth solid */}
+    <path d="M12 27.5l7 3.6v6.4l-7-3.6z" fill="#000" opacity=".14" />
+    <path d="M22 39l7 3.6v6.4l-7-3.6z" fill="#000" opacity=".12" />
+    <path d="M45 30l7-3.6v6.4l-7 3.6z" fill="#000" opacity=".12" />
+    <path d="M21 14.5l8 4.2-6 3.1-8-4.2z" fill="#000" opacity=".08" />
   </svg>
 );
 
-/* Four studded tiles — "a world made out of parts". The old one was a single
- * rounded square with a hole in it, which read as nothing at all. */
+/* THE TILTED SQUARE WITH THE SQUARE HOLE. Four studded tiles was a guess at
+ * "block game" and read as a keypad. The mark people actually recognise is one
+ * rounded square rotated off-axis with a smaller rounded square knocked out of
+ * its centre — and the hole has to be a REAL hole, cut with fill-rule evenodd,
+ * because the panel behind it is a gradient and a matching fill would show as
+ * a patch the moment the panel changed. */
 export const Blocks = () => (
   <svg {...box}>
-    <rect x="6" y="6" width="24" height="24" rx="4" fill="currentColor" />
-    <rect x="34" y="6" width="24" height="24" rx="4" fill="currentColor" opacity=".55" />
-    <rect x="6" y="34" width="24" height="24" rx="4" fill="currentColor" opacity=".55" />
-    <rect x="34" y="34" width="24" height="24" rx="4" fill="currentColor" />
-    <circle cx="18" cy="18" r="4" fill={INK} />
-    <circle cx="46" cy="46" r="4" fill={INK} />
+    <g transform="rotate(13 32 32)">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        fill="#fff"
+        d="M16 10h32a6 6 0 0 1 6 6v32a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6V16a6 6 0 0 1 6-6Zm10 14h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H26a2 2 0 0 1-2-2V26a2 2 0 0 1 2-2Z"
+      />
+    </g>
   </svg>
 );
 
 /* A printer mid-print: gantry, nozzle, and an object growing on the bed. The
  * old one had the letters "3D" set inside it, which is a label pretending to
  * be a drawing — and the words "3D PRINTING" are already underneath. */
-/* AN OPEN-FRONTED GANTRY, not a box. The first drawing put a closed rectangle
- * round the whole mechanism and at 84px that reads as a monitor with a
- * triangle on it — which is exactly what it looked like next to the word
- * CODING and a laptop. Two uprights and a top rail is the silhouette people
- * actually recognise as a 3D printer, and it leaves the nozzle and the object
- * on the bed as the only things inside. */
+/* DRAW THE PRINTING, NOT THE PRINTER. Two attempts at the machine both failed
+ * the same way: any frame that closes round the mechanism reads as a monitor
+ * at 84px, which is disastrous directly beside a laptop. What is unmistakable
+ * at this size is a nozzle laying down layers — the process, not the appliance
+ * — and it is also the only icon in the row that shows something being MADE,
+ * which is the point of the whole programme. */
 export const Printer = () => (
   <svg {...box}>
-    {/* uprights + top rail */}
-    <rect x="6" y="6" width="6" height="42" rx="3" fill="currentColor" />
-    <rect x="52" y="6" width="6" height="42" rx="3" fill="currentColor" />
-    <rect x="6" y="6" width="52" height="6" rx="3" fill="currentColor" />
-    {/* the gantry and its nozzle, part-way down its travel */}
-    <rect x="12" y="19" width="40" height="5" rx="2.5" fill="currentColor" />
-    <path d="M32 24v5l-3 3h6l-3-3z" fill="currentColor" />
-    {/* the object growing on the bed, printed in the lighter tone */}
-    <path d="M22 42l10-11 10 11z" fill="currentColor" opacity=".55" />
-    <rect x="12" y="42" width="40" height="6" rx="3" fill="currentColor" />
-    <rect x="18" y="53" width="28" height="6" rx="3" fill="currentColor" opacity=".5" />
+    {/* the gantry rail and the nozzle hanging off it */}
+    <rect x="8" y="6" width="48" height="6" rx="3" fill="currentColor" />
+    <rect x="28" y="12" width="8" height="6" fill="currentColor" />
+    <path d="M26 18h12l-4 7h-4z" fill="currentColor" />
+    {/* the extruded strand, mid-air between nozzle and object */}
+    <path d="M32 25v5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    {/* the object, built up in layers that widen as they go down */}
+    <rect x="25" y="31" width="14" height="6" rx="2" fill="currentColor" opacity=".55" />
+    <rect x="21" y="38" width="22" height="6" rx="2" fill="currentColor" opacity=".72" />
+    <rect x="17" y="45" width="30" height="6" rx="2" fill="currentColor" opacity=".88" />
+    {/* the bed */}
+    <rect x="8" y="53" width="48" height="6" rx="3" fill="currentColor" />
   </svg>
 );
 

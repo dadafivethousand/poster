@@ -460,7 +460,11 @@
    * cheapest thing that makes them read as cut out rather than as a chart. */
   box-shadow:
     0 0 0 calc(3 * var(--px)) #fff,
-    0 calc(6 * var(--px)) calc(14 * var(--px)) rgba(0, 8, 26, 0.5);
+    0 calc(6 * var(--px)) calc(14 * var(--px)) rgba(0, 8, 26, 0.5),
+    /* a lit top edge INSIDE the keyline — the one line that turns five flat
+       gradients into five moulded stickers */
+    inset 0 calc(2 * var(--px)) 0 rgba(255, 255, 255, 0.38),
+    inset 0 calc(-2 * var(--px)) 0 rgba(0, 0, 0, 0.16);
   display: flex;
   align-items: center;
   gap: calc(10 * var(--px));
@@ -644,15 +648,31 @@
   line-height: 1.14;
 }
 
+/* Two lines now, not three. With the plaza line gone the block was sitting
+ * small in a 140-unit band, so both lines grew and the leading opened — the
+ * address is the whole point of the footer and it was the quietest thing in
+ * it. */
+.oh-foot-addr {
+  gap: calc(4 * var(--px));
+}
+
 .oh-foot-addr b {
-  font-size: calc(27 * var(--px));
+  font-size: calc(30 * var(--px));
   font-weight: 800;
+  letter-spacing: calc(0.2 * var(--px));
+  /* Explicitly white. `.oh-foot` sets `color: lime` so the drawn icons in the
+     band inherit their mass colour from it, and that quietly turned the centre
+     name lime too — which put the name, the phone, the pin and the plaza all
+     on the same ink and flattened the footer to one note. Lime is the accent
+     here (pin, phone, keyline); the name is information. */
+  color: #fff;
 }
 
 .oh-foot-addr i {
   font-style: normal;
-  font-size: calc(21 * var(--px));
+  font-size: calc(23 * var(--px));
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .oh-foot-addr em {
@@ -685,15 +705,19 @@
   gap: calc(3 * var(--px));
 }
 
+/* Lime on navy, not violet on white. The footer is a two-ink band — navy and
+ * lime — and a violet chip in the corner of it was the only violet below the
+ * starburst, 800 units away. It read as a leftover. */
 .oh-qr b {
   font-family: Fredoka, Poppins, sans-serif;
   font-stretch: 85%;
   font-size: calc(15 * var(--px));
-  font-weight: 800;
-  color: var(--violet);
-  background: #fff;
+  font-weight: 700;
+  color: var(--navy);
+  background: var(--lime);
   border-radius: calc(4 * var(--px));
-  padding: 0 calc(6 * var(--px));
+  padding: 0 calc(7 * var(--px)) calc(1 * var(--px));
+  letter-spacing: calc(0.6 * var(--px));
 }
 
 /* SIZED OFF THE DECODER, not off the gap it had to fit. The payload is 24
