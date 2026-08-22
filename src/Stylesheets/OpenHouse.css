@@ -1,34 +1,63 @@
 /* OpenHouse.css — Code Ninjas Woodbridge open house. Namespace: oh-
  *
- * 1080×1080 (the `square` canvas). `calc(<n> * var(--px))` is design pixels;
- * the source is 1254 square, so a source pixel is 0.861 of one here.
+ * 1080×1080 (the `square` canvas). Every dimension is `calc(<n> * var(--px))`
+ * where <n> is read off that 1080 grid, so the same sheet re-exports at letter
+ * or A4 without being re-laid-out. No bare px except hairlines, no vw/vh —
+ * see App.css.
  *
- * Palette sampled off the original:
- *   #001b43 field navy   #001d48 footer navy
- *   #c1d931 HOUSE green  #4ea936 prizes green
- *   #0172ec chess blue   #f9d81d more yellow
- *   #7a2bbd violet       #ef7c18 orange
+ * ── ONE ACCENT, AND IT MEANS SOMETHING ──
+ *
+ * Navy field, white, lime. That is all of it. The version this replaced ran
+ * navy + lime + green + blue + yellow + violet + orange + red with a gradient
+ * on every block, and no amount of care inside each piece survives that: eight
+ * hues at equal saturation is the visual signature of clip art.
+ *
+ * Here the two inks carry meaning and never swap roles:
+ *
+ *   LIME   the thing to act on — the date, the phone, the icons, the ticks
+ *   WHITE  information — the headline, the labels, the address
+ *
+ * `--sky` exists only in confetti and in the field's own light. It is never
+ * put under type.
+ *
+ * ── THE VERTICAL GRID ──
+ *
+ * Six blocks, in the order a stranger needs them, with real air between:
+ *
+ *      0–124    header band      who this is
+ *    166–204    eyebrow          free / drop-in / all ages
+ *    216–480    headline         what it is
+ *    508–632    date slab        WHEN — the second hero
+ *    676–836    activities       why come
+ *    858–898    draws            the extras
+ *   924–1080    footer band      where, and the code
+ *
+ * The two BANDS are full-bleed on purpose and are the only things that touch
+ * an edge. A band that spans the sheet reads as structure; a tab that runs off
+ * one side reads as a mistake, which is what the five sticker tabs in the old
+ * version were doing.
+ *
+ * ── THE DISPLAY FACE ──
+ *
+ * Fredoka at `font-stretch: 85%`, kept from the previous pass because the
+ * measurement behind it was sound: the reference's cap-to-width ratio is 4.13
+ * and Fredoka at 85% measures 4.15, where Baloo 2 is 5.02 and Chewy 3.34.
+ *
+ * WEIGHT 700, NOT 800. The variable font is loaded `wght@400..700` in
+ * index.html, so every `font-weight: 800` in the old file was silently
+ * clamping to 700 anyway — and asking for a weight the face does not have
+ * invites a browser to synthesise one, which smears the outline.
  */
 
-/* THE DISPLAY FACE, derived rather than picked.
- *
- * The original's "HOUSE!" is 587px wide at a 142px cap — a width-to-cap ratio
- * of 4.13. Measured against it: Baloo 2 is 5.02 and Nunito 1000 is 5.27 (both
- * far too wide, and Baloo was the first guess), Chewy 3.34 (too narrow),
- * Titan One 4.60. Fredoka is variable on the width axis, and at
- * `font-stretch: 85%` it measures 4.15 — the match, and rounded the same way.
- * Cap there is 0.73em, which is where the display sizes below come from.
- */
 .oh {
-  --navy: #001b43;
-  --navy-deep: #00122f;
+  --navy-deep: #041530;
+  --navy: #0a2a5e;
   --lime: #c1d931;
-  --green: #4ea936;
-  --blue: #0172ec;
-  --yellow: #f9d81d;
-  --violet: #7a2bbd;
-  --orange: #ef7c18;
-  --ink: #0b2a5b;
+  --lime-deep: #a8bf1f;
+  --sky: #4aa3ff;
+  --ink: #06214a;
+
+  --margin: calc(64 * var(--px));
 
   font-family: Poppins, Inter, sans-serif;
   color: #fff;
@@ -36,522 +65,474 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* The field. One warm pool of light up behind the headline and a deep floor,
+ * rather than the four overlapping blue radials the old field used — those
+ * cancelled into an even haze, which is why the old sheet had no depth for the
+ * mascot to stand in. */
 .oh-field {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(58% 40% at 46% 30%, rgba(120, 190, 255, 0.34) 0%, transparent 66%),
-    radial-gradient(70% 44% at 12% 14%, rgba(70, 150, 235, 0.3) 0%, transparent 68%),
-    radial-gradient(64% 44% at 92% 44%, rgba(40, 115, 205, 0.26) 0%, transparent 70%),
-    linear-gradient(178deg, #0d4694 0%, #01306f 44%, var(--navy) 100%);
+    radial-gradient(64% 42% at 34% 26%, rgba(96, 176, 255, 0.30) 0%, transparent 70%),
+    radial-gradient(46% 34% at 88% 18%, rgba(193, 217, 49, 0.13) 0%, transparent 72%),
+    linear-gradient(176deg, #0e4a97 0%, #093a78 34%, #0a2a5e 66%, var(--navy-deep) 100%);
 }
 
-/* ---------- slots ----------
- * A missing image is a dashed box carrying its own name, sized and placed
- * exactly where the artwork goes — so the composition can be judged before a
- * single asset exists, and it is obvious what to drop where. */
-.oh-slot {
-  display: block;
-  object-fit: contain;
+/* A faint blueprint grid, faded out before it reaches anything it could
+ * interfere with. This is the one texture on the sheet and it is doing a
+ * specific job: a flat gradient is clean but inert, and a poster for a place
+ * where children build things should look like a place where things get built.
+ * A 54-unit grid at 5% white is under the threshold where you notice it as a
+ * pattern and above the one where the field reads as empty paint. */
+.oh-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) max(1px, calc(2 * var(--px))), transparent 0),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) max(1px, calc(2 * var(--px))), transparent 0);
+  background-size: calc(54 * var(--px)) calc(54 * var(--px));
+  -webkit-mask-image: radial-gradient(72% 56% at 46% 32%, #000 0%, transparent 80%);
+  mask-image: radial-gradient(72% 56% at 46% 32%, #000 0%, transparent 80%);
 }
 
-.oh-slot--drawn {
-  display: grid;
-  place-items: center;
+/* A vignette, so the corners sit back and the centre carries the eye. */
+.oh-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(78% 62% at 50% 46%, transparent 40%, rgba(2, 10, 26, 0.5) 100%);
 }
+
+/* ---------- slots ---------- */
+
+.oh-slot { display: block; object-fit: contain; }
+
+.oh-slot--drawn { display: grid; place-items: center; }
 
 .oh-slot--drawn svg {
   width: 100%;
   height: 100%;
   display: block;
-  filter: drop-shadow(0 calc(2 * var(--px)) calc(3 * var(--px)) rgba(0, 8, 26, 0.35));
+  filter: drop-shadow(0 calc(2 * var(--px)) calc(4 * var(--px)) rgba(0, 8, 26, 0.45));
 }
 
-.oh-slot--empty {
-  display: grid;
-  place-items: center;
-  /* An empty slot RESERVES ITS SPACE AND SHOWS NOTHING. The dashed labelled
-   * boxes were useful while the layout was being built and are noise once it
-   * is right — the poster now reads as the finished thing with holes where the
-   * art goes, rather than as a wireframe. The names are still in the markup,
-   * so `document.querySelectorAll('.oh-slot--empty')` lists what is missing. */
-  border: 0;
-  background: transparent;
-  color: transparent;
-  font-size: 0;
-  overflow: hidden;
-}
+.oh-slot--empty { display: none; }
 
 /* ---------- confetti ---------- */
 
-.oh-confetti {
-  position: absolute;
-  inset: 0;
-}
+.oh-confetti { position: absolute; inset: 0; }
 
 .oh-confetti span {
   position: absolute;
   border-radius: calc(3 * var(--px));
-  box-shadow: 0 calc(2 * var(--px)) calc(4 * var(--px)) rgba(0, 8, 26, 0.35);
+  /* Held back from full strength — they are atmosphere, not elements — but not
+   * so far back that they vanish. At 0.5 on this field they read as dust on
+   * the lens rather than as paper in the air. */
+  opacity: 0.8;
+  box-shadow: 0 calc(2 * var(--px)) calc(6 * var(--px)) rgba(0, 8, 26, 0.4);
 }
 
-/* ---------- top sheet ----------
- * The white shape the logo sits on: a slab whose bottom edge sweeps, cut with
- * a polygon rather than a border-radius because the original's edge is
- * straight-then-angled, not curved. */
-.oh-sheet {
+/* ---------- header band ---------- */
+
+.oh-head {
   position: absolute;
-  left: calc(176 * var(--px));
-  top: calc(-46 * var(--px));
-  width: calc(813 * var(--px));
-  height: calc(251 * var(--px));
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(124 * var(--px));
+  padding: 0 var(--margin);
   background: #fff;
-  clip-path: polygon(4% 0, 100% 0, 96% 100%, 8% 100%, 0 52%);
-}
-
-.oh-script {
-  position: absolute;
-  left: calc(26 * var(--px));
-  top: calc(16 * var(--px));
-  margin: 0;
-  /* Has to finish before x176, where the white sheet's angled edge begins —
-   * "Screen Time" is the widest line and was running under it. */
-  width: calc(146 * var(--px));
   display: flex;
-  flex-direction: column;
-  font-family: Caveat, cursive;
-  font-size: calc(35 * var(--px));
-  font-weight: 700;
-  line-height: 1.02;
-  color: #fff;
-  transform: rotate(-4deg);
+  align-items: center;
+  gap: calc(26 * var(--px));
 }
 
-/* the last line is the payoff, so it takes the accent and the underline */
-.oh-script span:last-child {
-  color: var(--yellow);
-  border-bottom: calc(5 * var(--px)) solid var(--yellow);
-  border-radius: 0 0 calc(40 * var(--px)) calc(6 * var(--px));
-  padding-bottom: calc(2 * var(--px));
-  align-self: flex-start;
-}
-
-.oh-logo {
+/* A lime hairline along the band's foot. The header and the footer are the
+ * sheet's two structural bands and this is what says so — without it the white
+ * slab reads as a letterhead somebody pasted the poster under. */
+.oh-head::after {
+  content: "";
   position: absolute;
-  left: calc(276 * var(--px));
-  top: calc(16 * var(--px));
-  width: calc(551 * var(--px));
-  height: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(5 * var(--px));
+  background: var(--lime);
 }
 
-.oh-centre-name {
-  position: absolute;
-  left: calc(276 * var(--px));
-  top: calc(116 * var(--px));
-  width: calc(551 * var(--px));
-  margin: 0;
-  text-align: center;
-  font-size: calc(31 * var(--px));
+.oh-head-logo {
+  height: calc(58 * var(--px));
+  width: auto;
+  display: block;
+}
+
+/* A hairline, not a slash or a bullet: it separates the brand from the centre
+ * name without implying either owns the other. */
+.oh-head-bar {
+  width: max(1px, calc(2 * var(--px)));
+  height: calc(46 * var(--px));
+  background: #d3dae4;
+}
+
+.oh-head-centre {
+  font-size: calc(29 * var(--px));
   font-weight: 700;
-  letter-spacing: calc(9 * var(--px));
-  text-indent: calc(9 * var(--px));
+  letter-spacing: calc(8 * var(--px));
+  text-indent: calc(8 * var(--px));
   color: var(--ink);
 }
 
-/* ---------- starburst ----------
- * A many-pointed star, which no border-radius makes. `clip-path` with a
- * generated polygon is exact and costs one property. */
-.oh-burst {
+/* ---------- eyebrow ----------
+ * The three objections a parent has to walking in — cost, commitment, and
+ * whether their kid is the right age — answered above the headline in the
+ * smallest type on the sheet. They only have to be FOUND, not shouted. */
+
+.oh-eyebrow {
   position: absolute;
-  left: calc(839 * var(--px));
-  top: calc(55 * var(--px));
-  width: calc(184 * var(--px));
-  height: calc(134 * var(--px));
-  background: var(--violet);
-  clip-path: polygon(
-    50% 0%, 57% 9%, 66% 3%, 70% 14%, 81% 10%, 82% 22%, 93% 21%, 90% 33%,
-    100% 36%, 93% 46%, 100% 57%, 90% 62%, 95% 74%, 84% 76%, 85% 88%, 74% 85%,
-    70% 97%, 60% 91%, 50% 100%, 40% 91%, 30% 97%, 26% 85%, 15% 88%, 16% 76%,
-    5% 74%, 10% 62%, 0% 57%, 7% 46%, 0% 36%, 10% 33%, 7% 21%, 18% 22%,
-    19% 10%, 30% 14%, 34% 3%, 43% 9%
-  );
-  display: grid;
-  place-items: center;
-}
-
-.oh-burst span {
+  left: var(--margin);
+  top: calc(166 * var(--px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: Fredoka, Poppins, sans-serif;
-  font-stretch: 85%;
-  font-size: calc(23 * var(--px));
-  font-weight: 800;
-  line-height: 1.08;
-  text-align: center;
+  gap: calc(10 * var(--px));
 }
 
-.oh-burst b:nth-child(2),
-.oh-burst b:nth-child(3) {
-  color: var(--yellow);
+.oh-eyebrow li {
+  padding: calc(7 * var(--px)) calc(16 * var(--px));
+  border: max(1px, calc(2 * var(--px))) solid rgba(193, 217, 49, 0.7);
+  border-radius: calc(99 * var(--px));
+  font-size: calc(16 * var(--px));
+  font-weight: 700;
+  letter-spacing: calc(1.4 * var(--px));
+  color: var(--lime);
+  white-space: nowrap;
+}
+
+/* the first chip is the strongest word on the sheet after the date */
+.oh-eyebrow li:first-child {
+  background: var(--lime);
+  border-color: var(--lime);
+  color: var(--ink);
+  font-weight: 800;
 }
 
 /* ---------- headline ----------
- * The extrusion is a stack of offset shadows, not a filter: the original's
- * faces are hard-edged and a blurred drop-shadow reads as a glow. */
+ * FLAT. The reference set this as a four-layer hard extrusion with a white
+ * keyline round every letter, which is the single element that dated the whole
+ * sheet. One soft shadow lifts it off the field; nothing is stacked behind it.
+ */
+
 .oh-title {
   position: absolute;
-  /* 140, not 120: the sheet's WOODBRIDGE line ends at 142, and OPEN's line
-   * box sits above its cap, so a top that looks clear in the numbers still
-   * put the O through the wordmark. */
-  left: calc(214 * var(--px));
-  top: calc(140 * var(--px));
-  width: calc(618 * var(--px));
+  left: var(--margin);
+  top: calc(198 * var(--px));
   margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   font-family: Fredoka, Poppins, sans-serif;
   font-stretch: 85%;
-  font-weight: 800;
-  line-height: 0.86;
-  letter-spacing: calc(-2 * var(--px));
+  font-weight: 700;
+  /* 168, not 158. At 158 the block ended at x501 with the mascot starting at
+     744 — 240 units of dead air across the middle of the hero. 168 fills it
+     without reaching him, and the extra two lines of cap height are free
+     impact. */
+  font-size: calc(168 * var(--px));
+  line-height: 0.84;
+  letter-spacing: calc(-3 * var(--px));
+  text-shadow: 0 calc(10 * var(--px)) calc(34 * var(--px)) rgba(1, 9, 26, 0.55);
 }
 
-.oh-title-a {
-  font-size: calc(200 * var(--px));
-  color: #fff;
-  -webkit-text-stroke: calc(6 * var(--px)) #fff;
-  paint-order: stroke fill;
-  text-shadow:
-    0 calc(4 * var(--px)) 0 #cdd8e6, 0 calc(8 * var(--px)) 0 #a8b7cb,
-    0 calc(12 * var(--px)) 0 #8494ab, 0 calc(16 * var(--px)) 0 #667792,
-    0 calc(22 * var(--px)) calc(24 * var(--px)) rgba(0, 10, 30, 0.6);
-}
+.oh-title-a { color: #fff; }
+.oh-title-b { color: var(--lime); }
 
-.oh-title-b {
-  font-size: calc(195 * var(--px));
-  color: var(--lime);
-  -webkit-text-stroke: calc(6 * var(--px)) #fff;
-  paint-order: stroke fill;
-  text-shadow:
-    0 calc(4 * var(--px)) 0 #9db325, 0 calc(8 * var(--px)) 0 #85991d,
-    0 calc(12 * var(--px)) 0 #6d7f16, 0 calc(16 * var(--px)) 0 #57660f,
-    0 calc(22 * var(--px)) calc(24 * var(--px)) rgba(0, 10, 30, 0.6);
-}
-
-.oh-kids {
+/* ---------- mascot ----------
+ * Bottom-anchored to the top of the date slab so he STANDS on something. The
+ * old version sized him into a fixed box with `object-fit: contain`, which
+ * centred him inside it and left him floating mid-air at half the height the
+ * box implied. */
+/* The light he stands in. Blurred hard and kept faint — at any strength where
+ * you can see it AS a shape it becomes a green circle behind a ninja. It is
+ * doing separation, not decoration. */
+.oh-mascot-pool {
   position: absolute;
-  left: calc(809 * var(--px));
-  top: calc(211 * var(--px));
-  width: calc(271 * var(--px));
-  height: calc(258 * var(--px));
+  right: calc(30 * var(--px));
+  bottom: calc(500 * var(--px));
+  width: calc(352 * var(--px));
+  height: calc(352 * var(--px));
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side,
+      rgba(193, 217, 49, 0.30) 0%,
+      rgba(96, 176, 255, 0.20) 46%,
+      transparent 72%);
+  filter: blur(calc(22 * var(--px)));
 }
 
 .oh-mascot {
   position: absolute;
-  /* Anchored to a BOTTOM edge, not sized into a box. `contain` inside a
-   * 224x482 frame rendered the figure at its own 0.83 aspect and centred it,
-   * so it floated mid-air at half the height the slot implied. A mascot stands
-   * on something. */
-  left: calc(-8 * var(--px));
-  bottom: calc(374 * var(--px));
-  top: auto;
-  width: calc(248 * var(--px));
+  right: var(--margin);
+  /* 548, not 572: his feet cross the slab's top edge by ~24 units so he is
+     standing ON it. At 572 his soles met the edge exactly and the figure read
+     as cut off at the shin, because a dark silhouette against a dark field
+     with nothing overlapping has no depth cue at all. */
+  bottom: calc(548 * var(--px));
+  width: calc(286 * var(--px));
   height: auto;
-  filter: drop-shadow(0 calc(14 * var(--px)) calc(20 * var(--px)) rgba(0, 8, 26, 0.6));
+  z-index: 3;
+  filter:
+    drop-shadow(0 calc(16 * var(--px)) calc(26 * var(--px)) rgba(0, 8, 26, 0.55))
+    drop-shadow(0 0 calc(3 * var(--px)) rgba(150, 214, 255, 0.5));
 }
 
-/* ---------- banner ---------- */
-
-.oh-banner {
-  position: absolute;
-  left: calc(196 * var(--px));
-  top: calc(469 * var(--px));
-  width: calc(608 * var(--px));
-  margin: 0;
-  padding: calc(13 * var(--px)) calc(20 * var(--px));
-  background: linear-gradient(180deg, #0f5bc4 0%, #073e92 100%);
-  border-radius: calc(10 * var(--px));
-  box-shadow: 0 calc(6 * var(--px)) calc(16 * var(--px)) rgba(0, 8, 26, 0.45);
-  text-align: center;
-  font-family: Fredoka, Poppins, sans-serif;
-  font-stretch: 85%;
-  font-size: calc(39 * var(--px));
-  font-weight: 800;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.oh-banner b {
-  color: var(--yellow);
-}
-
-/* ---------- date strip ---------- */
+/* ---------- the date ----------
+ * THE SECOND HERO. In the reference this was a white pill sitting under a blue
+ * banner that shouted louder than it did, which is backwards: the date is the
+ * one fact a passer-by has to carry away. It gets the accent, the full column
+ * width, and it is the only solid light block above the fold. */
 
 .oh-when {
   position: absolute;
-  left: calc(211 * var(--px));
-  top: calc(542 * var(--px));
-  width: calc(590 * var(--px));
-  height: calc(143 * var(--px));
-  padding: 0 calc(26 * var(--px));
-  background: #fff;
-  border-radius: calc(60 * var(--px)) calc(24 * var(--px)) calc(56 * var(--px)) calc(20 * var(--px));
+  left: var(--margin);
+  right: var(--margin);
+  top: calc(508 * var(--px));
+  height: calc(124 * var(--px));
+  padding: 0 calc(30 * var(--px));
+  background: var(--lime);
+  border-radius: calc(20 * var(--px));
+  box-shadow: 0 calc(10 * var(--px)) calc(28 * var(--px)) rgba(1, 9, 26, 0.45);
   display: flex;
+  align-items: center;
+  /* Packed LEFT, not spread. The right third of the slab is deliberately empty
+     because that is where the mascot's feet land — spreading the type to both
+     ends would put "1:00 PM" under him. */
+  justify-content: flex-start;
+  gap: calc(22 * var(--px));
+  color: var(--ink);
+  font-family: Fredoka, Poppins, sans-serif;
+  font-stretch: 85%;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* The weekday reversed out of an ink block — it is the piece people scan for
+ * ("is it the weekend?") and it separates cleanly from the numerals. */
+.oh-when-day {
+  padding: calc(11 * var(--px)) calc(18 * var(--px)) calc(13 * var(--px));
+  background: var(--ink);
+  color: var(--lime);
+  border-radius: calc(12 * var(--px));
+  font-size: calc(40 * var(--px));
+  letter-spacing: calc(1 * var(--px));
+}
+
+.oh-when-date {
+  font-size: calc(78 * var(--px));
+  letter-spacing: calc(-2 * var(--px));
+}
+
+.oh-when-rule {
+  margin-left: calc(10 * var(--px));
+  width: max(1px, calc(3 * var(--px)));
+  height: calc(62 * var(--px));
+  background: rgba(6, 33, 74, 0.28);
+}
+
+.oh-when-time {
+  font-size: calc(62 * var(--px));
+  letter-spacing: calc(-1 * var(--px));
+}
+
+/* ---------- activities ---------- */
+
+.oh-what {
+  position: absolute;
+  left: var(--margin);
+  right: var(--margin);
+  top: calc(660 * var(--px));
+}
+
+.oh-what-h {
+  margin: 0 0 calc(14 * var(--px));
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(20 * var(--px));
+}
+
+.oh-what-h span {
+  font-size: calc(19 * var(--px));
+  font-weight: 800;
+  letter-spacing: calc(4 * var(--px));
+  color: var(--lime);
+}
+
+.oh-what-h i {
+  font-style: normal;
+  font-size: calc(20 * var(--px));
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Five panels rather than five bare icons: a faint card behind each one is
+ * what makes the row read as a SET. The old version had four columns divided
+ * by dotted rules and a separate stack of five coloured tabs elsewhere on the
+ * sheet, saying overlapping things twice. */
+.oh-acts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: calc(14 * var(--px));
+}
+
+.oh-acts li {
+  height: calc(118 * var(--px));
+  border-radius: calc(16 * var(--px));
+  /* Lit from the top rather than filled flat: a panel with a highlight on its
+     upper edge reads as a raised surface, and five of them read as a row of
+     keys. A flat 7% fill reads as five holes cut in the field. */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.045) 60%);
+  border: max(1px, calc(2 * var(--px))) solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: calc(12 * var(--px));
-  color: var(--ink);
 }
 
-.oh-when-icon {
+.oh-act-icon {
   width: calc(52 * var(--px));
   height: calc(52 * var(--px));
-  flex: none;
 }
 
-/* nowrap: at 58px the date broke to two lines and the strip lost its shape */
-.oh-when-date,
-.oh-when-time {
-  font-family: Fredoka, Poppins, sans-serif;
-  font-stretch: 85%;
-  font-size: calc(47 * var(--px));
-  font-weight: 800;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.oh-when-time {
-  color: var(--violet);
-}
-
-/* ---------- right-hand tabs ---------- */
-
-.oh-tabs {
-  position: absolute;
-  left: calc(800 * var(--px));
-  right: 0;
-  top: calc(465 * var(--px));
-  display: flex;
-  flex-direction: column;
-  gap: calc(9 * var(--px));
-}
-
-.oh-tab {
-  height: calc(74 * var(--px));
-  padding: 0 calc(12 * var(--px));
-  border-radius: calc(16 * var(--px)) 0 0 calc(16 * var(--px));
-  /* The original's tabs are stickers — a white keyline round each one is what
-   * separates five saturated blocks stacked touching, and it is the single
-   * cheapest thing that makes them read as cut out rather than as a chart. */
-  box-shadow:
-    0 0 0 calc(3 * var(--px)) #fff,
-    0 calc(6 * var(--px)) calc(14 * var(--px)) rgba(0, 8, 26, 0.5);
-  display: flex;
-  align-items: center;
-  gap: calc(10 * var(--px));
-}
-
-.oh-tab--violet { background: linear-gradient(180deg, #8c3ad0 0%, #6c22ab 100%); }
-.oh-tab--green  { background: linear-gradient(180deg, #5cbb40 0%, #3f9129 100%); }
-.oh-tab--blue   { background: linear-gradient(180deg, #1a80f0 0%, #0060cf 100%); }
-.oh-tab--orange { background: linear-gradient(180deg, #f78a26 0%, #dd6a0c 100%); }
-.oh-tab--yellow { background: linear-gradient(180deg, #ffe23c 0%, #f5c40f 100%); color: var(--ink); }
-
-.oh-tab-icon {
-  width: calc(44 * var(--px));
-  height: calc(44 * var(--px));
-  flex: none;
-}
-
-.oh-tab-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.oh-tab-text b {
-  font-family: Fredoka, Poppins, sans-serif;
-  font-stretch: 85%;
-  font-size: calc(22 * var(--px));
-  font-weight: 800;
-  line-height: 0.95;
-}
-
-.oh-tab-text i {
-  font-style: normal;
-  font-size: calc(13 * var(--px));
-  font-weight: 600;
-  line-height: 1.14;
-  opacity: 0.94;
-}
-
-/* ---------- programs ---------- */
-
-.oh-programs {
-  position: absolute;
-  left: calc(24 * var(--px));
-  top: calc(697 * var(--px));
-  width: calc(748 * var(--px));
-  height: calc(194 * var(--px));
-  padding: calc(14 * var(--px)) calc(6 * var(--px));
-  background: rgba(0, 20, 54, 0.62);
-  border-radius: calc(16 * var(--px));
-  display: flex;
-}
-
-/* Dotted separators between the four, drawn on the item rather than as extra
-   elements — the first one simply has no rule. */
-.oh-program {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 0 calc(6 * var(--px));
-  border-left: max(1px, calc(2 * var(--px))) dotted rgba(255, 255, 255, 0.34);
-}
-
-.oh-program:first-child {
-  border-left: 0;
-}
-
-.oh-program-icon {
-  width: calc(88 * var(--px));
-  height: calc(78 * var(--px));
-  margin-bottom: calc(8 * var(--px));
-}
-
-.oh-program b {
-  font-size: calc(19 * var(--px));
-  font-weight: 800;
-  letter-spacing: calc(0.3 * var(--px));
-}
-
-.oh-program i {
-  font-style: normal;
+.oh-acts b {
   font-size: calc(16 * var(--px));
-  font-weight: 500;
-  line-height: 1.22;
-  opacity: 0.92;
+  font-weight: 800;
+  letter-spacing: calc(0.8 * var(--px));
+  text-align: center;
+  line-height: 1.1;
 }
 
-/* ---------- checks ---------- */
+/* ---------- the draws ---------- */
 
-.oh-checks {
+.oh-draws {
   position: absolute;
-  left: 0;
-  top: calc(892 * var(--px));
-  width: calc(861 * var(--px));
-  height: calc(48 * var(--px));
-  background: #fff;
-  border-radius: 0 calc(26 * var(--px)) calc(26 * var(--px)) 0;
+  left: var(--margin);
+  right: var(--margin);
+  /* Four units of gap is not a gap, it is a collision that happens to miss.
+     This sits 24 clear of the activity row above and 29 clear of the footer
+     band below. */
+  top: calc(846 * var(--px));
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 calc(26 * var(--px)) 0 calc(30 * var(--px));
-  color: var(--ink);
 }
 
-.oh-checks span {
+.oh-draws li {
   display: flex;
   align-items: center;
-  gap: calc(8 * var(--px));
-  font-size: calc(21 * var(--px));
-  font-weight: 800;
-  letter-spacing: calc(0.3 * var(--px));
+  gap: calc(11 * var(--px));
+  font-size: calc(22 * var(--px));
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.94);
 }
 
-.oh-checks svg {
-  width: calc(21 * var(--px));
-  height: calc(21 * var(--px));
-  color: var(--green);
+.oh-draw-icon {
+  width: calc(30 * var(--px));
+  height: calc(30 * var(--px));
   flex: none;
 }
 
-/* ---------- footer ---------- */
+/* ---------- footer band ---------- */
 
 .oh-foot {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(142 * var(--px));
-  padding: 0 calc(26 * var(--px));
-  background: var(--navy);
+  /* 172, not 156. The band grew to fit a QR big enough to actually scan —
+     see .oh-foot-qr img. Everything above it moved up to pay for it. */
+  height: calc(172 * var(--px));
+  padding: 0 var(--margin);
+  background: rgba(2, 11, 27, 0.72);
+  border-top: max(1px, calc(2 * var(--px))) solid rgba(193, 217, 49, 0.35);
   display: flex;
   align-items: center;
-  gap: calc(14 * var(--px));
+  gap: calc(30 * var(--px));
 }
 
-.oh-foot-icon {
-  width: calc(46 * var(--px));
-  height: calc(46 * var(--px));
-  flex: none;
-}
-
-.oh-foot-addr {
+.oh-foot-where {
   display: flex;
   flex-direction: column;
-  line-height: 1.14;
+  gap: calc(5 * var(--px));
+  min-width: 0;
 }
 
-.oh-foot-addr b {
-  font-size: calc(27 * var(--px));
+.oh-foot-where b {
+  font-size: calc(28 * var(--px));
   font-weight: 800;
+  letter-spacing: calc(0.4 * var(--px));
 }
 
-.oh-foot-addr i {
+.oh-foot-where i {
   font-style: normal;
-  font-size: calc(21 * var(--px));
+  font-size: calc(19 * var(--px));
   font-weight: 500;
-}
-
-.oh-foot-addr em {
-  font-style: normal;
-  font-size: calc(17 * var(--px));
-  font-weight: 600;
-  color: var(--lime);
-}
-
-.oh-foot-rule {
-  width: max(1px, calc(2 * var(--px)));
-  height: calc(66 * var(--px));
-  margin-left: auto;
-  background: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.74);
 }
 
 .oh-foot-tel {
+  margin-left: auto;
   font-family: Fredoka, Poppins, sans-serif;
   font-stretch: 85%;
-  font-size: calc(40 * var(--px));
-  font-weight: 800;
+  font-weight: 700;
+  font-size: calc(44 * var(--px));
+  line-height: 1;
+  color: var(--lime);
   white-space: nowrap;
 }
 
-.oh-qr {
-  margin-left: auto;
+/* The QR, which in every export of the previous version was an EMPTY WHITE
+ * SQUARE — the single most expensive defect on the sheet, since it is the only
+ * element that turns a passer-by into a visit.
+ *
+ * SIZED OFF THE DECODER, NOT OFF THE GAP IT HAD TO FIT. The payload is 24
+ * bytes at error-correction level H, which segno lays out as a 29×29 symbol.
+ * At the 88 units it was first given, that is 2.7px per module on the 1080
+ * export — and OpenCV's detector could read the cropped code but failed on the
+ * whole sheet, which is the warning sign. 108 units puts it at 3.7px per
+ * module here and 8.8px on a letter re-export, which is comfortably inside
+ * what a phone acquires at arm's length.
+ *
+ * The white plate is not a background, it is the QUIET ZONE. A code printed
+ * straight onto a dark field does not scan at all. */
+.oh-foot-qr {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(3 * var(--px));
+  gap: calc(6 * var(--px));
 }
 
-.oh-qr b {
-  font-family: Fredoka, Poppins, sans-serif;
-  font-stretch: 85%;
-  font-size: calc(15 * var(--px));
+.oh-foot-qr img {
+  width: calc(108 * var(--px));
+  height: calc(108 * var(--px));
+  display: block;
+  padding: calc(8 * var(--px));
+  background: #fff;
+  border-radius: calc(6 * var(--px));
+}
+
+.oh-foot-qr em {
+  font-style: normal;
+  font-size: calc(13 * var(--px));
   font-weight: 800;
-  color: var(--violet);
-  background: #fff;
-  border-radius: calc(4 * var(--px));
-  padding: 0 calc(6 * var(--px));
-}
-
-.oh-qr-img {
-  width: calc(84 * var(--px));
-  height: calc(84 * var(--px));
-  background: #fff;
-  border-radius: calc(4 * var(--px));
+  letter-spacing: calc(1.6 * var(--px));
+  color: var(--lime);
 }

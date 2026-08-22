@@ -1,151 +1,159 @@
-// OpenHouseIcons.js — the fallback icon set for the open house poster.
+// OpenHouseIcons.js — the drawn icon set for the open house poster.
 //
-// These exist so the poster looks FINISHED with no assets at all. Every one is
-// overridden the moment a real image is passed for that slot, so they are a
-// floor rather than a decision: the layout never shows a hole, and swapping in
-// the licensed artwork is still one prop.
+// These are not placeholders any more. They are the poster's actual icons, and
+// they are drawn here rather than sourced so the whole sheet is one file with
+// no image dependencies to go missing before a print run. Every one is still
+// overridable by passing a src for that slot, so licensed artwork remains one
+// prop away.
 //
-// Deliberately flat, bold and single-idea — they are read at 44-88px on a busy
-// field, where a detailed drawing turns to mush. Minecraft and Roblox are
-// stand-ins for trademarked marks and should be replaced with the real ones
-// before anything is printed.
+// ── TWO INKS, AND THAT IS THE POINT ──
+//
+// Every icon is drawn in exactly `--lime` and white on transparent, because
+// they sit in a row and a row of icons in eight colours is a row of stickers,
+// not a set. The previous set was sampled per-icon off a reference — a brown
+// dirt block, a green calendar, a purple clock, a blue printer — and the row
+// read as clip art gathered from four places, which is exactly what it was.
+//
+// ── NO PARTNER LOGOS ARE DRAWN HERE, DELIBERATELY ──
+//
+// The old set had a Minecraft grass block and a Roblox tile: recognisable
+// reproductions of other companies' marks on a piece of advertising, which is
+// the kind of thing that is fine right up until it is not. The names are still
+// on the poster as TEXT, which is nominative use and is how you are allowed to
+// say what you teach. The icons beside them are generic — a voxel cube, a
+// stacked-block tile — so they read as "building-block games" without
+// impersonating either brand.
+//
+// Drawn on a 64-unit grid, flat, one idea each: they are read at ~52px on a
+// dark field, where a detailed drawing turns to mush.
 import React from "react";
 
 const box = { viewBox: "0 0 64 64", xmlns: "http://www.w3.org/2000/svg" };
 
-export const Calendar = () => (
-  <svg {...box}>
-    <rect x="6" y="12" width="52" height="46" rx="8" fill="#fff" />
-    <rect x="6" y="12" width="52" height="14" rx="8" fill="#4ea936" />
-    <rect x="6" y="20" width="52" height="6" fill="#4ea936" />
-    <rect x="16" y="4" width="7" height="14" rx="3.5" fill="#2f7d22" />
-    <rect x="41" y="4" width="7" height="14" rx="3.5" fill="#2f7d22" />
-    {[0, 1, 2].map((r) =>
-      [0, 1, 2, 3].map((c) => (
-        <rect key={`${r}${c}`} x={13 + c * 10} y={32 + r * 8} width="7" height="6"
-              rx="1.6" fill="#4ea936" />
-      ))
-    )}
-  </svg>
-);
+const LIME = "#c1d931";
+const WHITE = "#ffffff";
 
-export const Clock = () => (
-  <svg {...box}>
-    <circle cx="32" cy="32" r="26" fill="#fff" stroke="#7a2bbd" strokeWidth="5" />
-    <path d="M32 16v17l12 7" fill="none" stroke="#7a2bbd" strokeWidth="6"
-          strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-export const Pin = () => (
-  <svg {...box}>
-    <path d="M32 4c-10.5 0-19 8.5-19 19 0 14 19 37 19 37s19-23 19-37c0-10.5-8.5-19-19-19z"
-          fill="#c1d931" />
-    <circle cx="32" cy="23" r="7.5" fill="#0b2a5b" />
-  </svg>
-);
-
-export const Phone = () => (
-  <svg {...box}>
-    <circle cx="32" cy="32" r="28" fill="none" stroke="#c1d931" strokeWidth="5" />
-    <path d="M23 18c2 0 3 1 4 3l2 4c1 2 0 3-1 4l-2 2c2 5 6 9 11 11l2-2c1-1 2-2 4-1l4 2c2 1 3 2 3 4 0 4-3 7-7 7C29 52 12 35 12 21c0-4 3-7 7-7z"
-          fill="#c1d931" />
-  </svg>
-);
-
-export const Gamepad = () => (
-  <svg {...box}>
-    <path d="M18 20h28c8 0 14 7 14 15v6c0 5-4 9-9 9-4 0-6-2-8-5H21c-2 3-4 5-8 5-5 0-9-4-9-9v-6c0-8 6-15 14-15z"
-          fill="#fff" />
-    <rect x="13" y="31" width="14" height="4.5" rx="2.2" fill="#7a2bbd" />
-    <rect x="17.7" y="26.2" width="4.5" height="14" rx="2.2" fill="#7a2bbd" />
-    <circle cx="45" cy="30" r="3.4" fill="#7a2bbd" />
-    <circle cx="52" cy="37" r="3.4" fill="#7a2bbd" />
-  </svg>
-);
-
-export const Gift = ({ bow = "#fff", body = "#fff", ink = "#3f9129" }) => (
-  <svg {...box}>
-    <rect x="7" y="26" width="50" height="32" rx="5" fill={body} />
-    <rect x="4" y="17" width="56" height="12" rx="4" fill={body} />
-    <rect x="27" y="17" width="10" height="41" fill={ink} />
-    <path d="M32 17c-6-9-18-10-18-3 0 5 9 6 18 3zM32 17c6-9 18-10 18-3 0 5-9 6-18 3z"
-          fill={bow} stroke={ink} strokeWidth="2.6" strokeLinejoin="round" />
-  </svg>
-);
-
-export const Chess = () => (
-  <svg {...box}>
-    <path d="M32 6c4 0 7 3 7 7 0 2-1 4-3 5l3 5-4 4 4 12H25l4-12-4-4 3-5c-2-1-3-3-3-5 0-4 3-7 7-7z"
-          fill="#fff" />
-    <path d="M20 41h24l4 9H16z" fill="#fff" />
-    <rect x="12" y="50" width="40" height="8" rx="3" fill="#fff" />
-  </svg>
-);
-
-export const Bag = () => (
-  <svg {...box}>
-    <path d="M12 20h40l4 34c.4 3-2 6-5 6H13c-3 0-5.4-3-5-6z" fill="#0b2a5b" />
-    <path d="M22 24V17c0-6 4.5-10 10-10s10 4 10 10v7" fill="none" stroke="#0b2a5b"
-          strokeWidth="5" strokeLinecap="round" />
-  </svg>
-);
+/* ---------- the activity row ---------- */
 
 export const Laptop = () => (
   <svg {...box}>
-    <rect x="9" y="12" width="46" height="32" rx="4" fill="#fff" />
-    <rect x="13" y="16" width="38" height="24" rx="2" fill="#0b2a5b" />
-    <path d="M25 22l-6 6 6 6M39 22l6 6-6 6M34 20l-4 16" fill="none" stroke="#c1d931"
-          strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M4 48h56l-3 5c-.6 1-1.7 2-3 2H10c-1.3 0-2.4-1-3-2z" fill="#dfe6f0" />
+    <rect x="8" y="11" width="48" height="33" rx="4" fill={WHITE} />
+    <rect x="12.5" y="15.5" width="39" height="24" rx="2" fill="#06214a" />
+    {/* </> — the one universally read symbol for "code" */}
+    <path d="M25 22l-6 5.5 6 5.5M39 22l6 5.5-6 5.5M35.5 20l-7 15"
+          fill="none" stroke={LIME} strokeWidth="3.2"
+          strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M3 48h58l-2.6 4.6c-.7 1.2-2 1.9-3.4 1.9H9c-1.4 0-2.7-.7-3.4-1.9z"
+          fill={LIME} />
   </svg>
 );
 
+/* A voxel cube — the shape of block-building games, not any one game's block. */
 export const Cube = () => (
   <svg {...box}>
-    <path d="M32 6l24 12-24 12L8 18z" fill="#6cbf3f" />
-    <path d="M8 18l24 12v24L8 42z" fill="#8a5a2b" />
-    <path d="M56 18L32 30v24l24-12z" fill="#6b451f" />
-    <path d="M32 6l24 12-24 12L8 18z" fill="none" stroke="#4b8f28" strokeWidth="1.6" />
+    <path d="M32 6l24 12.5L32 31 8 18.5z" fill={LIME} />
+    <path d="M8 18.5L32 31v25L8 43.5z" fill={WHITE} opacity=".92" />
+    <path d="M56 18.5L32 31v25l24-12.5z" fill={WHITE} opacity=".55" />
+    <path d="M32 6l24 12.5L32 31 8 18.5z" fill="none" stroke="#06214a"
+          strokeWidth="1.4" strokeLinejoin="round" />
   </svg>
 );
 
+/* Stacked tiles — "make a world out of parts", again with nobody's logo in it. */
 export const Blocks = () => (
   <svg {...box}>
-    <rect x="10" y="10" width="44" height="44" rx="7" transform="rotate(-9 32 32)"
-          fill="#e9edf3" />
-    <rect x="24" y="24" width="16" height="16" rx="2" transform="rotate(-9 32 32)"
-          fill="#0b2a5b" />
+    <rect x="7" y="7" width="23" height="23" rx="4" fill={WHITE} />
+    <rect x="34" y="7" width="23" height="23" rx="4" fill={LIME} />
+    <rect x="7" y="34" width="23" height="23" rx="4" fill={LIME} />
+    <rect x="34" y="34" width="23" height="23" rx="4" fill={WHITE} opacity=".55" />
   </svg>
 );
 
 export const Printer = () => (
   <svg {...box}>
-    <rect x="8" y="8" width="48" height="42" rx="5" fill="none" stroke="#4aa3ff"
-          strokeWidth="5" />
-    <rect x="18" y="18" width="28" height="8" rx="2.5" fill="#4aa3ff" />
-    <rect x="29" y="26" width="6" height="9" fill="#4aa3ff" />
-    <rect x="16" y="38" width="32" height="12" rx="3" fill="#fff" />
-    <text x="32" y="48" textAnchor="middle" fontFamily="Poppins, sans-serif"
-          fontWeight="800" fontSize="11" fill="#0b2a5b">3D</text>
+    <rect x="7" y="7" width="50" height="40" rx="5" fill="none" stroke={WHITE}
+          strokeWidth="4.5" />
+    {/* the nozzle and its gantry */}
+    <rect x="15" y="16" width="34" height="6" rx="3" fill={WHITE} />
+    <path d="M32 22v7" stroke={WHITE} strokeWidth="5" strokeLinecap="round" />
+    {/* the object growing on the bed */}
+    <path d="M22 40l10-8 10 8z" fill={LIME} />
+    <rect x="15" y="40" width="34" height="5" rx="2.5" fill={LIME} />
+    <rect x="19" y="52" width="26" height="6" rx="3" fill={WHITE} opacity=".55" />
   </svg>
 );
 
-/** Slot key → fallback. Anything not listed simply renders nothing. */
+export const Chess = () => (
+  <svg {...box}>
+    {/* a knight, because it is the piece a seven-year-old can name */}
+    <path d="M40 12c-4-4-9-6-14-6l-2 5-7 4c-3 1.6-5 4.8-5 8.3V32l7-3 2-4 5 2-8 9c-2 2.2-3 5-3 8v3h27v-6c0-9-1-16-2-20 0-4-.6-7-2-9z"
+          fill={LIME} />
+    <circle cx="35" cy="19" r="2" fill="#06214a" />
+    <rect x="11" y="52" width="42" height="7" rx="3.5" fill={WHITE} />
+    <rect x="16" y="45" width="32" height="6" rx="3" fill={WHITE} opacity=".7" />
+  </svg>
+);
+
+/* ---------- the strip ---------- */
+
+export const Trophy = () => (
+  <svg {...box}>
+    <path d="M20 8h24v14c0 7-5.4 12-12 12s-12-5-12-12z" fill={LIME} />
+    <path d="M20 12h-7v5c0 5 3 8 8 8M44 12h7v5c0 5-3 8-8 8"
+          fill="none" stroke={WHITE} strokeWidth="4" strokeLinecap="round" />
+    <path d="M28 34h8v9h-8z" fill={WHITE} />
+    <rect x="18" y="43" width="28" height="7" rx="3.5" fill={WHITE} />
+  </svg>
+);
+
+export const Gift = () => (
+  <svg {...box}>
+    <rect x="8" y="26" width="48" height="30" rx="4" fill={WHITE} />
+    <rect x="5" y="17" width="54" height="11" rx="4" fill={WHITE} />
+    <rect x="27.5" y="17" width="9" height="39" fill={LIME} />
+    <path d="M32 17c-6-8.5-17-9.5-17-3 0 4.7 8.5 5.7 17 3zM32 17c6-8.5 17-9.5 17-3 0 4.7-8.5 5.7-17 3z"
+          fill={LIME} />
+  </svg>
+);
+
+export const Team = () => (
+  <svg {...box}>
+    <circle cx="23" cy="21" r="9" fill={WHITE} />
+    <path d="M6 52c0-9.4 7.6-17 17-17s17 7.6 17 17z" fill={WHITE} />
+    <circle cx="44" cy="24" r="7.5" fill={LIME} />
+    <path d="M31 52c0-7.2 5.8-13 13-13s13 5.8 13 13z" fill={LIME} />
+  </svg>
+);
+
+/* ---------- footer ---------- */
+
+export const Pin = () => (
+  <svg {...box}>
+    <path d="M32 4c-10.5 0-19 8.5-19 19 0 14 19 37 19 37s19-23 19-37c0-10.5-8.5-19-19-19z"
+          fill={LIME} />
+    <circle cx="32" cy="23" r="7.5" fill="#06214a" />
+  </svg>
+);
+
+export const Phone = () => (
+  <svg {...box}>
+    <path d="M23 18c2 0 3 1 4 3l2 4c1 2 0 3-1 4l-2 2c2 5 6 9 11 11l2-2c1-1 2-2 4-1l4 2c2 1 3 2 3 4 0 4-3 7-7 7C29 52 12 35 12 21c0-4 3-7 7-7z"
+          fill={LIME} />
+  </svg>
+);
+
+/** Slot key → drawn icon. Anything not listed renders nothing. */
 const FALLBACKS = {
-  calendar: Calendar,
-  clock: Clock,
-  pin: Pin,
-  phone: Phone,
-  games: Gamepad,
-  prizes: () => <Gift bow="#fff" body="#fff" ink="#3f9129" />,
-  chess: Chess,
-  giveaways: () => <Gift bow="#fff" body="#fff" ink="#dd6a0c" />,
-  more: Bag,
   coding: Laptop,
   minecraft: Cube,
   roblox: Blocks,
   printing: Printer,
+  chess: Chess,
+  prizes: Trophy,
+  giveaways: Gift,
+  team: Team,
+  pin: Pin,
+  phone: Phone,
 };
 
 export default FALLBACKS;
