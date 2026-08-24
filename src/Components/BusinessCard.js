@@ -33,7 +33,7 @@ export default function BusinessCard({
   name = null,
   title = null,
 
-  tagline = "Coding · Robotics · Chess · 3D Printing",
+  tagline = "Coding · AI · Robotics · Chess · 3D Printing",
 
   centre = "WOODBRIDGE",
   address = "6175 Hwy 7, Woodbridge, ON",
