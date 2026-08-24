@@ -45,7 +45,7 @@ export default function MapleBackToSchool({
     },
     {
       big: "FREE",
-      small: ["1 MONTH AT", "CODE NINJAS"],
+      small: ["1 MONTH AT CODE NINJAS"],
       note: "(6175 HWY 7 LOCATION)",
       value: "($169 Value)",
       photo: ninjaPhoto,
@@ -115,7 +115,9 @@ export default function MapleBackToSchool({
         <div className="mb-cards">
           {cards.map((c, i) => (
             <div
-              className={`mb-card ${c.art === "partner" ? "mb-card--partner" : ""}`}
+              className={`mb-card mb-card--${i + 1} ${
+              c.art === "partner" ? "mb-card--partner" : ""
+            }`}
               key={c.big + i}
             >
               <span className="mb-num">{i + 1}</span>
