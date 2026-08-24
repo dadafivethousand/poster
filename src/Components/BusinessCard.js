@@ -15,10 +15,12 @@
 // name is not something to invent. `name` and `title` render the moment they
 // are passed.
 //
-// The two sides use the SAME lockup grammar — the head, the wordmark, and
-// WOODBRIDGE struck in gold between hairlines — at two scales. The back's is
-// the front's, laid on its side and shrunk to a heading, so the card reads as
-// one object rather than two designs stapled back to back.
+// THE TWO SIDES CARRY THE SAME LOCKUP, at two sizes. Not a matching pair — the
+// same markup, and every dimension inside it expressed as a fraction of one
+// variable, `--lock`, which is the only thing the two sides set differently.
+// So the wordmark, the gap under it, WOODBRIDGE's size, its tracking and the
+// nudge that puts its centre on the wordmark's all stay in proportion, and a
+// change to the lockup lands on both sides at once.
 import React from "react";
 import "../Stylesheets/BusinessCard.css";
 import cnLogo from "../Images/cn-logo-horizontal.svg";
@@ -33,7 +35,6 @@ export default function BusinessCard({
 
   tagline = "Coding · Robotics · Chess · 3D Printing",
 
-  brand = "CODE NINJAS",
   centre = "WOODBRIDGE",
   address = "6175 Hwy 7, Woodbridge, ON",
   phone = "647-887-9940",
@@ -81,21 +82,14 @@ export default function BusinessCard({
       ) : (
         <div className="bc-safe bc-back">
           <div className="bc-lines">
-            {/* The head next to the words, lit rather than recoloured — a pool
-                of light behind it, the artwork left in the three tones it was
-                drawn in. Same reason as everywhere else in this repo: the eye
-                slits are the same near-black as the hood, so any recolour that
-                lifts the hood takes his eyes with it. */}
-            <span className="bc-backlock">
-              <span className="bc-headbox">
-                <img className="bc-head" src={cnHead} alt="Code Ninjas" />
-              </span>
-
-              <span className="bc-backwords">
-                <span className="bc-brand">{brand}</span>
-                <span className="bc-centre-row">
-                  <p className="bc-centre">{centre}</p>
-                </span>
+            {/* THE SAME LOCKUP AS THE FRONT — the same markup, not a version
+                of it. Only `--lock` differs, and every measurement inside is a
+                fraction of it, so the two sides are the same drawing at two
+                sizes rather than two drawings that resemble each other. */}
+            <span className="bc-lockup">
+              <img className="bc-logo" src={cnLogo} alt="Code Ninjas" />
+              <span className="bc-centre-row">
+                <p className="bc-centre">{centre}</p>
               </span>
             </span>
 

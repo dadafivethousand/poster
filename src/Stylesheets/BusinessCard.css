@@ -84,10 +84,10 @@
  * for the same reason it does on the front: the head has to stand in front of
  * something, not on it. */
 .bc--back .bc-glow {
-  left: calc(300 * var(--px));
-  top: calc(196 * var(--px));
-  width: calc(640 * var(--px));
-  height: calc(340 * var(--px));
+  left: calc(340 * var(--px));
+  top: calc(182 * var(--px));
+  width: calc(700 * var(--px));
+  height: calc(330 * var(--px));
 }
 
 .bc-circuit {
@@ -193,7 +193,7 @@
  * half again as wide would strand it short of both ends and throw away the
  * letter-under-letter alignment the offset below exists to get. */
 .bc-logo {
-  width: calc(849 * var(--px));
+  width: var(--lock);
   height: auto;
   display: block;
   filter: drop-shadow(0 calc(6 * var(--px)) calc(14 * var(--px)) rgba(0, 6, 22, 0.55));
@@ -205,10 +205,35 @@
 /* The two marks are ONE lockup, so the gap is pulled negative. The logo file
  * carries its own padding, and a margin of 0 still left a hand's width of air
  * between the wordmark and the centre name. */
+/* ONE LOCKUP, TWO SIZES.
+ *
+ * `--lock` is the wordmark's width and the only number either side sets. The
+ * four measurements below are the fractions of it that were tuned on the front
+ * at 849 — the ratios are kept rather than the pixels, so the back's smaller
+ * copy is the same drawing and not an approximation of it. Retune one and both
+ * sides move together, which is the point.
+ *
+ * `width: max-content` is what lets the same markup sit centred on the front
+ * and flush left on the back: without it the flex container fills the back's
+ * column and the mark drifts to the middle of it. */
 .bc-lockup {
+  --lock: calc(849 * var(--px));
+  --lock-size: 0.07185;    /* WOODBRIDGE's cap height against the wordmark */
+  --lock-track: 0.02415;   /* its tracking, which is what makes it reach */
+  --lock-nudge: 0.09659;   /* wordmark centre − logo-file centre */
+  --lock-gap: -0.00942;    /* the logo file's own padding, taken back */
+
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: max-content;
+}
+
+.bc--back .bc-lockup {
+  /* All the room there is: the safe width less the chip and the gap, less the
+   * chip's fan-out, which overhangs its footprint by 46. */
+  --lock: calc(560 * var(--px));
+  margin-bottom: calc(34 * var(--px));
 }
 
 /* At 1.5× THE HAIRLINES ARE GONE FROM THE FRONT, and the word does their job.
@@ -222,14 +247,14 @@
  * side before the other. The back's heading still carries one — there the word
  * is short and the rule has somewhere to go. */
 .bc-centre-row {
-  margin-top: calc(-8 * var(--px));
+  margin-top: calc(var(--lock) * var(--lock-gap));
   /* Nudged right off the lockup's centre and onto the WORDMARK's. The logo
    * file is a head plus "CODE NINJAS", so its own centre falls inside the
    * head; a WOODBRIDGE centred on the file therefore hangs left of every
    * letter above it. At this tracking the word happens to be the width of
    * "CODE NINJAS", so one offset lands its W under the C and its E under the
    * S — the whole second line aligns with the first, not just its middle. */
-  transform: translateX(calc(82 * var(--px)));
+  transform: translateX(calc(var(--lock) * var(--lock-nudge)));
   /* NOT 1.5× of 628. A full scale would put the row at 942 and its right-hand
    * rule 70px outside the safe margin, because the offset pushes the whole row
    * right as well. The word scales; the rules give up the difference. */
@@ -238,20 +263,12 @@
   gap: calc(24 * var(--px));
 }
 
-/* Only the back's, trailing. */
-.bc--back .bc-centre-row::after {
-  content: "";
-  flex: 1;
-  height: max(1px, calc(2 * var(--px)));
-  background: linear-gradient(90deg, var(--gold), transparent);
-}
-
 .bc-centre {
   margin: 0;
-  font-size: calc(61 * var(--px));
+  font-size: calc(var(--lock) * var(--lock-size));
   font-weight: 800;
-  letter-spacing: calc(20.5 * var(--px));
-  text-indent: calc(20.5 * var(--px));
+  letter-spacing: calc(var(--lock) * var(--lock-track));
+  text-indent: calc(var(--lock) * var(--lock-track));
   white-space: nowrap;
   /* Struck gold rather than white. The card had gold hairlines and gold icons
    * and nothing gold that anyone would call the accent; this is the word that
@@ -323,105 +340,6 @@
 .bc-lines {
   flex: 1;
   min-width: 0;
-}
-
-/* THE HEADING IS THE FRONT'S LOCKUP, ON ITS SIDE.
- *
- * It was a plain white line with a gold dash under it, which is what a heading
- * looks like when nobody decided anything. The front already owns a grammar —
- * the head, the wordmark, WOODBRIDGE struck in gold between hairlines — so the
- * back borrows it wholesale rather than inventing a second one: head at the
- * left, the two words stacked beside it, and `.bc-centre` reused verbatim so
- * the gold is literally the same gradient, not a matching one.
- */
-.bc-backlock {
-  display: flex;
-  align-items: center;
-  gap: calc(22 * var(--px));
-  margin-bottom: calc(34 * var(--px));
-}
-
-.bc-headbox {
-  position: relative;
-  flex: none;
-  display: block;
-  width: calc(132 * var(--px));
-}
-
-/* Lit, not recoloured — the pool goes behind the mark and the artwork keeps
- * the three tones it was drawn in. */
-.bc-headbox::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: calc(238 * var(--px));
-  height: calc(238 * var(--px));
-  transform: translate(-50%, -50%);
-  background: radial-gradient(
-    closest-side,
-    rgba(126, 190, 255, 0.28) 0%,
-    rgba(110, 172, 240, 0.1) 54%,
-    transparent 100%
-  );
-}
-
-.bc-head {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: auto;
-  /* A KEYLINE, NOT A HALO. The head PNG has no outline of its own but the
-   * horizontal logo on the front does, so without one the same character turns
-   * up on the two sides in two different treatments.
-   *
-   * Four ZERO-BLUR shadows chained, not one blurred shadow: a blurred rim on an
-   * anti-aliased edge comes out as a smudge of light round the hood, which is
-   * what the first pass looked like. Chained, each shadow lands on the previous
-   * result — so the two horizontal copies get shifted vertically too and the
-   * diagonals fill in, giving a hard outline the whole way round. It is a rim,
-   * never a recolour: his eye slits are the hood's black and stay it. */
-  filter:
-    drop-shadow(calc(3.5 * var(--px)) 0 0 #fff)
-    drop-shadow(calc(-3.5 * var(--px)) 0 0 #fff)
-    drop-shadow(0 calc(3.5 * var(--px)) 0 #fff)
-    drop-shadow(0 calc(-3.5 * var(--px)) 0 #fff)
-    drop-shadow(0 calc(5 * var(--px)) calc(13 * var(--px)) rgba(0, 6, 22, 0.6));
-}
-
-.bc-backwords {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
-}
-
-/* Sized so its width lands within a few px of the WOODBRIDGE row beneath it —
- * two lines the same length read as one block, which is the whole trick the
- * front's lockup is playing. */
-.bc-brand {
-  font-size: calc(40 * var(--px));
-  font-weight: 800;
-  letter-spacing: calc(4.5 * var(--px));
-  line-height: 1;
-  white-space: nowrap;
-  color: #fff;
-}
-
-/* The front nudges this row right onto the wordmark's centre and lets it shrink
- * to the word. Left-aligned under a left-aligned wordmark it wants neither: no
- * offset, a fixed width, and the rule running off the end of it. */
-.bc--back .bc-centre-row {
-  transform: none;
-  width: calc(384 * var(--px));
-  margin-top: calc(10 * var(--px));
-  gap: calc(14 * var(--px));
-}
-
-.bc--back .bc-centre {
-  font-size: calc(27 * var(--px));
-  letter-spacing: calc(8.5 * var(--px));
-  text-indent: 0;
 }
 
 .bc-row {
