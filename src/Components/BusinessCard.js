@@ -42,6 +42,9 @@ export default function BusinessCard({
   return (
     <div className={`pf-stage bc bc--${side}`}>
       <div className="bc-field" aria-hidden />
+      <div className="bc-glow" aria-hidden />
+      <Circuit />
+      <img className="bc-ghost" src={cnHead} alt="" aria-hidden />
       <Grain />
 
       {side === "front" ? (
@@ -66,7 +69,6 @@ export default function BusinessCard({
           <span className="bc-footrule" aria-hidden />
           <p className="bc-tag">{tagline}</p>
 
-          <img className="bc-mascot" src={ninjaFigure} alt="" aria-hidden />
         </div>
       ) : (
         <div className="bc-safe bc-back">
@@ -75,7 +77,7 @@ export default function BusinessCard({
 
             <p className="bc-row">
               <Pin />
-              <span>{address}</span>
+              <span className="bc-strong">{address}</span>
             </p>
 
             <p className="bc-row">
@@ -107,6 +109,30 @@ export default function BusinessCard({
         </div>
       )}
     </div>
+  );
+}
+
+/* Tone-on-tone circuit traces in the corners. A card is held close, so it can
+ * carry detail a poster cannot — at 6% these are invisible across a room and
+ * are the thing someone notices when the card is actually in their hand, which
+ * is the only moment that matters for a card. */
+function Circuit() {
+  return (
+    <svg className="bc-circuit" viewBox="0 0 1080 617" aria-hidden focusable="false">
+      <g fill="none" stroke="#8fc7ff" strokeWidth="2.4" strokeLinecap="round">
+        <path d="M-10 96h108l44-44h96" />
+        <path d="M-10 168h150l40 40h84" />
+        <path d="M1090 452H986l-44 44h-92" />
+        <path d="M1090 528H948l-40-40h-86" />
+        <path d="M84 -10v52l40 40v54" />
+        <path d="M996 627v-52l-40-40v-58" />
+      </g>
+      <g fill="#8fc7ff">
+        <circle cx="238" cy="52" r="7" /><circle cx="274" cy="208" r="7" />
+        <circle cx="850" cy="496" r="7" /><circle cx="822" cy="488" r="0" />
+        <circle cx="124" cy="182" r="7" /><circle cx="956" cy="477" r="7" />
+      </g>
+    </svg>
   );
 }
 

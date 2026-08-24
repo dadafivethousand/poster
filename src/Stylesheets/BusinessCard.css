@@ -63,6 +63,64 @@
   );
 }
 
+/* A spotlight behind the lockup. The mark was sitting on an even field and
+ * reading as printed on it; a pool of light puts it in front of something. */
+.bc-glow {
+  position: absolute;
+  left: 50%;
+  top: calc(232 * var(--px));
+  width: calc(760 * var(--px));
+  height: calc(420 * var(--px));
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    rgba(126, 190, 255, 0.3) 0%,
+    rgba(110, 172, 240, 0.11) 52%,
+    transparent 100%
+  );
+}
+
+.bc--back .bc-glow {
+  left: calc(300 * var(--px));
+  top: calc(300 * var(--px));
+  width: calc(680 * var(--px));
+}
+
+.bc-circuit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.075;
+  pointer-events: none;
+}
+
+/* THE HEAD, as a graphic rather than a whisper.
+ *
+ * At 8% it was a smudge nobody would look twice at, which is the failure mode
+ * of a watermark: too faint to be a picture, too present to be nothing. Bigger,
+ * bled off the edge and lifted to 18% with a rim of light behind it, it becomes
+ * the card's second element — and because it is tone-on-tone it still never
+ * competes with the lockup for the first read. */
+.bc-ghost {
+  position: absolute;
+  right: calc(-150 * var(--px));
+  top: 50%;
+  transform: translateY(-50%);
+  width: calc(470 * var(--px));
+  height: auto;
+  opacity: 0.18;
+  filter: drop-shadow(0 0 calc(30 * var(--px)) rgba(120, 190, 255, 0.5));
+  pointer-events: none;
+}
+
+/* Not on the back. There it landed behind the contact column with the eye band
+ * cutting straight through the address, and the back already has its graphic —
+ * the QR. A second one is competition, not richness. */
+.bc--back .bc-ghost {
+  display: none;
+}
+
 .bc-grain {
   position: absolute;
   inset: 0;
@@ -139,7 +197,16 @@
   letter-spacing: calc(13 * var(--px));
   text-indent: calc(13 * var(--px));
   white-space: nowrap;
-  color: #fff;
+  /* Struck gold rather than white. The card had gold hairlines and gold icons
+   * and nothing gold that anyone would call the accent; this is the word that
+   * makes the centre this centre, so it is the one that gets it. */
+  background: linear-gradient(178deg, #fff4d4 0%, #e9c46a 44%, #c8a24d 78%, #a9853a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* filter, not text-shadow: a clipped gradient is a background, and a shadow
+   * would paint over it and render as its own colour. */
+  filter: drop-shadow(0 calc(2 * var(--px)) calc(5 * var(--px)) rgba(0, 8, 26, 0.6));
 }
 
 .bc-footrule {
@@ -187,19 +254,6 @@
   font-weight: 600;
   letter-spacing: calc(2 * var(--px));
   color: var(--gold);
-}
-
-/* Bleeds off the corner on purpose. A watermark held inside the safe margin
-   reads as a small picture someone placed; one that runs off the edge reads as
-   the card's own material. */
-.bc-mascot {
-  position: absolute;
-  right: calc(-104 * var(--px));
-  bottom: calc(-96 * var(--px));
-  width: calc(300 * var(--px));
-  height: auto;
-  opacity: 0.085;
-  pointer-events: none;
 }
 
 /* ---------- back ---------- */
