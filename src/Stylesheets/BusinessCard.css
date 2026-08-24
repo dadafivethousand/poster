@@ -86,10 +86,12 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  /* leaves room for the footrule and the line beneath it */
+  padding-bottom: calc(112 * var(--px));
 }
 
 .bc-logo {
-  width: calc(510 * var(--px));
+  width: calc(566 * var(--px));
   height: auto;
   display: block;
   filter: drop-shadow(0 calc(6 * var(--px)) calc(14 * var(--px)) rgba(0, 6, 22, 0.55));
@@ -98,9 +100,18 @@
 /* WOODBRIDGE between two hairlines rather than under one. A rule that stops
    either side of the word ties it to the mark above; a rule beneath it divides
    the card into halves it does not have. */
+/* The two marks are ONE lockup, so the gap is pulled negative. The logo file
+ * carries its own padding, and a margin of 0 still left a hand's width of air
+ * between the wordmark and the centre name. */
+.bc-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .bc-centre-row {
-  margin-top: calc(26 * var(--px));
-  width: calc(600 * var(--px));
+  margin-top: calc(-8 * var(--px));
+  width: calc(628 * var(--px));
   display: flex;
   align-items: center;
   gap: calc(20 * var(--px));
@@ -123,21 +134,39 @@
 
 .bc-centre {
   margin: 0;
-  font-size: calc(34 * var(--px));
+  font-size: calc(41 * var(--px));
   font-weight: 800;
-  letter-spacing: calc(11 * var(--px));
-  text-indent: calc(11 * var(--px));
+  letter-spacing: calc(13 * var(--px));
+  text-indent: calc(13 * var(--px));
   white-space: nowrap;
   color: #fff;
 }
 
+.bc-footrule {
+  position: absolute;
+  left: calc(-1 * var(--safe));
+  right: calc(-1 * var(--safe));
+  bottom: calc(96 * var(--px));
+  height: max(1px, calc(2 * var(--px)));
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(233, 196, 106, 0.8) 20%,
+    rgba(233, 196, 106, 0.8) 80%,
+    transparent
+  );
+}
+
 .bc-tag {
-  margin: calc(26 * var(--px)) 0 0;
-  max-width: calc(760 * var(--px));
-  font-size: calc(28 * var(--px));
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(28 * var(--px));
+  margin: 0;
+  font-size: calc(30 * var(--px));
   font-weight: 500;
-  line-height: 1.34;
-  color: rgba(222, 236, 254, 0.84);
+  line-height: 1.3;
+  color: rgba(222, 236, 254, 0.86);
 }
 
 .bc-name {
@@ -188,7 +217,7 @@
 
 .bc-centre-back {
   margin: 0 0 calc(22 * var(--px));
-  font-size: calc(34 * var(--px));
+  font-size: calc(40 * var(--px));
   font-weight: 800;
   letter-spacing: calc(1.2 * var(--px));
   line-height: 1.05;
@@ -206,11 +235,11 @@
 }
 
 .bc-row {
-  margin: 0 0 calc(14 * var(--px));
+  margin: 0 0 calc(15 * var(--px));
   display: flex;
   align-items: center;
-  gap: calc(15 * var(--px));
-  font-size: calc(29 * var(--px));
+  gap: calc(16 * var(--px));
+  font-size: calc(33 * var(--px));
   font-weight: 500;
   line-height: 1.2;
   color: rgba(224, 238, 255, 0.92);
@@ -224,10 +253,10 @@
    floating beside four lines; in a disc they become a column the eye can run
    down, which is the whole job of a card back. */
 .bc-row svg {
-  width: calc(38 * var(--px));
-  height: calc(38 * var(--px));
+  width: calc(43 * var(--px));
+  height: calc(43 * var(--px));
   flex: none;
-  padding: calc(8 * var(--px));
+  padding: calc(9 * var(--px));
   box-sizing: border-box;
   border-radius: 50%;
   background: rgba(233, 196, 106, 0.14);
@@ -250,9 +279,9 @@
 
 .bc-qr {
   flex: none;
-  width: calc(196 * var(--px));
-  height: calc(196 * var(--px));
-  padding: calc(10 * var(--px));
+  width: calc(214 * var(--px));
+  height: calc(214 * var(--px));
+  padding: calc(12 * var(--px));
   background: #fff;
   border-radius: calc(10 * var(--px));
   display: grid;

@@ -19,6 +19,7 @@ import "../Stylesheets/BusinessCard.css";
 import cnLogo from "../Images/cn-logo-horizontal.svg";
 import ninjaFigure from "../Images/cn-ninja-figure.png";
 import cnHead from "../Images/cn-head-mark.png";
+import qrCode from "../Images/qr-cnwoodbridge.svg";
 
 export default function BusinessCard({
   side = "front",
@@ -34,9 +35,9 @@ export default function BusinessCard({
   site = "cnwoodbridge.com",
   instagram = "@cn_woodbridge",
 
-  // Optional: a QR image. Without one the block simply isn't there, rather
-  // than leaving a white square that looks like a printing fault.
-  qr = null,
+  // Defaults to the centre's own code, which lives in the repo. Pass `null`
+  // explicitly for a card without one — the mark takes the space instead.
+  qr = qrCode,
 }) {
   return (
     <div className={`pf-stage bc bc--${side}`}>
@@ -45,18 +46,25 @@ export default function BusinessCard({
 
       {side === "front" ? (
         <div className="bc-safe bc-front">
-          <img className="bc-logo" src={cnLogo} alt="Code Ninjas" />
-          <span className="bc-centre-row" aria-hidden={false}>
-            <p className="bc-centre">WOODBRIDGE</p>
-          </span>
-          <p className="bc-tag">{tagline}</p>
+          <span className="bc-lockup">
+            <img className="bc-logo" src={cnLogo} alt="Code Ninjas" />
+            <span className="bc-centre-row">
+              <p className="bc-centre">WOODBRIDGE</p>
+            </span>
 
-          {name && (
-            <p className="bc-name">
-              <b>{name}</b>
-              {title && <i>{title}</i>}
-            </p>
-          )}
+            {name && (
+              <p className="bc-name">
+                <b>{name}</b>
+                {title && <i>{title}</i>}
+              </p>
+            )}
+          </span>
+
+          {/* A rule that runs off both edges, with the line under it. It gives
+              the front a footer, so the three centred things stop floating and
+              become a block over a base. */}
+          <span className="bc-footrule" aria-hidden />
+          <p className="bc-tag">{tagline}</p>
 
           <img className="bc-mascot" src={ninjaFigure} alt="" aria-hidden />
         </div>
