@@ -143,6 +143,13 @@ numbered offer cards. The gi and gloves are emoji rather than the original's
 branded product shots, at the user's direction — no photography to re-license
 or re-shoot when a value changes.
 
+**BusinessCard** — Code Ninjas Woodbridge, 3.5×2in at 300dpi. Two sides via
+`side="front" | "back"`; export each and send the printer both. No bleed — the
+canvas is exactly the trim size. Most commercial printers want 3.75×2.25in with
+0.125in of bleed, which is one change (`<Frame canvas="3.75x2.25in">`) and no
+coordinate edits, because the field runs edge to edge and everything sits
+inside a safe margin.
+
 ## Adding one
 
 One poster = one component in `src/Components/` + one stylesheet in
