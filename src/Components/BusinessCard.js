@@ -27,7 +27,7 @@ export default function BusinessCard({
   name = null,
   title = null,
 
-  tagline = "Kids learn to code by building video games.",
+  tagline = "Coding · Robotics · Chess · 3D Printing",
 
   centre = "CODE NINJAS WOODBRIDGE",
   address = "6175 Hwy 7, Woodbridge, ON",

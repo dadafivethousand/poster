@@ -169,6 +169,13 @@
 
 .bc-centre-row {
   margin-top: calc(-8 * var(--px));
+  /* Nudged right off the lockup's centre and onto the WORDMARK's. The logo
+   * file is a head plus "CODE NINJAS", so its own centre falls inside the
+   * head; a WOODBRIDGE centred on the file therefore hangs left of every
+   * letter above it. At this tracking the word happens to be the width of
+   * "CODE NINJAS", so one offset lands its W under the C and its E under the
+   * S — the whole second line aligns with the first, not just its middle. */
+  transform: translateX(calc(55 * var(--px)));
   width: calc(628 * var(--px));
   display: flex;
   align-items: center;
