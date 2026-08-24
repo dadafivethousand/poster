@@ -1,18 +1,20 @@
 /* BusinessCard.css — Code Ninjas Woodbridge. Namespace: bc-
  *
  * 3.5×2in at 300dpi (1050×600). `--px` is 1/1080th of the canvas WIDTH, so the
- * design sheet is 1080 wide and 617 tall whatever the physical size — which is
- * why switching to a bleed canvas (3.75×2.25in) needs no coordinate changes.
+ * design sheet is 1080 × 617 whatever the physical size — which is why moving
+ * to a bleed canvas (3.75×2.25in) needs no coordinate changes.
  *
- * Everything sits inside --safe, comfortably clear of the trim: a card is cut
- * on a guillotine through a stack, and the last two cards in that stack are
- * never cut where the first one was.
+ * TYPE IS SIZED FOR THE HAND, NOT THE SCREEN. One design px is 1050/1080 of a
+ * physical pixel, so at 300dpi a design px is 0.0032in — meaning 30 design px
+ * is about 7pt. The first pass set the contact lines at 23, which looked fine
+ * at 4× on a monitor and is 5.4pt in the hand: under the ~7pt floor where a
+ * card stops being readable at arm's length. Nothing here is below 28.
  */
 
 .bc {
   --navy: #001b43;
   --gold: #e9c46a;
-  --blue: #3490bf;
+  --gold-deep: #c8a24d;
   --safe: calc(58 * var(--px));
 
   background: #00102b;
@@ -21,13 +23,44 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* ---------- the field ----------
+ * A card is read at arm's length, so it takes finer texture than a poster
+ * would: a weave at 2.5% that would be invisible at poster distance is what
+ * stops this reading as flat ink on the desk.
+ */
 .bc-field {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(74% 96% at 22% 14%, rgba(84, 156, 232, 0.34) 0%, transparent 70%),
-    radial-gradient(66% 90% at 92% 88%, rgba(36, 104, 190, 0.28) 0%, transparent 72%),
-    linear-gradient(168deg, #06306c 0%, #01204d 52%, #000f2a 100%);
+    radial-gradient(78% 104% at 24% 8%, rgba(96, 170, 245, 0.34) 0%, transparent 68%),
+    radial-gradient(70% 96% at 94% 92%, rgba(38, 108, 195, 0.3) 0%, transparent 72%),
+    linear-gradient(166deg, #083a80 0%, #01204d 50%, #000d26 100%);
+  background-color: #01204d;
+}
+
+.bc-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+  background-image:
+    repeating-linear-gradient(
+      48deg,
+      rgba(255, 255, 255, 0.05) 0 max(1px, calc(1 * var(--px))),
+      transparent max(1px, calc(1 * var(--px))) calc(7 * var(--px))
+    );
+}
+
+.bc-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    88% 118% at 50% 42%,
+    transparent 40%,
+    rgba(0, 6, 22, 0.62) 100%
+  );
 }
 
 .bc-grain {
@@ -35,7 +68,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.06;
+  opacity: 0.055;
   mix-blend-mode: overlay;
   pointer-events: none;
 }
@@ -56,69 +89,87 @@
 }
 
 .bc-logo {
-  width: calc(488 * var(--px));
+  width: calc(510 * var(--px));
   height: auto;
   display: block;
+  filter: drop-shadow(0 calc(6 * var(--px)) calc(14 * var(--px)) rgba(0, 6, 22, 0.55));
 }
 
-/* A hairline, not a bar: at this size a rule with any weight reads as a
-   divider between two halves of a card that only has one. */
-.bc-rule {
-  width: calc(300 * var(--px));
+/* WOODBRIDGE between two hairlines rather than under one. A rule that stops
+   either side of the word ties it to the mark above; a rule beneath it divides
+   the card into halves it does not have. */
+.bc-centre-row {
+  margin-top: calc(26 * var(--px));
+  width: calc(600 * var(--px));
+  display: flex;
+  align-items: center;
+  gap: calc(20 * var(--px));
+}
+
+.bc-centre-row::before,
+.bc-centre-row::after {
+  content: "";
+  flex: 1;
   height: max(1px, calc(2 * var(--px)));
-  margin: calc(20 * var(--px)) 0 calc(14 * var(--px));
-  background: linear-gradient(90deg, transparent, var(--gold) 22%, var(--gold) 78%, transparent);
+}
+
+.bc-centre-row::before {
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+.bc-centre-row::after {
+  background: linear-gradient(90deg, var(--gold), transparent);
 }
 
 .bc-centre {
   margin: 0;
-  font-size: calc(33 * var(--px));
+  font-size: calc(34 * var(--px));
   font-weight: 800;
-  letter-spacing: calc(12 * var(--px));
-  text-indent: calc(12 * var(--px));
+  letter-spacing: calc(11 * var(--px));
+  text-indent: calc(11 * var(--px));
+  white-space: nowrap;
   color: #fff;
 }
 
 .bc-tag {
-  margin: calc(22 * var(--px)) 0 0;
-  max-width: calc(700 * var(--px));
-  font-size: calc(24 * var(--px));
+  margin: calc(26 * var(--px)) 0 0;
+  max-width: calc(760 * var(--px));
+  font-size: calc(28 * var(--px));
   font-weight: 500;
-  line-height: 1.35;
-  color: rgba(226, 238, 252, 0.82);
+  line-height: 1.34;
+  color: rgba(222, 236, 254, 0.84);
 }
 
 .bc-name {
-  margin: calc(22 * var(--px)) 0 0;
+  margin: calc(26 * var(--px)) 0 0;
   display: flex;
   flex-direction: column;
-  gap: calc(3 * var(--px));
+  gap: calc(4 * var(--px));
 }
 
 .bc-name b {
-  font-size: calc(30 * var(--px));
+  font-size: calc(36 * var(--px));
   font-weight: 700;
 }
 
 .bc-name i {
   font-style: normal;
-  font-size: calc(20 * var(--px));
-  font-weight: 500;
-  letter-spacing: calc(1.6 * var(--px));
+  font-size: calc(24 * var(--px));
+  font-weight: 600;
+  letter-spacing: calc(2 * var(--px));
   color: var(--gold);
 }
 
-/* The figure sits in the bottom corner at low opacity — a watermark, not a
-   third element competing with the lockup on a card this small. */
+/* Bleeds off the corner on purpose. A watermark held inside the safe margin
+   reads as a small picture someone placed; one that runs off the edge reads as
+   the card's own material. */
 .bc-mascot {
   position: absolute;
-  /* Sits WHOLE in the corner rather than half off the card. Cropped, it read
-   * as artwork that had slipped rather than as a watermark. */
-  right: calc(-30 * var(--px));
-  bottom: calc(-46 * var(--px));
-  width: calc(150 * var(--px));
+  right: calc(-104 * var(--px));
+  bottom: calc(-96 * var(--px));
+  width: calc(300 * var(--px));
   height: auto;
-  opacity: 0.1;
+  opacity: 0.085;
   pointer-events: none;
 }
 
@@ -127,7 +178,7 @@
 .bc-back {
   display: flex;
   align-items: center;
-  gap: calc(34 * var(--px));
+  gap: calc(30 * var(--px));
 }
 
 .bc-lines {
@@ -136,49 +187,52 @@
 }
 
 .bc-centre-back {
-  margin: 0 0 calc(20 * var(--px));
-  font-size: calc(28 * var(--px));
+  margin: 0 0 calc(22 * var(--px));
+  font-size: calc(34 * var(--px));
   font-weight: 800;
-  letter-spacing: calc(1.4 * var(--px));
+  letter-spacing: calc(1.2 * var(--px));
+  line-height: 1.05;
   color: #fff;
 }
 
 .bc-centre-back::after {
   content: "";
   display: block;
-  width: calc(120 * var(--px));
-  height: max(1px, calc(2 * var(--px)));
-  margin-top: calc(12 * var(--px));
-  background: var(--gold);
+  width: calc(96 * var(--px));
+  height: max(1px, calc(3 * var(--px)));
+  margin-top: calc(13 * var(--px));
+  background: linear-gradient(90deg, var(--gold), var(--gold-deep));
+  border-radius: 999px;
 }
 
 .bc-row {
-  margin: 0 0 calc(15 * var(--px));
+  margin: 0 0 calc(14 * var(--px));
   display: flex;
-  align-items: flex-start;
-  gap: calc(14 * var(--px));
-  font-size: calc(23 * var(--px));
+  align-items: center;
+  gap: calc(15 * var(--px));
+  font-size: calc(29 * var(--px));
   font-weight: 500;
-  line-height: 1.3;
-  color: rgba(226, 238, 252, 0.9);
+  line-height: 1.2;
+  color: rgba(224, 238, 255, 0.92);
 }
 
 .bc-row:last-child {
   margin-bottom: 0;
 }
 
+/* The icons sit in gold discs. Loose on the field they were four small marks
+   floating beside four lines; in a disc they become a column the eye can run
+   down, which is the whole job of a card back. */
 .bc-row svg {
-  width: calc(26 * var(--px));
-  height: calc(26 * var(--px));
+  width: calc(38 * var(--px));
+  height: calc(38 * var(--px));
   flex: none;
-  margin-top: calc(2 * var(--px));
+  padding: calc(8 * var(--px));
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: rgba(233, 196, 106, 0.14);
+  box-shadow: inset 0 0 0 max(1px, calc(1.5 * var(--px))) rgba(233, 196, 106, 0.42);
   color: var(--gold);
-}
-
-.bc-row em {
-  font-style: normal;
-  font-size: calc(19 * var(--px));
-  color: rgba(226, 238, 252, 0.6);
 }
 
 .bc-strong {
@@ -186,15 +240,12 @@
   color: #fff;
 }
 
-/* The mark, when no QR is supplied. Big enough to be the card's second
-   element rather than a sticker, and held off the right edge so it balances
-   the text block instead of drifting into the trim. */
 .bc-mark {
   flex: none;
-  width: calc(178 * var(--px));
+  width: calc(186 * var(--px));
   height: auto;
-  margin-right: calc(18 * var(--px));
-  filter: drop-shadow(0 calc(8 * var(--px)) calc(16 * var(--px)) rgba(0, 8, 26, 0.5));
+  margin-right: calc(10 * var(--px));
+  filter: drop-shadow(0 calc(8 * var(--px)) calc(16 * var(--px)) rgba(0, 6, 22, 0.55));
 }
 
 .bc-qr {

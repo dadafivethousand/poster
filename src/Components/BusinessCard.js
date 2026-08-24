@@ -29,9 +29,10 @@ export default function BusinessCard({
   tagline = "Kids learn to code by building video games.",
 
   centre = "CODE NINJAS WOODBRIDGE",
-  address = ["6175 Hwy 7, Woodbridge, ON", "In Market Lane Plaza"],
+  address = "6175 Hwy 7, Woodbridge, ON",
   phone = "647-887-9940",
   site = "cnwoodbridge.com",
+  instagram = "@cn_woodbridge",
 
   // Optional: a QR image. Without one the block simply isn't there, rather
   // than leaving a white square that looks like a printing fault.
@@ -45,8 +46,9 @@ export default function BusinessCard({
       {side === "front" ? (
         <div className="bc-safe bc-front">
           <img className="bc-logo" src={cnLogo} alt="Code Ninjas" />
-          <span className="bc-rule" aria-hidden />
-          <p className="bc-centre">WOODBRIDGE</p>
+          <span className="bc-centre-row" aria-hidden={false}>
+            <p className="bc-centre">WOODBRIDGE</p>
+          </span>
           <p className="bc-tag">{tagline}</p>
 
           {name && (
@@ -65,15 +67,7 @@ export default function BusinessCard({
 
             <p className="bc-row">
               <Pin />
-              <span>
-                {address[0]}
-                {address[1] && (
-                  <>
-                    <br />
-                    <em>{address[1]}</em>
-                  </>
-                )}
-              </span>
+              <span>{address}</span>
             </p>
 
             <p className="bc-row">
@@ -84,6 +78,11 @@ export default function BusinessCard({
             <p className="bc-row">
               <Globe />
               <span className="bc-strong">{site}</span>
+            </p>
+
+            <p className="bc-row">
+              <Instagram />
+              <span className="bc-strong">{instagram}</span>
             </p>
           </div>
 
@@ -137,6 +136,16 @@ const Phone = () => (
   <svg viewBox="0 0 24 24" aria-hidden>
     <path d="M7 3c.9 0 1.4.5 1.8 1.3l1 2c.4.9 0 1.5-.5 2l-.9.9a12 12 0 0 0 5.4 5.4l.9-.9c.5-.5 1.1-.9 2-.5l2 1c.8.4 1.3.9 1.3 1.8 0 1.7-1.4 3-3 3C9.6 19 5 14.4 5 6c0-1.6 1.3-3 3-3Z"
           {...stroke} />
+  </svg>
+);
+
+/* Drawn rather than pulled from an icon font: the card ships four glyphs and a
+ * font dependency for four glyphs is a dependency for nothing. */
+const Instagram = () => (
+  <svg viewBox="0 0 24 24" aria-hidden>
+    <rect x="3" y="3" width="18" height="18" rx="5.2" {...stroke} />
+    <circle cx="12" cy="12" r="4.1" {...stroke} />
+    <circle cx="17.2" cy="6.8" r="1.15" fill="currentColor" stroke="none" />
   </svg>
 );
 
