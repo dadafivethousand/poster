@@ -123,11 +123,19 @@ export default function BusinessCard({
           {/* A QR if there is one, the mark if there isn't. Left to itself the
               contact block sits in the left half and the right half is empty,
               which reads as a card missing something rather than as space.
-              On the board it is dressed as a part: gold pad ring, four legs. */}
+              The board's biggest part — see `.bc-chip`. */}
           {qr ? (
-            <span className="bc-qr">
-              <span className="bc-qr-legs" aria-hidden />
-              <img src={qr} alt="Scan for details" />
+            <span className="bc-chip">
+              <ChipLeads />
+              <span className="bc-chip-pkg">
+                <span className="bc-chip-body">
+                  <span className="bc-chip-dimple" aria-hidden />
+                  <ChipGrain />
+                  <span className="bc-chip-panel">
+                    <img src={qr} alt="Scan for details" />
+                  </span>
+                </span>
+              </span>
             </span>
           ) : (
             <img className="bc-mark" src={cnHead} alt="" aria-hidden />
@@ -135,6 +143,135 @@ export default function BusinessCard({
         </div>
       )}
     </div>
+  );
+}
+
+/* ---------- the QR is a 32-pin QFP ----------
+ *
+ * The leads and their pads, drawn from below the package so the inner ends
+ * disappear under it. Top-down is the only view a card has, so a gull-wing
+ * lead is just a metal tongue running from under the body out onto a gold pad —
+ * what sells it is that the METAL RUNS BRIGHT AT THE FOOT AND DARK UNDER THE
+ * BODY. A flat grey rectangle reads as a tick mark; a gradient along the lead's
+ * length reads as a bent piece of tin catching the light, which is why there
+ * are four gradients here and not one.
+ *
+ * Eight a side, 30 apart — a real pitch for a part this size. Six would read as
+ * decoration and sixteen would turn to mush at 300dpi.
+ */
+const CHIP = 330;   // the whole footprint, leads included
+const LEAD = 24;    // how far a lead reaches past the package
+const PINS = 8;
+const PITCH = 30;
+const PIN_W = 14;
+const FAN = 46;     // margin round the footprint for the copper leaving it
+
+function ChipLeads() {
+  const span = (PINS - 1) * PITCH + PIN_W;
+  const at = Array.from({ length: PINS }, (_, i) => (CHIP - span) / 2 + i * PITCH);
+  const far = CHIP - 3 - (LEAD + 6);   // where the far side's leads start
+  const box = CHIP + FAN * 2;
+
+  return (
+    <svg
+      className="bc-chip-leads"
+      viewBox={`0 0 ${box} ${box}`}
+      aria-hidden
+      focusable="false"
+    >
+      <defs>
+        {[
+          ["bc-lead-t", 0, 0, 0, 1],
+          ["bc-lead-b", 0, 1, 0, 0],
+          ["bc-lead-l", 0, 0, 1, 0],
+          ["bc-lead-r", 1, 0, 0, 0],
+        ].map(([id, x1, y1, x2, y2]) => (
+          <linearGradient key={id} id={id} x1={x1} y1={y1} x2={x2} y2={y2}>
+            {/* The bright band sits at 22%, not at 0. A gull-wing lead is bent,
+                and the specular lands on the BEND — a straight bright-to-dark
+                ramp reads as a flat tab, which is what the first pass drew. */}
+            <stop offset="0" stopColor="#b6c3d2" />
+            <stop offset="0.2" stopColor="#f8fbfe" />
+            <stop offset="0.46" stopColor="#ccd7e4" />
+            <stop offset="0.76" stopColor="#8b99a9" />
+            <stop offset="1" stopColor="#525e6b" />
+          </linearGradient>
+        ))}
+      </defs>
+
+      {/* THE FAN-OUT. A part with nothing wired to it is a sticker, and this
+          is the detail the eye checks without being asked: copper leaving the
+          pads, at the board's own weight and colour so it reads as the same
+          layer the rest of the traces are on. Lengths vary per pin and some
+          kink at 45° — eight identical stubs a side would be a comb. */}
+      <FanOut at={at} />
+
+      <g transform={`translate(${FAN} ${FAN})`}>
+      {/* solder pads: gold, a little proud of the lead on every side */}
+      <g fill="#c19b4e" opacity="0.88">
+        {at.map((v) => (
+          <React.Fragment key={`pad-${v}`}>
+            <rect x={v - 2.5} y={0} width={PIN_W + 5} height={LEAD + 3} rx="2.5" />
+            <rect x={v - 2.5} y={CHIP - LEAD - 3} width={PIN_W + 5} height={LEAD + 3} rx="2.5" />
+            <rect x={0} y={v - 2.5} width={LEAD + 3} height={PIN_W + 5} rx="2.5" />
+            <rect x={CHIP - LEAD - 3} y={v - 2.5} width={LEAD + 3} height={PIN_W + 5} rx="2.5" />
+          </React.Fragment>
+        ))}
+      </g>
+
+      {/* the leads themselves, running on under the body */}
+      <g>
+        {at.map((v) => (
+          <React.Fragment key={`pin-${v}`}>
+            <rect x={v} y={3} width={PIN_W} height={LEAD + 6} rx="2" fill="url(#bc-lead-t)" />
+            <rect x={v} y={far} width={PIN_W} height={LEAD + 6} rx="2" fill="url(#bc-lead-b)" />
+            <rect x={3} y={v} width={LEAD + 6} height={PIN_W} rx="2" fill="url(#bc-lead-l)" />
+            <rect x={far} y={v} width={LEAD + 6} height={PIN_W} rx="2" fill="url(#bc-lead-r)" />
+          </React.Fragment>
+        ))}
+      </g>
+      </g>
+    </svg>
+  );
+}
+
+/* Stubs of copper running off each pad into the board. Drawn in the footprint's
+ * outer margin, in the field's blue at the same 32% the rest of the copper
+ * carries, so where one of these meets a board trace the join is invisible. */
+function FanOut({ at }) {
+  const LENGTHS = [30, 16, 42, 22, 36, 14, 26, 38];
+  const KINK = [1, 0, -1, 0, 1, 0, -1, 0];
+
+  const run = (i, v, side) => {
+    const c = FAN + v + PIN_W / 2;      // the pin's centre line
+    const L = LENGTHS[i];
+    const k = KINK[i] * 12;
+    const lead = FAN;                   // the footprint's near edge
+    const tail = FAN + CHIP;            // and its far edge
+
+    switch (side) {
+      case "t": return `M${c} ${lead}V${lead - L}${k ? `l${k} ${-Math.abs(k)}` : ""}`;
+      case "b": return `M${c} ${tail}V${tail + L}${k ? `l${k} ${Math.abs(k)}` : ""}`;
+      case "l": return `M${lead} ${c}H${lead - L}${k ? `l${-Math.abs(k)} ${k}` : ""}`;
+      default:  return `M${tail} ${c}H${tail + L}${k ? `l${Math.abs(k)} ${k}` : ""}`;
+    }
+  };
+
+  return (
+    <g
+      fill="none"
+      stroke="#8fc7ff"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.32"
+    >
+      {at.map((v, i) =>
+        ["t", "b", "l", "r"].map((side) => (
+          <path key={`${side}${i}`} d={run(i, v, side)} />
+        ))
+      )}
+    </g>
   );
 }
 
@@ -279,6 +416,23 @@ function Chip({ x, y }) {
         );
       })}
     </g>
+  );
+}
+
+/* The package's own grain. `.bc-grain` sits under `.bc-safe` in the stack and
+ * so never reaches the chip, and without it the epoxy is a clean gradient —
+ * which is exactly what moulded plastic is not. Its own filter id, because two
+ * elements answering to `#bc-noise` is a bug waiting for the day one of them
+ * needs different settings. */
+function ChipGrain() {
+  return (
+    <svg className="bc-chip-grain" aria-hidden focusable="false">
+      <filter id="bc-chip-noise" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#bc-chip-noise)" />
+    </svg>
   );
 }
 

@@ -460,48 +460,159 @@
   filter: drop-shadow(0 calc(8 * var(--px)) calc(16 * var(--px)) rgba(0, 6, 22, 0.55));
 }
 
-/* The QR is the one thing on the back that has to be white, which on a dark
- * board makes it the brightest object by a mile. Rather than fight that, it is
- * dressed as the board's largest part: gold pad ring, legs down both sides. */
-.bc-qr {
+/* ---------- the QR, as a real part ----------
+ *
+ * The QR has to stay white, which on a dark board makes it the brightest thing
+ * on the card by a mile. Rather than fight that, it becomes the marking panel
+ * of the board's largest component: a 32-pin QFP, laid out to the geometry a
+ * real one has.
+ *
+ *   .bc-chip         the footprint — package plus leads plus the silkscreen
+ *                    outline and pin-1 dot PRINTED ON THE BOARD around it
+ *   .bc-chip-leads   the lead frame and its gold pads (SVG, behind everything)
+ *   .bc-chip-pkg     carries the cast shadow, because `filter` is applied
+ *                    BEFORE `clip-path` and a drop-shadow on the clipped body
+ *                    would be clipped away with it
+ *   .bc-chip-body    the epoxy: square, with the pin-1 corner chamfered off
+ *   .bc-chip-dimple  the moulded pin-1 dot
+ *   .bc-chip-panel   the white marking panel the QR is printed on
+ *
+ * The four things that make it read as a part rather than a framed square:
+ * the chamfer and the dimple agreeing about which corner is pin 1; leads that
+ * disappear UNDER the body instead of butting against it; the body sitting
+ * above the board on a real shadow; and the silkscreen carrying on underneath,
+ * printed, casting nothing.
+ *
+ * Sizes are locked to each other: 330 footprint − 24 of lead each side = 282 of
+ * package, − 34 of epoxy each side = a 214 panel, − 18 of quiet zone = a 178
+ * QR. At 300dpi that is 14.7mm across 29 modules, so a module is half a
+ * millimetre — the floor for a phone camera. Shrink the chip and the card stops
+ * scanning, which is the one thing on this side that has a job to do.
+ */
+.bc-chip {
   position: relative;
   flex: none;
-  width: calc(214 * var(--px));
-  height: calc(214 * var(--px));
-  padding: calc(12 * var(--px));
-  background: #fff;
-  border-radius: calc(10 * var(--px));
-  display: grid;
-  place-items: center;
-  box-shadow:
-    0 0 0 max(1px, calc(2.5 * var(--px))) rgba(233, 196, 106, 0.65),
-    0 calc(10 * var(--px)) calc(24 * var(--px)) rgba(0, 8, 26, 0.55);
+  width: calc(330 * var(--px));
+  height: calc(330 * var(--px));
 }
 
-.bc-qr-legs {
+/* Silkscreen: the component outline and its pin-1 dot, printed on the board.
+ * White ink on a board is never bright white — it soaks into the mask — so
+ * this is the field's own blue at a third, and it sits UNDER the shadow the
+ * package casts, which is what puts the package above the board. */
+.bc-chip::after {
+  content: "";
   position: absolute;
-  /* Outside the white box on both sides — only the two 20px strips are
-   * painted, so nothing needs to go behind the QR and there is no negative
-   * z-index to fall through the field. */
-  inset: calc(26 * var(--px)) calc(-20 * var(--px));
-  border-radius: calc(3 * var(--px));
-  background-image:
-    repeating-linear-gradient(
-      180deg,
-      rgba(233, 196, 106, 0.85) 0 calc(9 * var(--px)),
-      transparent calc(9 * var(--px)) calc(37 * var(--px))
-    ),
-    repeating-linear-gradient(
-      180deg,
-      rgba(233, 196, 106, 0.85) 0 calc(9 * var(--px)),
-      transparent calc(9 * var(--px)) calc(37 * var(--px))
-    );
-  background-size: calc(20 * var(--px)) 100%, calc(20 * var(--px)) 100%;
-  background-position: left top, right top;
-  background-repeat: no-repeat;
+  inset: calc(-17 * var(--px));
+  border: max(1px, calc(2.4 * var(--px))) solid rgba(143, 199, 255, 0.3);
+  border-radius: calc(5 * var(--px));
+  pointer-events: none;
 }
 
-.bc-qr img {
+.bc-chip::before {
+  content: "";
+  position: absolute;
+  left: calc(-30 * var(--px));
+  top: calc(-30 * var(--px));
+  width: calc(11 * var(--px));
+  height: calc(11 * var(--px));
+  border-radius: 50%;
+  background: rgba(143, 199, 255, 0.42);
+}
+
+/* Overhangs the footprint by the fan-out margin, so the copper leaving the
+ * pads is drawn in the same SVG as the pads and lands on them exactly. */
+.bc-chip-leads {
+  position: absolute;
+  inset: calc(-46 * var(--px));
+  width: auto;
+  height: auto;
+}
+
+.bc-chip-pkg {
+  position: absolute;
+  inset: calc(24 * var(--px));
+  /* The part is 1mm of plastic standing off the board, so the shadow is tight
+   * and offset down — a soft halo would read as a sticker floating over it. */
+  filter:
+    drop-shadow(0 calc(3 * var(--px)) calc(5 * var(--px)) rgba(0, 5, 18, 0.58))
+    drop-shadow(0 calc(13 * var(--px)) calc(21 * var(--px)) rgba(0, 5, 18, 0.48));
+}
+
+/* Moulded epoxy. Square corners and ONE chamfer, because that chamfer is not
+ * styling — on a real part it is the mark that says which corner is pin 1, and
+ * rounding the other three would throw that away. */
+.bc-chip-body {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(
+    calc(28 * var(--px)) 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 calc(28 * var(--px))
+  );
+  background:
+    radial-gradient(116% 88% at 20% 10%, rgba(214, 231, 255, 0.13) 0%, transparent 56%),
+    linear-gradient(155deg, #3b4453 0%, #262d3a 26%, #191f2a 62%, #0f141c 100%);
+}
+
+/* The moulding's lit top edge and shaded bottom one. Painted as gradients
+ * rather than an inset box-shadow: the body is clipped, and an inset shadow
+ * would still trace the unclipped rectangle straight across the chamfer. */
+.bc-chip-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0, transparent calc(5 * var(--px))),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0, transparent calc(7 * var(--px))),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0, transparent calc(4 * var(--px))),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.4) 0, transparent calc(5 * var(--px)));
+}
+
+/* Moulded plastic is matte and slightly rough; a clean CSS gradient is neither. */
+.bc-chip-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.11;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.bc-chip-dimple {
+  position: absolute;
+  left: calc(16 * var(--px));
+  top: calc(16 * var(--px));
+  width: calc(15 * var(--px));
+  height: calc(15 * var(--px));
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #0a0d13 0%, #171d27 60%, #333c4b 100%);
+  box-shadow:
+    inset 0 calc(2 * var(--px)) calc(3 * var(--px)) rgba(0, 0, 0, 0.85),
+    0 max(1px, calc(1.5 * var(--px))) 0 rgba(255, 255, 255, 0.13);
+}
+
+/* The marking panel, recessed into the epoxy: a dark ring all round and a
+ * light one offset DOWNWARD, so the light lands below the panel and the eye
+ * reads a cut rather than a raised label. Nothing inset — an inner shadow
+ * would eat into the QR's quiet zone, which is the one border here that is
+ * functional rather than decorative. */
+.bc-chip-panel {
+  position: absolute;
+  inset: calc(34 * var(--px));
+  padding: calc(18 * var(--px));
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: calc(2 * var(--px));
+  box-shadow:
+    0 0 0 max(1px, calc(2 * var(--px))) rgba(0, 0, 0, 0.55),
+    0 calc(3 * var(--px)) 0 max(1px, calc(2 * var(--px))) rgba(255, 255, 255, 0.09);
+}
+
+.bc-chip-panel img {
   width: 100%;
   height: 100%;
   display: block;
