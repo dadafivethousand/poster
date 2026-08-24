@@ -80,10 +80,14 @@
   );
 }
 
+/* On the back the pool sits behind the heading lockup rather than mid-card,
+ * for the same reason it does on the front: the head has to stand in front of
+ * something, not on it. */
 .bc--back .bc-glow {
   left: calc(300 * var(--px));
-  top: calc(300 * var(--px));
-  width: calc(680 * var(--px));
+  top: calc(196 * var(--px));
+  width: calc(640 * var(--px));
+  height: calc(340 * var(--px));
 }
 
 .bc-circuit {
@@ -93,6 +97,39 @@
   height: 100%;
   opacity: 0.075;
   pointer-events: none;
+}
+
+/* THE BOARD — the back's field, not its wallpaper.
+ *
+ * The front's traces are at 7.5% because there the lockup is the composition
+ * and anything else is interference. The back has four short lines of contact
+ * detail and a QR, which is not a composition; the board is what makes it one,
+ * so it comes up to 32% and runs edge to edge, dense, with parts on it.
+ *
+ * The weights live on the groups inside the SVG rather than here, because they
+ * are not all the same: a 3px stroke survives 32% and still reads as copper,
+ * while the solid gold edge fingers at 32% go flat olive — a big fill loses far
+ * more colour to a low alpha than a hairline does, so they get 50%.
+ *
+ * What keeps the type readable is `.bc-scrim`, NOT a hole in the artwork: a
+ * board routed around a paragraph-shaped void reads as a printing fault. */
+.bc-board {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Solder mask pooled under the contact column, so 33px type sits on an even
+ * ground while the copper carries on underneath it. */
+.bc-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 64% at 32% 50%, rgba(0, 11, 32, 0.8) 0%, rgba(0, 11, 32, 0.44) 58%, transparent 84%),
+    radial-gradient(46% 42% at 84% 50%, rgba(0, 11, 32, 0.5) 0%, transparent 78%);
 }
 
 /* THE HEAD, as a graphic rather than a whisper.
@@ -268,7 +305,7 @@
 .bc-back {
   display: flex;
   align-items: center;
-  gap: calc(30 * var(--px));
+  gap: calc(34 * var(--px));
 }
 
 .bc-lines {
@@ -276,27 +313,111 @@
   min-width: 0;
 }
 
-.bc-centre-back {
-  margin: 0 0 calc(22 * var(--px));
+/* THE HEADING IS THE FRONT'S LOCKUP, ON ITS SIDE.
+ *
+ * It was a plain white line with a gold dash under it, which is what a heading
+ * looks like when nobody decided anything. The front already owns a grammar —
+ * the head, the wordmark, WOODBRIDGE struck in gold between hairlines — so the
+ * back borrows it wholesale rather than inventing a second one: head at the
+ * left, the two words stacked beside it, and `.bc-centre` reused verbatim so
+ * the gold is literally the same gradient, not a matching one.
+ */
+.bc-backlock {
+  display: flex;
+  align-items: center;
+  gap: calc(22 * var(--px));
+  margin-bottom: calc(34 * var(--px));
+}
+
+.bc-headbox {
+  position: relative;
+  flex: none;
+  display: block;
+  width: calc(132 * var(--px));
+}
+
+/* Lit, not recoloured — the pool goes behind the mark and the artwork keeps
+ * the three tones it was drawn in. */
+.bc-headbox::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(238 * var(--px));
+  height: calc(238 * var(--px));
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    rgba(126, 190, 255, 0.28) 0%,
+    rgba(110, 172, 240, 0.1) 54%,
+    transparent 100%
+  );
+}
+
+.bc-head {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  /* A KEYLINE, NOT A HALO. The head PNG has no outline of its own but the
+   * horizontal logo on the front does, so without one the same character turns
+   * up on the two sides in two different treatments.
+   *
+   * Four ZERO-BLUR shadows chained, not one blurred shadow: a blurred rim on an
+   * anti-aliased edge comes out as a smudge of light round the hood, which is
+   * what the first pass looked like. Chained, each shadow lands on the previous
+   * result — so the two horizontal copies get shifted vertically too and the
+   * diagonals fill in, giving a hard outline the whole way round. It is a rim,
+   * never a recolour: his eye slits are the hood's black and stay it. */
+  filter:
+    drop-shadow(calc(3.5 * var(--px)) 0 0 #fff)
+    drop-shadow(calc(-3.5 * var(--px)) 0 0 #fff)
+    drop-shadow(0 calc(3.5 * var(--px)) 0 #fff)
+    drop-shadow(0 calc(-3.5 * var(--px)) 0 #fff)
+    drop-shadow(0 calc(5 * var(--px)) calc(13 * var(--px)) rgba(0, 6, 22, 0.6));
+}
+
+.bc-backwords {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+/* Sized so its width lands within a few px of the WOODBRIDGE row beneath it —
+ * two lines the same length read as one block, which is the whole trick the
+ * front's lockup is playing. */
+.bc-brand {
   font-size: calc(40 * var(--px));
   font-weight: 800;
-  letter-spacing: calc(1.2 * var(--px));
-  line-height: 1.05;
+  letter-spacing: calc(4.5 * var(--px));
+  line-height: 1;
+  white-space: nowrap;
   color: #fff;
 }
 
-.bc-centre-back::after {
-  content: "";
-  display: block;
-  width: calc(96 * var(--px));
-  height: max(1px, calc(3 * var(--px)));
-  margin-top: calc(13 * var(--px));
-  background: linear-gradient(90deg, var(--gold), var(--gold-deep));
-  border-radius: 999px;
+/* The front centres this row on the wordmark and flanks it with two rules.
+ * Left-aligned under a left-aligned wordmark it wants neither: no offset, and
+ * one rule, trailing. */
+.bc--back .bc-centre-row {
+  transform: none;
+  width: calc(384 * var(--px));
+  margin-top: calc(10 * var(--px));
+  gap: calc(14 * var(--px));
+}
+
+.bc--back .bc-centre-row::before {
+  display: none;
+}
+
+.bc--back .bc-centre {
+  font-size: calc(27 * var(--px));
+  letter-spacing: calc(8.5 * var(--px));
+  text-indent: 0;
 }
 
 .bc-row {
-  margin: 0 0 calc(15 * var(--px));
+  margin: 0 0 calc(17 * var(--px));
   display: flex;
   align-items: center;
   gap: calc(16 * var(--px));
@@ -312,7 +433,8 @@
 
 /* The icons sit in gold discs. Loose on the field they were four small marks
    floating beside four lines; in a disc they become a column the eye can run
-   down, which is the whole job of a card back. */
+   down, which is the whole job of a card back. On the board they read as
+   through-hole pads, which is the happy accident that made the density work. */
 .bc-row svg {
   width: calc(43 * var(--px));
   height: calc(43 * var(--px));
@@ -338,7 +460,11 @@
   filter: drop-shadow(0 calc(8 * var(--px)) calc(16 * var(--px)) rgba(0, 6, 22, 0.55));
 }
 
+/* The QR is the one thing on the back that has to be white, which on a dark
+ * board makes it the brightest object by a mile. Rather than fight that, it is
+ * dressed as the board's largest part: gold pad ring, legs down both sides. */
 .bc-qr {
+  position: relative;
   flex: none;
   width: calc(214 * var(--px));
   height: calc(214 * var(--px));
@@ -347,6 +473,32 @@
   border-radius: calc(10 * var(--px));
   display: grid;
   place-items: center;
+  box-shadow:
+    0 0 0 max(1px, calc(2.5 * var(--px))) rgba(233, 196, 106, 0.65),
+    0 calc(10 * var(--px)) calc(24 * var(--px)) rgba(0, 8, 26, 0.55);
+}
+
+.bc-qr-legs {
+  position: absolute;
+  /* Outside the white box on both sides — only the two 20px strips are
+   * painted, so nothing needs to go behind the QR and there is no negative
+   * z-index to fall through the field. */
+  inset: calc(26 * var(--px)) calc(-20 * var(--px));
+  border-radius: calc(3 * var(--px));
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      rgba(233, 196, 106, 0.85) 0 calc(9 * var(--px)),
+      transparent calc(9 * var(--px)) calc(37 * var(--px))
+    ),
+    repeating-linear-gradient(
+      180deg,
+      rgba(233, 196, 106, 0.85) 0 calc(9 * var(--px)),
+      transparent calc(9 * var(--px)) calc(37 * var(--px))
+    );
+  background-size: calc(20 * var(--px)) 100%, calc(20 * var(--px)) 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
 }
 
 .bc-qr img {

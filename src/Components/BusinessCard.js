@@ -14,10 +14,14 @@
 // The card carries no personal name by default, because none was given and a
 // name is not something to invent. `name` and `title` render the moment they
 // are passed.
+//
+// The two sides use the SAME lockup grammar — the head, the wordmark, and
+// WOODBRIDGE struck in gold between hairlines — at two scales. The back's is
+// the front's, laid on its side and shrunk to a heading, so the card reads as
+// one object rather than two designs stapled back to back.
 import React from "react";
 import "../Stylesheets/BusinessCard.css";
 import cnLogo from "../Images/cn-logo-horizontal.svg";
-import ninjaFigure from "../Images/cn-ninja-figure.png";
 import cnHead from "../Images/cn-head-mark.png";
 import qrCode from "../Images/qr-cnwoodbridge.svg";
 
@@ -27,9 +31,10 @@ export default function BusinessCard({
   name = null,
   title = null,
 
-  tagline = "Coding · Computer Science · Robotics · Chess · 3D Printing",
+  tagline = "Coding · Robotics · Chess · 3D Printing",
 
-  centre = "CODE NINJAS WOODBRIDGE",
+  brand = "CODE NINJAS",
+  centre = "WOODBRIDGE",
   address = "6175 Hwy 7, Woodbridge, ON",
   phone = "647-887-9940",
   site = "cnwoodbridge.com",
@@ -39,20 +44,23 @@ export default function BusinessCard({
   // explicitly for a card without one — the mark takes the space instead.
   qr = qrCode,
 }) {
+  const back = side === "back";
+
   return (
     <div className={`pf-stage bc bc--${side}`}>
       <div className="bc-field" aria-hidden />
       <div className="bc-glow" aria-hidden />
-      <Circuit />
+      {back ? <Board /> : <Circuit />}
+      {back && <div className="bc-scrim" aria-hidden />}
       <img className="bc-ghost" src={cnHead} alt="" aria-hidden />
       <Grain />
 
-      {side === "front" ? (
+      {!back ? (
         <div className="bc-safe bc-front">
           <span className="bc-lockup">
             <img className="bc-logo" src={cnLogo} alt="Code Ninjas" />
             <span className="bc-centre-row">
-              <p className="bc-centre">WOODBRIDGE</p>
+              <p className="bc-centre">{centre}</p>
             </span>
 
             {name && (
@@ -73,7 +81,23 @@ export default function BusinessCard({
       ) : (
         <div className="bc-safe bc-back">
           <div className="bc-lines">
-            <p className="bc-centre-back">{centre}</p>
+            {/* The head next to the words, lit rather than recoloured — a pool
+                of light behind it, the artwork left in the three tones it was
+                drawn in. Same reason as everywhere else in this repo: the eye
+                slits are the same near-black as the hood, so any recolour that
+                lifts the hood takes his eyes with it. */}
+            <span className="bc-backlock">
+              <span className="bc-headbox">
+                <img className="bc-head" src={cnHead} alt="Code Ninjas" />
+              </span>
+
+              <span className="bc-backwords">
+                <span className="bc-brand">{brand}</span>
+                <span className="bc-centre-row">
+                  <p className="bc-centre">{centre}</p>
+                </span>
+              </span>
+            </span>
 
             <p className="bc-row">
               <Pin />
@@ -98,9 +122,11 @@ export default function BusinessCard({
 
           {/* A QR if there is one, the mark if there isn't. Left to itself the
               contact block sits in the left half and the right half is empty,
-              which reads as a card missing something rather than as space. */}
+              which reads as a card missing something rather than as space.
+              On the board it is dressed as a part: gold pad ring, four legs. */}
           {qr ? (
             <span className="bc-qr">
+              <span className="bc-qr-legs" aria-hidden />
               <img src={qr} alt="Scan for details" />
             </span>
           ) : (
@@ -112,10 +138,12 @@ export default function BusinessCard({
   );
 }
 
-/* Tone-on-tone circuit traces in the corners. A card is held close, so it can
- * carry detail a poster cannot — at 6% these are invisible across a room and
- * are the thing someone notices when the card is actually in their hand, which
- * is the only moment that matters for a card. */
+/* Tone-on-tone circuit traces in the corners of the FRONT. A card is held
+ * close, so it can carry detail a poster cannot — at 7% these are invisible
+ * across a room and are the thing someone notices when the card is actually in
+ * their hand, which is the only moment that matters for a card. The front
+ * keeps them to a whisper because the lockup is the whole composition there;
+ * the back turns them up into the composition itself. */
 function Circuit() {
   return (
     <svg className="bc-circuit" viewBox="0 0 1080 617" aria-hidden focusable="false">
@@ -133,6 +161,124 @@ function Circuit() {
         <circle cx="124" cy="182" r="7" /><circle cx="956" cy="477" r="7" />
       </g>
     </svg>
+  );
+}
+
+/* ---------- the back is the board ----------
+ *
+ * Not "some traces in the corners" — an actual PCB, with the four things that
+ * make a board read as a board at a glance:
+ *
+ *   1. a pad field       — the regular dot grid under everything
+ *   2. traces            — every segment horizontal, vertical or 45°, never an
+ *                          arbitrary angle, because copper is routed on a grid
+ *                          and a stray 20° line is the tell that it's wallpaper
+ *   3. vias and pads     — traces terminate in something; a line that just
+ *                          stops is a scratch, a line into a ring is a circuit
+ *   4. two IC footprints and the gold edge fingers — the parts. Gold because
+ *                          ENIG plating is gold, which is also the card's
+ *                          accent, so the board joins the palette instead of
+ *                          arriving with one of its own.
+ *
+ * Density is deliberate and the contact column is protected by `.bc-scrim`
+ * rather than by leaving a hole in the artwork: a board with a bald patch
+ * shaped like a paragraph looks like a mistake.
+ */
+function Board() {
+  return (
+    <svg className="bc-board" viewBox="0 0 1080 617" aria-hidden focusable="false">
+      <defs>
+        <pattern id="bc-pad-field" width="30" height="30" patternUnits="userSpaceOnUse">
+          <circle cx="15" cy="15" r="1.9" fill="#8fc7ff" />
+        </pattern>
+      </defs>
+
+      <rect width="1080" height="617" fill="url(#bc-pad-field)" opacity="0.15" />
+
+      {/* copper */}
+      <g fill="none" stroke="#8fc7ff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.32">
+        <path d="M-14 34H148l32 32h216l32-32h258l32 32h176" />
+        <path d="M-14 88H92l32-32h138" />
+        <path d="M-14 142h60l36 36v122" />
+        <path d="M130-14v44l32 32h138l28 28v104" />
+        <path d="M388-14v60h132l32 32h88" />
+        <path d="M604-14v76l32 32h164l32-32h180" />
+        <path d="M1094 130H968l-36-36V22" />
+        <path d="M1094 206h-64l-32 32v96" />
+        <path d="M1094 380h-70l-34 34h-90" />
+        <path d="M1094 480H946l-36 36H742l-34 34H500" />
+        <path d="M1094 560h-84l-32-32" />
+        <path d="M-14 500h134l34 34h172l30 30h190" />
+        <path d="M-14 566h92l30 30h108" />
+        <path d="M250 631v-41l30-30h150" />
+        <path d="M470 631v-61l30-30h120" />
+        <path d="M660 631v-35h170l32-32h78" />
+        <path d="M232 196v96l30 30h108" />
+        <path d="M786 150v92l-30 30v96" />
+      </g>
+
+      {/* vias: a ring with a plated hole, sat on the corners and the ends */}
+      <g fill="none" stroke="#8fc7ff" strokeWidth="2.6" opacity="0.32">
+        <circle cx="180" cy="66" r="9" /><circle cx="396" cy="66" r="9" />
+        <circle cx="262" cy="56" r="9" /><circle cx="96" cy="178" r="9" />
+        <circle cx="520" cy="46" r="9" /><circle cx="636" cy="94" r="9" />
+        <circle cx="932" cy="94" r="9" /><circle cx="998" cy="238" r="9" />
+        <circle cx="990" cy="414" r="9" /><circle cx="910" cy="516" r="9" />
+        <circle cx="154" cy="534" r="9" /><circle cx="108" cy="596" r="9" />
+        <circle cx="280" cy="560" r="9" /><circle cx="500" cy="540" r="9" />
+        <circle cx="756" cy="272" r="9" /><circle cx="262" cy="322" r="9" />
+      </g>
+      <g fill="#8fc7ff" opacity="0.32">
+        <circle cx="180" cy="66" r="3.1" /><circle cx="396" cy="66" r="3.1" />
+        <circle cx="262" cy="56" r="3.1" /><circle cx="96" cy="178" r="3.1" />
+        <circle cx="520" cy="46" r="3.1" /><circle cx="636" cy="94" r="3.1" />
+        <circle cx="932" cy="94" r="3.1" /><circle cx="998" cy="238" r="3.1" />
+        <circle cx="990" cy="414" r="3.1" /><circle cx="910" cy="516" r="3.1" />
+        <circle cx="154" cy="534" r="3.1" /><circle cx="108" cy="596" r="3.1" />
+        <circle cx="280" cy="560" r="3.1" /><circle cx="500" cy="540" r="3.1" />
+        <circle cx="756" cy="272" r="3.1" /><circle cx="262" cy="322" r="3.1" />
+      </g>
+
+      {/* the parts */}
+      <g opacity="0.32">
+        <Chip x={874} y={58} />
+        <Chip x={96} y={512} />
+      </g>
+
+      {/* gold: the routed power rail and the edge connector */}
+      <g fill="none" stroke="#e9c46a" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.38">
+        <path d="M20 631V466l34-34V214l30-30V-14" />
+        <path d="M1094 96h-90l-34 34v212" />
+        <path d="M340 631v-27l30-30h230l30-30h180" />
+      </g>
+      <g fill="#e9c46a" opacity="0.5">
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <rect key={i} x={806 + i * 36} y={578} width={20} height={53} rx={5} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+/* An IC: the body, the notch that says which end is pin 1, and eight legs. */
+function Chip({ x, y }) {
+  const w = 104;
+  const h = 62;
+  const legs = [0, 1, 2, 3];
+  return (
+    <g stroke="#8fc7ff" fill="none" strokeWidth="3">
+      <rect x={x} y={y} width={w} height={h} rx={6} />
+      <path d={`M${x + 16} ${y} a8 8 0 0 0 16 0`} />
+      {legs.map((i) => {
+        const ly = y + 13 + i * 12;
+        return (
+          <g key={i}>
+            <path d={`M${x} ${ly}h-13`} strokeLinecap="round" />
+            <path d={`M${x + w} ${ly}h13`} strokeLinecap="round" />
+          </g>
+        );
+      })}
+    </g>
   );
 }
 

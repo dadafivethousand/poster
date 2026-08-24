@@ -28,7 +28,7 @@ import BusinessCard from "./Components/BusinessCard";
 function App() {
   return (
     <Frame canvas="3.5x2in">
-      <BusinessCard side="front" />
+      <BusinessCard side="back" />
     </Frame>
   );
 }
