@@ -141,12 +141,15 @@
  * competes with the lockup for the first read. */
 .bc-ghost {
   position: absolute;
-  right: calc(-150 * var(--px));
+  /* Pushed further off the edge and taken down a little now the lockup is 1.5×
+   * and reaches into where he used to sit alone. He is still the card's second
+   * element; he is just no longer standing behind the ®. */
+  right: calc(-212 * var(--px));
   top: 50%;
   transform: translateY(-50%);
   width: calc(470 * var(--px));
   height: auto;
-  opacity: 0.18;
+  opacity: 0.155;
   filter: drop-shadow(0 0 calc(30 * var(--px)) rgba(120, 190, 255, 0.5));
   pointer-events: none;
 }
@@ -185,8 +188,12 @@
   padding-bottom: calc(112 * var(--px));
 }
 
+/* 1.5× the first pass, at the user's ask. The lockup goes with it: WOODBRIDGE
+ * is welded to this mark, so leaving the word at its old size under a wordmark
+ * half again as wide would strand it short of both ends and throw away the
+ * letter-under-letter alignment the offset below exists to get. */
 .bc-logo {
-  width: calc(566 * var(--px));
+  width: calc(849 * var(--px));
   height: auto;
   display: block;
   filter: drop-shadow(0 calc(6 * var(--px)) calc(14 * var(--px)) rgba(0, 6, 22, 0.55));
@@ -204,6 +211,16 @@
   align-items: center;
 }
 
+/* At 1.5× THE HAIRLINES ARE GONE FROM THE FRONT, and the word does their job.
+ * They existed to tie WOODBRIDGE to the mark above it while the word was too
+ * short to reach either end of the wordmark. It isn't any more — the tracking
+ * below lands its W under the C and its E under the S, so the two lines are
+ * flush and the tie is the alignment itself. What was left for the rules was
+ * two 55px dashes hanging off the ends, which read as offcuts, and there is no
+ * room to run them further: the row is already pushed right by the offset, so
+ * a symmetric pair long enough to matter would break the safe margin on one
+ * side before the other. The back's heading still carries one — there the word
+ * is short and the rule has somewhere to go. */
 .bc-centre-row {
   margin-top: calc(-8 * var(--px));
   /* Nudged right off the lockup's centre and onto the WORDMARK's. The logo
@@ -212,34 +229,29 @@
    * letter above it. At this tracking the word happens to be the width of
    * "CODE NINJAS", so one offset lands its W under the C and its E under the
    * S — the whole second line aligns with the first, not just its middle. */
-  transform: translateX(calc(55 * var(--px)));
-  width: calc(628 * var(--px));
+  transform: translateX(calc(82 * var(--px)));
+  /* NOT 1.5× of 628. A full scale would put the row at 942 and its right-hand
+   * rule 70px outside the safe margin, because the offset pushes the whole row
+   * right as well. The word scales; the rules give up the difference. */
   display: flex;
   align-items: center;
-  gap: calc(20 * var(--px));
+  gap: calc(24 * var(--px));
 }
 
-.bc-centre-row::before,
-.bc-centre-row::after {
+/* Only the back's, trailing. */
+.bc--back .bc-centre-row::after {
   content: "";
   flex: 1;
   height: max(1px, calc(2 * var(--px)));
-}
-
-.bc-centre-row::before {
-  background: linear-gradient(90deg, transparent, var(--gold));
-}
-
-.bc-centre-row::after {
   background: linear-gradient(90deg, var(--gold), transparent);
 }
 
 .bc-centre {
   margin: 0;
-  font-size: calc(41 * var(--px));
+  font-size: calc(61 * var(--px));
   font-weight: 800;
-  letter-spacing: calc(13 * var(--px));
-  text-indent: calc(13 * var(--px));
+  letter-spacing: calc(20.5 * var(--px));
+  text-indent: calc(20.5 * var(--px));
   white-space: nowrap;
   /* Struck gold rather than white. The card had gold hairlines and gold icons
    * and nothing gold that anyone would call the accent; this is the word that
@@ -396,18 +408,14 @@
   color: #fff;
 }
 
-/* The front centres this row on the wordmark and flanks it with two rules.
- * Left-aligned under a left-aligned wordmark it wants neither: no offset, and
- * one rule, trailing. */
+/* The front nudges this row right onto the wordmark's centre and lets it shrink
+ * to the word. Left-aligned under a left-aligned wordmark it wants neither: no
+ * offset, a fixed width, and the rule running off the end of it. */
 .bc--back .bc-centre-row {
   transform: none;
   width: calc(384 * var(--px));
   margin-top: calc(10 * var(--px));
   gap: calc(14 * var(--px));
-}
-
-.bc--back .bc-centre-row::before {
-  display: none;
 }
 
 .bc--back .bc-centre {
