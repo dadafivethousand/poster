@@ -82,6 +82,20 @@ The exporter asserts the PNG's dimensions and warns if the file compresses like
 a blank frame, so an off-size or empty export can't quietly land in Downloads
 looking deliberate.
 
+**A print export also states its own physical size.** Chrome writes no density
+into a PNG, and a PNG that carries none is read as 72dpi by everything that
+opens it — so a 3.5×2in card, pixel-perfect at 1050×600, reaches the printer
+claiming to be 14.58×8.33 inches. Any size given in real-world units, and every
+print preset, is stamped at its real density (times `SCALE`), and `shot` prints
+it back:
+
+```
+  ✓ ~/Downloads/card-front.png
+    1050×600 at 300dpi — 3.5×2in, 621KB
+```
+
+A social size is left unstamped, because pixels on a feed have no inches.
+
 ## What the submitted image is for
 
 `src/Utils/useSource.js` gives a poster the image in two halves and lets it use

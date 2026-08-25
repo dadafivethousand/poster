@@ -145,6 +145,15 @@ exactly that size. It then asserts the PNG's dimensions and warns if the file
 compresses like a flat frame, because an off-size or blank export is the
 failure that hides for weeks and then gets blamed on the artwork.
 
+**Pixel-correct is not size-correct.** Chrome writes no `pHYs` chunk, and a PNG
+without one is read as 72dpi by every application that opens it — so the
+business card, exactly 1050×600 for 3.5×2in at 300dpi, arrived at the printer
+claiming to be 14.58×8.33 inches. A canvas given in real-world units, or a print
+preset, therefore carries a `dpi`; `Frame` publishes it as `data-canvas-dpi`
+beside `data-canvas`; and the exporter stamps `dpi × SCALE` into the file before
+finishing. Same principle as the size itself — read off the page, never assumed
+by the tool. Social sizes are left unstamped, since a feed post has no inches.
+
 Print presets are already 300dpi, so `SCALE` is only for social sizes. The size
 argument and `SCALE` are different knobs: the argument changes the paper,
 `SCALE` renders the same paper at a higher pixel density.

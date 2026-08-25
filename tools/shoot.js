@@ -40,10 +40,19 @@
  * The PNG's dimensions are asserted afterwards. Silently exporting an off-size
  * or upscaled file is the failure mode that hides for weeks and then gets
  * blamed on the artwork.
+ *
+ * AND THE FILE IS TOLD ITS PHYSICAL SIZE. Chrome writes no pHYs chunk, and a
+ * PNG that does not carry one is read as 72dpi by everything that opens it — so
+ * a 3.5×2in business card, pixel-perfect at 1050×600, arrives at the printer
+ * claiming to be 14.58×8.33 inches. The size is right and the file lies about
+ * it. When the page reports a `data-canvas-dpi` (print presets and real-world
+ * specs have one; a feed post does not) that density, times SCALE, is stamped
+ * in before the file is finished.
  */
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const zlib = require("zlib");
 const { spawnSync } = require("child_process");
 
 const { resolveCanvas } = require("../src/canvas");
@@ -116,6 +125,7 @@ const probe = spawnSync(CHROME, [...BASE, "--dump-dom", URL], {
 if (probe.error) fail(`Couldn't start Chrome: ${probe.error.message}`);
 
 const found = /data-canvas="(\d+)x(\d+)"/.exec(probe.stdout || "");
+const foundDpi = /data-canvas-dpi="([\d.]+)"/.exec(probe.stdout || "");
 if (!found) {
   fail(
     `Couldn't read the canvas size from the page.\n` +
@@ -126,6 +136,9 @@ if (!found) {
 }
 const CANVAS_W = Number(found[1]);
 const CANVAS_H = Number(found[2]);
+// The page is the authority here too. `want.dpi` is the fallback for the case
+// where a size was named on the command line but the page is an older build.
+const DPI = foundDpi ? Number(foundDpi[1]) : (want && want.dpi) || null;
 
 // The page is the authority, but if it laid out at something other than what
 // was asked for, that is a bug worth stopping on rather than a file to ship.
@@ -149,6 +162,7 @@ const args = [
 
 console.log(
   `\n  → ${BASE_URL}  ${CANVAS_W}×${CANVAS_H} @${SCALE}x` +
+    (DPI ? `  ${DPI * SCALE}dpi` : "") +
     (want ? `  (${want.label})` : "")
 );
 const run = spawnSync(CHROME, args, { encoding: "utf8" });
@@ -179,6 +193,16 @@ if (w !== wantW || h !== wantH) {
   );
 }
 
+// ---- tell the file how big it is in the world ----
+// Everything above proves the PIXELS are right. This is what makes the INCHES
+// right, and it is a separate claim: without it the card is 1050×600 at an
+// assumed 72dpi, which is fourteen inches of business card.
+let written = png;
+if (DPI) {
+  written = stampDensity(png, DPI * SCALE);
+  fs.writeFileSync(OUT, written);
+}
+
 // A blank export is the other silent failure: the dev server answers, React
 // never mounts, and a flat frame lands in ~/Downloads looking deliberate. A
 // finished poster is never one colour, so its PNG never compresses this hard.
@@ -191,5 +215,72 @@ if (bytesPerPixel < 0.02) {
 }
 
 console.log(
-  `  ✓ ${OUT}\n    ${w}×${h}, ${(png.length / 1024).toFixed(0)}KB\n`
+  `  ✓ ${OUT}\n    ${w}×${h}` +
+    (DPI ? ` at ${DPI * SCALE}dpi — ${trim(w / (DPI * SCALE))}×${trim(h / (DPI * SCALE))}in` : "") +
+    `, ${(written.length / 1024).toFixed(0)}KB\n`
 );
+
+function trim(n) {
+  return String(Math.round(n * 100) / 100);
+}
+
+/**
+ * Insert a pHYs chunk saying how many pixels there are per metre, replacing any
+ * that is already there. Nine bytes: x per unit, y per unit, and the unit — 1
+ * meaning metres, which is the only unit PNG defines.
+ *
+ * Written by hand rather than pulled from a library because this repo's export
+ * path deliberately has no dependencies: no puppeteer for the browser, and
+ * nothing for twenty bytes of header either.
+ */
+function stampDensity(buf, dpi) {
+  const ppm = Math.round(dpi / 0.0254);
+  const data = Buffer.alloc(9);
+  data.writeUInt32BE(ppm, 0);
+  data.writeUInt32BE(ppm, 4);
+  data.writeUInt8(1, 8);
+
+  const type = Buffer.from("pHYs", "latin1");
+  const chunk = Buffer.alloc(21);
+  chunk.writeUInt32BE(9, 0);
+  type.copy(chunk, 4);
+  data.copy(chunk, 8);
+  chunk.writeUInt32BE(crc32(Buffer.concat([type, data])), 17);
+
+  const out = [buf.subarray(0, 8)];
+  let i = 8;
+  let placed = false;
+  while (i + 12 <= buf.length) {
+    const len = buf.readUInt32BE(i);
+    const t = buf.toString("latin1", i + 4, i + 8);
+    const end = i + 12 + len;
+    if (end > buf.length) break;
+    if (t !== "pHYs") out.push(buf.subarray(i, end));
+    // Straight after IHDR, which is where pHYs is allowed and where every
+    // reader looks for it.
+    if (t === "IHDR" && !placed) {
+      out.push(chunk);
+      placed = true;
+    }
+    i = end;
+  }
+  if (!placed) fail(`${OUT} has no IHDR — that is not a PNG this can stamp`);
+  return Buffer.concat(out);
+}
+
+function crc32(buf) {
+  if (typeof zlib.crc32 === "function") return zlib.crc32(buf) >>> 0;
+  if (!crc32.table) {
+    crc32.table = new Int32Array(256);
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+      crc32.table[n] = c;
+    }
+  }
+  let crc = -1;
+  for (let i = 0; i < buf.length; i++) {
+    crc = (crc >>> 8) ^ crc32.table[(crc ^ buf[i]) & 0xff];
+  }
+  return (crc ^ -1) >>> 0;
+}

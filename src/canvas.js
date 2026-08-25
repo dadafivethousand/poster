@@ -25,6 +25,13 @@
  *   "8.5x11in"      real-world units (in / mm / cm) at 300dpi, or "@150" for another
  *   { w, h }        an object, from JSX
  *
+ * A size given in real-world units, or a print preset, also carries its `dpi`.
+ * That travels through <Frame> onto the page as `data-canvas-dpi` and ends up
+ * in the exported PNG's pHYs chunk, so the file states its own physical size.
+ * WITHOUT IT A 1050×600 CARD OPENS AS 14.58×8.33 INCHES, because every reader
+ * assumes 72dpi when a PNG says nothing — and a printer would either scale it
+ * to fit or print it at fourteen inches wide. Pixel-correct is not size-correct.
+ *
  * This file is loaded by BOTH the app and `tools/shoot.js`, which is why it is
  * CommonJS — webpack reads it fine, and the exporter needs it without a build
  * step. Keep it dependency-free.
@@ -37,11 +44,14 @@ const CANVASES = {
   story: { w: 1080, h: 1920, label: "Story / Reel (9:16)" },
 
   // --- print, 300dpi ---
-  "half-letter": { w: 1650, h: 2550, label: 'Half-letter 5.5×8.5" flyer' },
-  letter: { w: 2550, h: 3300, label: 'Letter 8.5×11" portrait' },
-  "letter-landscape": { w: 3300, h: 2550, label: 'Letter 11×8.5" landscape' },
-  a4: { w: 2480, h: 3508, label: "A4 portrait" },
-  tabloid: { w: 3300, h: 5100, label: 'Tabloid 11×17" portrait' },
+  // `dpi` is not decoration either: it is what `npm run shot` stamps into the
+  // PNG so the file knows its own physical size. A social preset has none,
+  // because pixels on a feed have no inches.
+  "half-letter": { w: 1650, h: 2550, dpi: 300, label: 'Half-letter 5.5×8.5" flyer' },
+  letter: { w: 2550, h: 3300, dpi: 300, label: 'Letter 8.5×11" portrait' },
+  "letter-landscape": { w: 3300, h: 2550, dpi: 300, label: 'Letter 11×8.5" landscape' },
+  a4: { w: 2480, h: 3508, dpi: 300, label: "A4 portrait" },
+  tabloid: { w: 3300, h: 5100, dpi: 300, label: 'Tabloid 11×17" portrait' },
 };
 
 const DEFAULT = "ig";
@@ -72,7 +82,8 @@ function resolveCanvas(canvas = DEFAULT) {
         `canvas {w, h} must be positive numbers, got ${JSON.stringify(canvas)}`
       );
     }
-    return { w, h, label: `${w}×${h}` };
+    const dpi = Number(canvas.dpi);
+    return { w, h, ...(dpi > 0 ? { dpi } : null), label: `${w}×${h}` };
   }
 
   const name = String(canvas).trim();
@@ -94,6 +105,9 @@ function resolveCanvas(canvas = DEFAULT) {
     return {
       w,
       h,
+      // Only when the numbers were inches/mm/cm. "1200x1600" is a pixel count
+      // and has no physical size to claim.
+      ...(perInch ? { dpi } : null),
       label: perInch ? `${rawW}×${rawH}${unit} at ${dpi}dpi` : `${w}×${h}`,
     };
   }

@@ -27,7 +27,9 @@ const { resolveCanvas } = require("./canvas");
  *
  * `data-canvas` is not decoration: `npm run shot` reads it back off the
  * rendered page to size the window, so the picture is always taken at whatever
- * the page actually laid out — never at what something upstream believed.
+ * the page actually laid out — never at what something upstream believed. The
+ * same goes for `data-canvas-dpi`, which is how a physical size reaches the
+ * exported file.
  */
 export default function Frame({ canvas, children }) {
   // undefined falls through to resolveCanvas's own default (an IG post).
@@ -45,12 +47,17 @@ export default function Frame({ canvas, children }) {
     resolved = resolveCanvas();
   }
 
-  const { w, h } = resolved;
+  const { w, h, dpi } = resolved;
 
   return (
     <div
       className="pf-frame"
       data-canvas={`${w}x${h}`}
+      // Present only for a size that HAS a physical one — a print preset or a
+      // real-world spec. `npm run shot` reads it back and stamps it into the
+      // PNG, so a card exported at 3.5×2in opens as 3.5×2in rather than as
+      // 1050×600 pixels at whatever density the reader assumes.
+      data-canvas-dpi={dpi || undefined}
       style={{ "--canvas-w": w, "--canvas-h": h }}
     >
       {children}
