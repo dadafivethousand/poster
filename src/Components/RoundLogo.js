@@ -33,11 +33,12 @@ const DX = 0.58;        // ...and the light vector they run along
 const DY = 0.82;
 
 export default function RoundLogo({
-  // "dark" | "light" — the backdrop the badge is standing in. It is not a
+  // "light" | "dark" — the backdrop the badge is standing in. It is not a
   // colour choice: it decides what material CODE NINJAS is made of, because
   // near-black type disappears on a dark ground and chrome disappears on a
-  // light one.
-  ground = "dark",
+  // white one. It also flips what the halo IS — light on a dark wall, shadow
+  // on a white one, since a pool of white light on white paper does nothing.
+  ground = "light",
   top = "CODE NINJAS",
   // `bottom={null}` drops the lower arc and leaves CODE NINJAS ringing the head
   // on its own — the ring is built from two independent runs, so nothing else

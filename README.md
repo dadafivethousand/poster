@@ -214,11 +214,13 @@ arced over it and WOODBRIDGE under it, both extruded: 40 stacked copies of one
 the face makes the bevel, and the face itself is gradient-lit. `bottom={null}`
 drops the lower arc and rings the head with CODE NINJAS alone.
 
-`ground="dark"` (the default) or `"light"` picks the backdrop, and it is not
-just a colour: the depth comes from the wall, not from the extrusion, so each
-ground carries its own graduated cyc, key-light pool, falloff and halo — and it
-decides what CODE NINJAS is made of, since near-black type vanishes on a dark
-wall and chrome vanishes on a light one.
+`ground="light"` (the default, a white seamless) or `"dark"` picks the backdrop,
+and it is not just a colour: the depth comes from the wall, not from the
+extrusion, so each ground carries its own graduated sweep, key-light pool,
+falloff and halo. It also decides what CODE NINJAS is made of — near-black type
+vanishes on a dark wall, chrome vanishes on a white one — and what the halo IS,
+since light behind the head reads on a dark wall and is invisible on a white
+one, where the job falls to the shadow the head throws instead.
 
 **BusinessCard** — Code Ninjas Woodbridge, 3.5×2in at 300dpi. Two sides via
 `side="front" | "back"`; export each and send the printer both. No bleed — the
