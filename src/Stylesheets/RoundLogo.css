@@ -1,0 +1,62 @@
+/* RoundLogo.css — the square badge. Namespace: rl-
+ *
+ * Square canvas, 1080×1080 design sheet, `--px` = 1/1080th of it as everywhere
+ * in this repo.
+ */
+
+.rl {
+  background: #eef2f7;
+  font-family: Archivo, Inter, Poppins, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A studio ground rather than flat white: the type is glossy and an extruded
+ * solid needs something to sit in front of. Flat white gives the highlights
+ * nothing to be brighter than. */
+.rl-ground {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(78% 68% at 50% 34%, #ffffff 0%, #f2f5f9 46%, #dde5ef 78%, #c9d5e3 100%);
+}
+
+.rl-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Both runs share a face; only the size and the tracking differ. WOODBRIDGE is
+ * a letter shorter AND sits on the larger radius, so at one size it would span
+ * a visibly smaller arc than CODE NINJAS — the tracking is what brings the two
+ * bands back to the same width of circle. */
+.rl-type {
+  font-family: Archivo, Inter, Poppins, sans-serif;
+  font-weight: 900;
+  font-variation-settings: "wdth" 108, "wght" 900;
+  font-size: calc(106 * var(--px));
+  letter-spacing: calc(2 * var(--px));
+}
+
+.rl-type--bot {
+  font-size: calc(100 * var(--px));
+  letter-spacing: calc(14 * var(--px));
+}
+
+/* The supplied render, dropped in whole and never recoloured — it arrives lit,
+ * and this repo's rule about lighting the mark rather than tinting it is
+ * already satisfied by the file.
+ *
+ * Positioned off the HEAD CIRCLE's centre, not the file's. The knot hangs off
+ * the left, so the circle sits at 59.5% / 48.9% of a square image; centring the
+ * file itself would push the head visibly right of the ring it lives in. */
+.rl-head {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(822 * var(--px));
+  height: auto;
+  transform: translate(-59.5%, -48.9%);
+  filter: drop-shadow(0 calc(18 * var(--px)) calc(26 * var(--px)) rgba(20, 40, 70, 0.28));
+}

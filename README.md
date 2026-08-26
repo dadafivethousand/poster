@@ -208,6 +208,12 @@ numbered offer cards. The gi and gloves are emoji rather than the original's
 branded product shots, at the user's direction — no photography to re-license
 or re-shoot when a value changes.
 
+**RoundLogo** — the square badge. The supplied 3D ninja head with CODE NINJAS
+arced over it and WOODBRIDGE under it, both extruded: 40 stacked copies of one
+`<text>` along a single light vector make the side walls, a light copy behind
+the face makes the bevel, and the face itself is gradient-lit. `bottom={null}`
+drops the lower arc and rings the head with CODE NINJAS alone.
+
 **BusinessCard** — Code Ninjas Woodbridge, 3.5×2in at 300dpi. Two sides via
 `side="front" | "back"`; export each and send the printer both. No bleed — the
 canvas is exactly the trim size. Most commercial printers want 3.75×2.25in with

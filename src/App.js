@@ -6,7 +6,8 @@ import Frame from "./Frame";
 // import TechTalk from "./Components/TechTalk";
 // import MapleBackToSchool from "./Components/MapleBackToSchool";
 // import OpenHouse from "./Components/OpenHouse";
-import BusinessCard from "./Components/BusinessCard";
+// import BusinessCard from "./Components/BusinessCard";
+import RoundLogo from "./Components/RoundLogo";
 
 // One poster renders at a time. Swap the import and the returned component;
 // leave the previous one commented out above.
@@ -28,8 +29,8 @@ import BusinessCard from "./Components/BusinessCard";
 // BusinessCard has two sides; export each: side="front" then side="back".
 function App() {
   return (
-    <Frame canvas="3.5x2in+0.125in">
-      <BusinessCard side="back" />
+    <Frame canvas="square">
+      <RoundLogo />
     </Frame>
   );
 }
