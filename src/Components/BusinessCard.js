@@ -49,7 +49,7 @@ export default function BusinessCard({
   address = "6175 Hwy 7, Woodbridge, ON",
   phone = "647-887-9940",
   site = "cnwoodbridge.com",
-  instagram = "@cn_woodbridge",
+  instagram = "cn_woodbridge",
 
   // Defaults to the centre's own code, which lives in the repo. Pass `null`
   // explicitly for a card without one — the mark takes the space instead.
