@@ -5,19 +5,114 @@
  */
 
 .rl {
-  background: #eef2f7;
   font-family: Archivo, Inter, Poppins, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* A studio ground rather than flat white: the type is glossy and an extruded
- * solid needs something to sit in front of. Flat white gives the highlights
- * nothing to be brighter than. */
+.rl--dark { background: #030a14; }
+.rl--light { background: #dfe6ef; }
+
+/* ---------- the backdrop ----------
+ *
+ * Three layers, and the order they are in is the point: a seamless graduated
+ * wall, a pool of light thrown ON that wall behind the subject, then a falloff
+ * that closes the corners. That is how a product shot is lit, and it is what
+ * makes a flat badge read as an object standing in a room rather than a decal.
+ *
+ * The gradient runs top-to-bottom AND corner-to-corner. One radial alone gives
+ * a target-shaped ground that reads as a circle painted on the wall; the linear
+ * underneath it is what gives the wall a floor to meet.
+ */
 .rl-ground {
   position: absolute;
   inset: 0;
+}
+
+.rl--dark .rl-ground {
   background:
-    radial-gradient(78% 68% at 50% 34%, #ffffff 0%, #f2f5f9 46%, #dde5ef 78%, #c9d5e3 100%);
+    radial-gradient(96% 84% at 50% 30%, rgba(36, 86, 138, 0.55) 0%, transparent 62%),
+    linear-gradient(178deg, #12314f 0%, #0b2138 34%, #061527 62%, #020a14 100%);
+}
+
+.rl--light .rl-ground {
+  background:
+    radial-gradient(96% 84% at 50% 28%, #ffffff 0%, rgba(255, 255, 255, 0) 64%),
+    linear-gradient(178deg, #f7f9fc 0%, #e7edf4 38%, #d3dde9 70%, #b9c7d8 100%);
+}
+
+/* The key light, landing on the wall rather than on the mark. */
+.rl-pool {
+  position: absolute;
+  left: 50%;
+  top: calc(430 * var(--px));
+  width: calc(1180 * var(--px));
+  height: calc(1000 * var(--px));
+  transform: translate(-50%, -50%);
+}
+
+.rl--dark .rl-pool {
+  background: radial-gradient(
+    closest-side,
+    rgba(96, 186, 246, 0.28) 0%,
+    rgba(48, 122, 194, 0.11) 52%,
+    transparent 100%
+  );
+}
+
+.rl--light .rl-pool {
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.35) 54%,
+    transparent 100%
+  );
+}
+
+/* And the falloff. Without it the frame has four bright corners and no walls,
+ * which is exactly what a flat fill looks like. */
+.rl-vignette {
+  position: absolute;
+  inset: 0;
+}
+
+.rl--dark .rl-vignette {
+  background: radial-gradient(74% 74% at 50% 44%, transparent 38%, rgba(0, 4, 12, 0.78) 100%);
+}
+
+.rl--light .rl-vignette {
+  background: radial-gradient(76% 76% at 50% 42%, transparent 42%, rgba(105, 127, 154, 0.34) 100%);
+}
+
+/* Light on the wall immediately behind the head, so the mark has something to
+ * separate from. On the mark itself this would make the head emit; on the wall
+ * it makes the head stand in front of something. */
+.rl-halo {
+  position: absolute;
+  left: 50%;
+  top: calc(536 * var(--px));
+  width: calc(880 * var(--px));
+  height: calc(880 * var(--px));
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.rl--dark .rl-halo {
+  background: radial-gradient(
+    closest-side,
+    rgba(76, 196, 255, 0.3) 0%,
+    rgba(40, 126, 205, 0.12) 54%,
+    transparent 100%
+  );
+}
+
+.rl--light .rl-halo {
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(226, 240, 252, 0.4) 56%,
+    transparent 100%
+  );
 }
 
 .rl-ring {
@@ -58,5 +153,19 @@
   width: calc(822 * var(--px));
   height: auto;
   transform: translate(-59.5%, -48.9%);
-  filter: drop-shadow(0 calc(18 * var(--px)) calc(26 * var(--px)) rgba(20, 40, 70, 0.28));
+}
+
+/* The mark's own shadow, cast onto the wall behind it. Two lengths: a tight one
+ * that says it is close to the wall, and a long soft one that says the room has
+ * depth. One of either reads as a sticker with a border. */
+.rl--light .rl-head {
+  filter:
+    drop-shadow(0 calc(10 * var(--px)) calc(14 * var(--px)) rgba(20, 40, 70, 0.3))
+    drop-shadow(0 calc(34 * var(--px)) calc(52 * var(--px)) rgba(20, 40, 70, 0.26));
+}
+
+.rl--dark .rl-head {
+  filter:
+    drop-shadow(0 calc(10 * var(--px)) calc(16 * var(--px)) rgba(0, 6, 16, 0.6))
+    drop-shadow(0 calc(38 * var(--px)) calc(58 * var(--px)) rgba(0, 4, 12, 0.55));
 }

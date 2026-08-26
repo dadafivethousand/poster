@@ -214,6 +214,12 @@ arced over it and WOODBRIDGE under it, both extruded: 40 stacked copies of one
 the face makes the bevel, and the face itself is gradient-lit. `bottom={null}`
 drops the lower arc and rings the head with CODE NINJAS alone.
 
+`ground="dark"` (the default) or `"light"` picks the backdrop, and it is not
+just a colour: the depth comes from the wall, not from the extrusion, so each
+ground carries its own graduated cyc, key-light pool, falloff and halo — and it
+decides what CODE NINJAS is made of, since near-black type vanishes on a dark
+wall and chrome vanishes on a light one.
+
 **BusinessCard** — Code Ninjas Woodbridge, 3.5×2in at 300dpi. Two sides via
 `side="front" | "back"`; export each and send the printer both. No bleed — the
 canvas is exactly the trim size. Most commercial printers want 3.75×2.25in with

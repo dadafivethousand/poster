@@ -33,15 +33,30 @@ const DX = 0.58;        // ...and the light vector they run along
 const DY = 0.82;
 
 export default function RoundLogo({
+  // "dark" | "light" — the backdrop the badge is standing in. It is not a
+  // colour choice: it decides what material CODE NINJAS is made of, because
+  // near-black type disappears on a dark ground and chrome disappears on a
+  // light one.
+  ground = "dark",
   top = "CODE NINJAS",
   // `bottom={null}` drops the lower arc and leaves CODE NINJAS ringing the head
   // on its own — the ring is built from two independent runs, so nothing else
   // has to move for that.
   bottom = "WOODBRIDGE",
 }) {
+  const dark = ground === "dark";
+
   return (
-    <div className="pf-stage rl">
+    <div className={`pf-stage rl rl--${ground}`}>
+      {/* THE BACKDROP IS THE 3D, more than the extrusion is. A flat fill gives
+          a lit object nothing to be lit against: no falloff means no room, and
+          no room means the badge reads as a sticker however carefully its
+          shadows are drawn. Three layers do the work — a seamless graduated
+          cyc, a pool of light thrown on it behind the subject, and a corner
+          falloff that closes the box in. */}
       <div className="rl-ground" aria-hidden />
+      <div className="rl-pool" aria-hidden />
+      <div className="rl-vignette" aria-hidden />
 
       <svg className="rl-ring" viewBox="0 0 1080 1080" aria-label={`${top} ${bottom}`}>
         <defs>
@@ -68,11 +83,24 @@ export default function RoundLogo({
           {/* The lit face of the black type. Not flat black: a black object in
               a lit scene has a bright top and a near-black underside, and that
               difference is most of what says "solid" here. */}
-          <linearGradient id="rl-face-top" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="rl-face-top-light" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#7c8794" />
             <stop offset="0.16" stopColor="#2b323c" />
             <stop offset="0.55" stopColor="#12161c" />
             <stop offset="1" stopColor="#04060a" />
+          </linearGradient>
+
+          {/* Chrome, for the dark ground. The band of white at 0.55 is the
+              horizon line a polished surface always carries — sky above it,
+              floor below — and it is the single thing that separates chrome
+              from grey. */}
+          <linearGradient id="rl-face-top-dark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#ffffff" />
+            <stop offset="0.24" stopColor="#d5e2ef" />
+            <stop offset="0.47" stopColor="#7f93a9" />
+            <stop offset="0.55" stopColor="#ffffff" />
+            <stop offset="0.72" stopColor="#5d7288" />
+            <stop offset="1" stopColor="#c2d3e4" />
           </linearGradient>
 
           {/* Lit from the same side as the black run. The bottom arc's glyphs
@@ -92,29 +120,53 @@ export default function RoundLogo({
           </filter>
         </defs>
 
-        <Extruded id="rl-t-top" face="url(#rl-face-top)" wall="#0b0e13" bevel="#aab6c4" />
+        <Extruded
+          id="rl-t-top"
+          face={`url(#rl-face-top-${ground})`}
+          wall={dark ? "#25303d" : "#0b0e13"}
+          bevel={dark ? "#ffffff" : "#aab6c4"}
+          cast={dark ? "#00060f" : "#8c99a8"}
+          castOpacity={dark ? 0.75 : 0.55}
+        />
         {bottom && (
-          <Extruded id="rl-t-bot" face="url(#rl-face-bot)" wall="#06344c" bevel="#d8f4ff" />
+          <Extruded
+            id="rl-t-bot"
+            face="url(#rl-face-bot)"
+            wall="#06344c"
+            bevel="#d8f4ff"
+            cast={dark ? "#00060f" : "#8c99a8"}
+            castOpacity={dark ? 0.75 : 0.55}
+          />
         )}
       </svg>
 
+      {/* A halo, not a glow on the mark: the light lands on the WALL behind
+          the head, which is what a real object in front of a lit backdrop
+          does. Putting it on the head instead makes the head emit. */}
+      <div className="rl-halo" aria-hidden />
       <img className="rl-head" src={head} alt="Code Ninjas" />
+
     </div>
   );
 }
 
 /* One run of type, built into a solid. `wall` is the deepest colour; each step
  * back toward the face lightens a little, so the side wall carries a gradient
- * of its own and the extrusion reads as a surface rather than a shadow. */
-function Extruded({ id, face, wall, bevel }) {
+ * of its own and the extrusion reads as a surface rather than a shadow.
+ *
+ * `cast` is a separate argument from `wall` because a shadow is not a dark
+ * version of the object — it is a dark version of the WALL. Reused across both
+ * grounds, the grey that reads as a shadow on a light backdrop reads as a glow
+ * on a dark one, which is what the first dark pass looked like. */
+function Extruded({ id, face, wall, bevel, cast, castOpacity }) {
   const steps = Array.from({ length: DEPTH }, (_, i) => DEPTH - i); // far → near
 
   return (
     <g>
       <use
         href={`#${id}`}
-        fill="#8c99a8"
-        opacity="0.55"
+        fill={cast}
+        opacity={castOpacity}
         filter="url(#rl-cast)"
         transform={`translate(${DX * DEPTH + 10} ${DY * DEPTH + 14})`}
       />
