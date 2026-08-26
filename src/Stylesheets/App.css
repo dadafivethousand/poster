@@ -59,6 +59,12 @@ body {
 .pf-frame {
   --canvas-w: 1080;
   --canvas-h: 1350;
+  /* No-bleed identity, overridden by src/Frame.js only for a canvas that has
+   * one. `--trim-ratio` is the trim width as a fraction of the paper's, and
+   * `--bleed-ratio` is the bleed as the same. At 1 and 0 every calc below
+   * collapses to what it was before bleed existed. */
+  --trim-ratio: 1;
+  --bleed-ratio: 0;
 
   position: relative;
   width: min(100vw, calc(100vh * var(--canvas-w) / var(--canvas-h)));
@@ -80,14 +86,28 @@ body {
    * Instagram post came out as a row of ants the moment the same poster was
    * exported at letter, where the canvas is 2550px across. Posters are always
    * authored on a nominal 1080-wide sheet; the preset decides how many real
-   * pixels that sheet is printed at. */
-  --px: calc(100cqw / 1080);
+   * pixels that sheet is printed at.
+   *
+   * 1/1080th of the TRIM, not of the paper. Without `--trim-ratio` a bleed
+   * would silently enlarge the whole design — a 3.5×2in card given 0.125in of
+   * bleed is a 3.75in sheet, so the same 1080 units would spread across 3.75in
+   * and every piece of type would come out 7% bigger than it was set, after
+   * the cut. The bleed has to change the paper without touching the artwork,
+   * which is the same rule the preset already follows. */
+  --px: calc(100cqw * var(--trim-ratio) / 1080);
+
+  /* How far the paper's edge is from the cut. Zero unless the canvas asked for
+   * a bleed; add it to anything measured inward from the edge, so a margin
+   * stays where it was drawn relative to the CARD rather than sliding in with
+   * the paper. */
+  --bleed: calc(100cqw * var(--bleed-ratio));
 
   /* Safe margins. The export is exact, so unlike the sibling repos these are
    * not crop insurance — they are the poster's margins, and content still sits
-   * as one centred block with clear space on all four sides. */
-  --margin-x: calc(96 * var(--px));
-  --margin-y: calc(112 * var(--px));
+   * as one centred block with clear space on all four sides. On a bled canvas
+   * they are measured from the trim, which is where the eye will see the edge. */
+  --margin-x: calc(96 * var(--px) + var(--bleed));
+  --margin-y: calc(112 * var(--px) + var(--bleed));
 
   position: absolute;
   inset: 0;
@@ -96,6 +116,20 @@ body {
   /* A poster never scrolls, never selects, never hovers. It is a picture. */
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* The cut line on a bled poster, drawn only for `?guides` in the address bar.
+ * Never in an export — see the note on <TrimGuide> in src/Frame.js.
+ *
+ * Bare `px` on purpose, one of the few places the rule bends: this is a preview
+ * annotation rather than artwork, so it wants to stay a hairline on screen at
+ * any zoom rather than scale with the poster. */
+.pf-trim {
+  position: absolute;
+  inset: calc(100cqw * var(--bleed-ratio));
+  outline: 1px dashed rgba(255, 90, 90, 0.9);
+  pointer-events: none;
+  z-index: 98;
 }
 
 /* Shown only when a ?canvas= in the address bar can't be parsed. Never present

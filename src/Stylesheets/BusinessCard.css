@@ -15,7 +15,12 @@
   --navy: #001b43;
   --gold: #e9c46a;
   --gold-deep: #c8a24d;
-  --safe: calc(58 * var(--px));
+  /* Measured from the CUT, not from the sheet. On a bled canvas `--bleed` is
+   * the strip outside the cut, so adding it keeps every line of type the same
+   * 58 design px from the card's edge whether or not the file has bleed —
+   * which is the whole reason the bleed can be switched on without re-laying
+   * out anything here. */
+  --safe: calc(58 * var(--px) + var(--bleed));
 
   background: #00102b;
   color: #fff;
@@ -143,8 +148,12 @@
   position: absolute;
   /* Pushed further off the edge and taken down a little now the lockup is 1.5×
    * and reaches into where he used to sit alone. He is still the card's second
-   * element; he is just no longer standing behind the ®. */
-  right: calc(-212 * var(--px));
+   * element; he is just no longer standing behind the ®.
+   *
+   * Offset from the cut like everything else: he is 212px past the CARD's right
+   * edge, so on a bled sheet the paper's edge is `--bleed` further out again
+   * and he has to come back by that much to stay where he was drawn. */
+  right: calc(var(--bleed) - 212 * var(--px));
   top: 50%;
   transform: translateY(-50%);
   width: calc(470 * var(--px));

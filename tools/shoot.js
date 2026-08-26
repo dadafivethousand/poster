@@ -57,9 +57,11 @@ const { spawnSync } = require("child_process");
 
 const { resolveCanvas } = require("../src/canvas");
 
-const CHROME =
-  process.env.CHROME ||
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+// Wherever this machine's Chrome is. The whole point of not bundling puppeteer
+// is that the browser is already installed — which only holds if the tool can
+// find it on more than one operating system. CHROME= still overrides, and is
+// the answer for a Chromium or a Canary somewhere unusual.
+const CHROME = process.env.CHROME || findChrome();
 const BASE_URL = process.env.URL || "http://localhost:3000";
 // `npm run shot -- letter`, or SIZE=letter for the same thing from a script.
 const SIZE = process.argv[2] || process.env.SIZE || "";
@@ -77,8 +79,40 @@ function fail(msg) {
   process.exit(1);
 }
 
-if (!fs.existsSync(CHROME)) {
-  fail(`No Chrome at ${CHROME}\n    Set CHROME=/path/to/chrome and re-run.`);
+/** The first installed Chrome this platform is known to put somewhere. */
+function findChrome() {
+  const env = (k) => process.env[k] || "";
+  const candidates = {
+    darwin: [
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    ],
+    win32: [
+      // Per-user first: an install without admin rights lands here, and on a
+      // machine that has both this is the one that is actually kept updated.
+      path.join(env("LOCALAPPDATA"), "Google\\Chrome\\Application\\chrome.exe"),
+      path.join(env("PROGRAMFILES"), "Google\\Chrome\\Application\\chrome.exe"),
+      path.join(env("PROGRAMFILES(X86)"), "Google\\Chrome\\Application\\chrome.exe"),
+      // Edge is Chromium and takes every flag used here. Last, not never: a
+      // missing browser should not be the reason a card cannot be exported.
+      path.join(env("PROGRAMFILES(X86)"), "Microsoft\\Edge\\Application\\msedge.exe"),
+      path.join(env("PROGRAMFILES"), "Microsoft\\Edge\\Application\\msedge.exe"),
+    ],
+    linux: [
+      "/usr/bin/google-chrome",
+      "/usr/bin/google-chrome-stable",
+      "/usr/bin/chromium",
+      "/usr/bin/chromium-browser",
+    ],
+  };
+  return (candidates[process.platform] || []).find((p) => p && fs.existsSync(p)) || "";
+}
+
+if (!CHROME || !fs.existsSync(CHROME)) {
+  fail(
+    `No Chrome found${CHROME ? ` at ${CHROME}` : " on this machine"}.\n` +
+      `    Set CHROME=/path/to/chrome and re-run.`
+  );
 }
 if (!(SCALE > 0)) fail(`SCALE must be a positive number, got "${process.env.SCALE}"`);
 
@@ -126,6 +160,10 @@ if (probe.error) fail(`Couldn't start Chrome: ${probe.error.message}`);
 
 const found = /data-canvas="(\d+)x(\d+)"/.exec(probe.stdout || "");
 const foundDpi = /data-canvas-dpi="([\d.]+)"/.exec(probe.stdout || "");
+// Present only when the canvas has bleed. Reported rather than acted on: the
+// window is still sized to the full sheet, and this is so the log says what the
+// thing will measure once it is cut.
+const foundTrim = /data-canvas-trim="(\d+)x(\d+)"/.exec(probe.stdout || "");
 if (!found) {
   fail(
     `Couldn't read the canvas size from the page.\n` +
@@ -214,10 +252,16 @@ if (bytesPerPixel < 0.02) {
   );
 }
 
+const density = DPI ? DPI * SCALE : null;
 console.log(
   `  ✓ ${OUT}\n    ${w}×${h}` +
-    (DPI ? ` at ${DPI * SCALE}dpi — ${trim(w / (DPI * SCALE))}×${trim(h / (DPI * SCALE))}in` : "") +
-    `, ${(written.length / 1024).toFixed(0)}KB\n`
+    (density ? ` at ${density}dpi — ${trim(w / density)}×${trim(h / density)}in` : "") +
+    `, ${(written.length / 1024).toFixed(0)}KB` +
+    (foundTrim && density
+      ? `\n    trims to ${trim((Number(foundTrim[1]) * SCALE) / density)}×` +
+        `${trim((Number(foundTrim[2]) * SCALE) / density)}in — the rest is bleed`
+      : "") +
+    `\n`
 );
 
 function trim(n) {

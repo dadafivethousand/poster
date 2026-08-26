@@ -20,10 +20,24 @@
  * accepted — the `canvas` prop on <Frame>, the `?canvas=` query param, and
  * `npm run shot -- <size>`:
  *
- *   "letter"        a preset name
- *   "1200x1600"     literal pixels
- *   "8.5x11in"      real-world units (in / mm / cm) at 300dpi, or "@150" for another
- *   { w, h }        an object, from JSX
+ *   "letter"           a preset name
+ *   "1200x1600"        literal pixels
+ *   "8.5x11in"         real-world units (in / mm / cm) at 300dpi, or "@150" for another
+ *   "3.5x2in+0.125in"  the same, with bleed
+ *   { w, h, bleed }    an object, from JSX
+ *
+ * BLEED IS ADDED OUTSIDE THE TRIM, NEVER CARVED OUT OF IT. "3.5x2in+0.125in"
+ * is a 3.5×2in card whose file is 3.75×2.25in, because the guillotine that cuts
+ * a stack of cards does not land on the same line twice and a card trimmed a
+ * hair wide would otherwise show a white sliver of paper down one edge. So the
+ * artwork runs 0.125in past the cut on every side and that margin is thrown
+ * away. `w`/`h` are the FILE; `trimW`/`trimH` are what survives the cut; and
+ * `bleed` is the difference, which <Frame> hands to the layout so the design
+ * still measures its margins from the trim rather than from the paper's edge.
+ *
+ * A commercial printer asks for this, and a card supplied at exact trim size
+ * gets scaled up into their bleed template — which is what turns a pixel-exact
+ * 300dpi file into a "low resolution" warning at upload.
  *
  * A size given in real-world units, or a print preset, also carries its `dpi`.
  * That travels through <Frame> onto the page as `data-canvas-dpi` and ends up
@@ -59,9 +73,9 @@ const DEFAULT = "ig";
 const DEFAULT_DPI = 300;
 const PER_INCH = { in: 1, mm: 1 / 25.4, cm: 1 / 2.54 };
 
-/** "1200x1600" · "8.5x11in" · "210x297mm@150" · "1080 × 1350" */
+/** "1200x1600" · "8.5x11in" · "3.5x2in+0.125in" · "210x297mm@150" */
 const SIZE_RE =
-  /^\s*([\d.]+)\s*[x×]\s*([\d.]+)\s*(px|in|mm|cm)?\s*(?:@\s*([\d.]+))?\s*$/i;
+  /^\s*([\d.]+)\s*[x×]\s*([\d.]+)\s*(px|in|mm|cm)?\s*(?:\+\s*([\d.]+)\s*(px|in|mm|cm)?)?\s*(?:@\s*([\d.]+))?\s*$/i;
 
 /**
  * Resolve any of the accepted size forms into { w, h, label } in pixels.
@@ -83,7 +97,18 @@ function resolveCanvas(canvas = DEFAULT) {
       );
     }
     const dpi = Number(canvas.dpi);
-    return { w, h, ...(dpi > 0 ? { dpi } : null), label: `${w}×${h}` };
+    // {w, h} are the TRIM here, same as the string form: a bleed is added
+    // outside them, never carved out of them.
+    const bleed = Math.max(0, Math.round(Number(canvas.bleed) || 0));
+    return {
+      w: w + bleed * 2,
+      h: h + bleed * 2,
+      trimW: w,
+      trimH: h,
+      bleed,
+      ...(dpi > 0 ? { dpi } : null),
+      label: `${w}×${h}${bleed ? ` + ${bleed}px bleed` : ""}`,
+    };
   }
 
   const name = String(canvas).trim();
@@ -92,30 +117,59 @@ function resolveCanvas(canvas = DEFAULT) {
 
   const m = SIZE_RE.exec(name);
   if (m) {
-    const [, rawW, rawH, unit, rawDpi] = m;
+    const [, rawW, rawH, unit, rawBleed, bleedUnit, rawDpi] = m;
     const dpi = rawDpi ? Number(rawDpi) : DEFAULT_DPI;
     const perInch = unit ? PER_INCH[unit.toLowerCase()] : null;
 
     // No unit, or an explicit "px": the numbers are already pixels and dpi is
     // meaningless. With a real-world unit they are inches/mm/cm at `dpi`.
-    const w = perInch ? Math.round(Number(rawW) * perInch * dpi) : Math.round(Number(rawW));
-    const h = perInch ? Math.round(Number(rawH) * perInch * dpi) : Math.round(Number(rawH));
+    const trimW = perInch ? Math.round(Number(rawW) * perInch * dpi) : Math.round(Number(rawW));
+    const trimH = perInch ? Math.round(Number(rawH) * perInch * dpi) : Math.round(Number(rawH));
 
-    if (!(w > 0 && h > 0)) throw new Error(`Canvas "${name}" resolves to ${w}×${h}`);
+    if (!(trimW > 0 && trimH > 0)) {
+      throw new Error(`Canvas "${name}" resolves to ${trimW}×${trimH}`);
+    }
+
+    // The bleed defaults to the size's own unit, so "3.5x2in+0.125" is inches
+    // like the rest of it. A bare pixel size takes a bare pixel bleed.
+    const bleedPerInch = bleedUnit ? PER_INCH[bleedUnit.toLowerCase()] : perInch;
+    const bleedPx = rawBleed
+      ? Number(rawBleed) * (bleedPerInch ? bleedPerInch * dpi : 1)
+      : 0;
+    if (!(bleedPx >= 0)) throw new Error(`Canvas "${name}" has a negative bleed`);
+
+    // THE SHEET IS ROUNDED, NOT THE BLEED. 0.125in at 300dpi is 37.5px, and
+    // rounding that first puts the sheet at 1126×676 — a pixel over the
+    // 1125×675 every printer's 3.5×2in template is cut for, and a pixel is
+    // enough for an uploader to call the file the wrong size. Round the total
+    // instead and let the bleed keep its half pixel; nothing downstream needs
+    // it whole, since it reaches the layout as a ratio.
+    const w = Math.round(trimW + bleedPx * 2);
+    const h = Math.round(trimH + bleedPx * 2);
+
     return {
+      // The CANVAS is trim plus bleed on all four sides — that is the file the
+      // printer gets. `trimW`/`trimH` are what survives the guillotine, and
+      // they are what the design lays out against.
       w,
       h,
+      trimW,
+      trimH,
+      bleed: (w - trimW) / 2,
       // Only when the numbers were inches/mm/cm. "1200x1600" is a pixel count
       // and has no physical size to claim.
       ...(perInch ? { dpi } : null),
-      label: perInch ? `${rawW}×${rawH}${unit} at ${dpi}dpi` : `${w}×${h}`,
+      label: perInch
+        ? `${rawW}×${rawH}${unit}${bleedPx ? ` + ${rawBleed}${bleedUnit || unit} bleed` : ""}` +
+          ` at ${dpi}dpi`
+        : `${trimW}×${trimH}${bleedPx ? ` + ${bleedPx}px bleed` : ""}`,
     };
   }
 
   throw new Error(
     `Unknown canvas "${name}".\n` +
       `  Presets: ${Object.keys(CANVASES).join(", ")}\n` +
-      `  Or a size: "1200x1600", "8.5x11in", "210x297mm@150"`
+      `  Or a size: "1200x1600", "8.5x11in", "3.5x2in+0.125in", "210x297mm@150"`
   );
 }
 

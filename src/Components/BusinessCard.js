@@ -4,12 +4,22 @@
 // the brand face, `side="back"` carries the contact details. Export each and
 // send the printer both files.
 //
-// NO BLEED. The canvas is exactly the trim size the user asked for, so this
-// prints as-is on a home printer or a cut-to-size job. Most commercial
-// printers want 3.75×2.25in with 0.125in of bleed off every edge — that is one
-// change, `<Frame canvas="3.75x2.25in">`, and nothing here has to move: the
-// field runs edge to edge and every element sits inside a safe margin well
-// clear of the trim.
+// BLEED, because a commercial printer asks for it: `canvas="3.5x2in+0.125in"`
+// in App.js makes the FILE 3.75×2.25in (1125×675) around a card that is still
+// cut to 3.5×2in. Everything here is measured from the cut — `--safe` and the
+// ghost's offset both add `--bleed` — so the artwork does not move when the
+// bleed goes on or comes off; only the paper around it changes.
+//
+// The earlier note here said the same switch was "one change and nothing has to
+// move", and that was wrong twice over. A bleed changes the sheet's ASPECT, so
+// (a) tying `--px` to the canvas would have grown every piece of type by 7%
+// after trimming, and (b) the board and circuit SVGs, whose viewBox is the
+// trim's shape, would have been fitted inside the taller sheet with a bare navy
+// band left along both cut edges. Both are fixed where they belong — the unit
+// in App.css, the `preserveAspectRatio` on the two SVGs.
+//
+// For a home printer or a cut-to-size job, drop the `+0.125in` and the card
+// exports at exact trim as before.
 //
 // The card carries no personal name by default, because none was given and a
 // name is not something to invent. `name` and `title` render the moment they
@@ -277,7 +287,13 @@ function FanOut({ at }) {
  * the back turns them up into the composition itself. */
 function Circuit() {
   return (
-    <svg className="bc-circuit" viewBox="0 0 1080 617" aria-hidden focusable="false">
+    <svg
+      className="bc-circuit"
+      viewBox="0 0 1080 617"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden
+      focusable="false"
+    >
       <g fill="none" stroke="#8fc7ff" strokeWidth="2.4" strokeLinecap="round">
         <path d="M-10 96h108l44-44h96" />
         <path d="M-10 168h150l40 40h84" />
@@ -317,7 +333,20 @@ function Circuit() {
  */
 function Board() {
   return (
-    <svg className="bc-board" viewBox="0 0 1080 617" aria-hidden focusable="false">
+    <svg
+      className="bc-board"
+      viewBox="0 0 1080 617"
+      // `slice`, not the default `meet`. The viewBox is the card's TRIM shape,
+      // and a bleed makes the sheet a different one — 1080×648 for 3.75×2.25in
+      // — so `meet` would fit the board inside the taller sheet and leave a
+      // bare navy band along the top and bottom, exactly where the guillotine
+      // is aiming. `slice` covers the sheet and lets the copper run off it,
+      // which is what these traces were drawn to do anyway: half the paths
+      // already start at -14 and end past 1094.
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden
+      focusable="false"
+    >
       <defs>
         <pattern id="bc-pad-field" width="30" height="30" patternUnits="userSpaceOnUse">
           <circle cx="15" cy="15" r="1.9" fill="#8fc7ff" />

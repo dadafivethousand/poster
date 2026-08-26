@@ -58,7 +58,8 @@ localhost:3000/?canvas=letter
 | `tabloid` | 3300×5100 | 11×17" portrait |
 
 Or skip the presets: `1200x1600` for literal pixels, `8.5x11in` / `210x297mm`
-for real-world units at 300dpi, `@150` on the end for another density.
+for real-world units at 300dpi, `@150` on the end for another density, and
+`+0.125in` for bleed — see below.
 
 **Changing the preset changes the paper, not the type scale.** Everything
 inside a poster is authored in `calc(<n> * var(--px))`, and `--px` is always
@@ -95,6 +96,56 @@ it back:
 ```
 
 A social size is left unstamped, because pixels on a feed have no inches.
+
+## Bleed, for anything going to a commercial printer
+
+Add it to any real-world size with `+`:
+
+```jsx
+<Frame canvas="3.5x2in+0.125in">   {/* a 3.5×2in card in a 3.75×2.25in file */}
+```
+
+```bash
+npm run shot -- 3.5x2in+0.125in
+localhost:3000/?canvas=3.5x2in+0.125in&guides    # ?guides draws the cut line
+```
+
+**The bleed is added outside the trim, never carved out of it.** The canvas
+becomes trim + bleed on all four sides, and that is the file; the trim is what
+survives the guillotine. A stack of cards is cut in one pass and the blade does
+not land on the same line twice, so the artwork has to run past the cut and
+that margin gets thrown away.
+
+Nothing inside the poster moves when the bleed goes on. `--px` stays pinned to
+the **trim** width, so the type is the size it was set at after trimming rather
+than 7% bigger, and `--bleed` is published for anything measured inward from
+the edge — `--margin-x` and `--margin-y` already include it:
+
+```css
+.xx-thing { inset: calc(58 * var(--px) + var(--bleed)); }   /* 58px from the CUT */
+```
+
+The one thing to check when adding bleed to an existing poster is any SVG
+whose `viewBox` is the trim's shape: a bleed changes the sheet's aspect, so it
+needs `preserveAspectRatio="xMidYMid slice"` to cover, or it gets fitted inside
+the taller sheet with a bare band left along both cut edges.
+
+`?guides` draws the trim line over the preview and is opt-in for a reason —
+`shot` builds its URL from `?canvas=` alone, so a guide cannot reach a printer.
+
+**And use `SCALE` for a print job.** A card at 300dpi is the minimum a printer
+accepts, which means any scaling at all on their end drops it below the
+threshold and the upload comes back "low resolution". `SCALE=2` renders the
+same sheet at 600dpi — genuinely re-rasterised, not upscaled — and the file
+says 600dpi:
+
+```bash
+SCALE=2 npm run shot -- 3.5x2in+0.125in
+
+  ✓ ~/Downloads/poster.png
+    2250×1350 at 600dpi — 3.75×2.25in, 2104KB
+    trims to 3.5×2in — the rest is bleed
+```
 
 ## What the submitted image is for
 

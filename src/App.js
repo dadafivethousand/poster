@@ -14,7 +14,8 @@ import BusinessCard from "./Components/BusinessCard";
 // The Frame sets the output size, and `npm run shot` follows it — omit
 // `canvas` for an Instagram post, or name one: "square", "story", "letter",
 // "letter-landscape", "half-letter", "a4", "tabloid", a literal "1200x1600",
-// a real-world "3.5x2in", or {w, h}. See src/canvas.js.
+// a real-world "3.5x2in", the same with bleed "3.5x2in+0.125in", or {w, h}.
+// See src/canvas.js.
 //
 // OpenHouse goes out as an Instagram Reel and wants canvas="story", laid out
 // inside a safe area — see the top of OpenHouse.css — because a reel played
@@ -27,7 +28,7 @@ import BusinessCard from "./Components/BusinessCard";
 // BusinessCard has two sides; export each: side="front" then side="back".
 function App() {
   return (
-    <Frame canvas="3.5x2in">
+    <Frame canvas="3.5x2in+0.125in">
       <BusinessCard side="back" />
     </Frame>
   );

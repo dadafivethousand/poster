@@ -48,6 +48,11 @@ export default function Frame({ canvas, children }) {
   }
 
   const { w, h, dpi } = resolved;
+  // A preset carries no bleed, so the trim IS the canvas and these fall back to
+  // the no-bleed identity: the ratios below come out 1 and 0, and every poster
+  // lays out exactly as it did before bleed existed.
+  const bleed = resolved.bleed || 0;
+  const trimW = resolved.trimW || w;
 
   return (
     <div
@@ -58,9 +63,23 @@ export default function Frame({ canvas, children }) {
       // PNG, so a card exported at 3.5×2in opens as 3.5×2in rather than as
       // 1050×600 pixels at whatever density the reader assumes.
       data-canvas-dpi={dpi || undefined}
-      style={{ "--canvas-w": w, "--canvas-h": h }}
+      // For the export's log line, so a bled file reports the size it will be
+      // after trimming rather than the larger one it is on disk.
+      data-canvas-trim={bleed ? `${trimW}x${resolved.trimH}` : undefined}
+      style={{
+        "--canvas-w": w,
+        "--canvas-h": h,
+        // Both as bare fractions of the canvas WIDTH, because that is the one
+        // dimension `100cqw` gives the stylesheet to multiply. `--trim-ratio`
+        // keeps `--px` pinned to the trim, so adding bleed enlarges the paper
+        // and not the type; `--bleed-ratio` is how a margin measured from the
+        // trim edge finds it again from the paper's.
+        "--trim-ratio": trimW / w,
+        "--bleed-ratio": bleed / w,
+      }}
     >
       {children}
+      {bleed > 0 && showGuides() && <TrimGuide />}
       {error && <pre className="pf-error">{error}</pre>}
     </div>
   );
@@ -70,4 +89,24 @@ function queryCanvas() {
   if (typeof window === "undefined") return null;
   const v = new URLSearchParams(window.location.search).get("canvas");
   return v && v.trim() ? v.trim() : null;
+}
+
+/**
+ * The cut line, drawn over a bled poster so you can see what the guillotine
+ * takes — the one thing about a bleed you cannot check by looking at the file,
+ * since the whole point is that the artwork runs past the edge of the card.
+ *
+ * OPT-IN, via `?guides` in the address bar, and that is what keeps it out of
+ * every export: `npm run shot` builds its URL from `?canvas=` alone and never
+ * adds this, so a guide cannot reach a printer even by accident. Nothing here
+ * is conditional on some "is this an export" flag, because a flag like that is
+ * exactly what eventually gets read wrong once.
+ */
+function TrimGuide() {
+  return <div className="pf-trim" aria-hidden />;
+}
+
+function showGuides() {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).has("guides");
 }
